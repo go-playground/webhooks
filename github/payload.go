@@ -22,9 +22,9 @@ type StatusPayload struct {
 	ID          int          `json:"id"`
 	SHA         string       `json:"sha"`
 	Name        string       `json:"name"`
-	TragetURL   *string      `json:"target_url"`
+	TragetURL   string       `json:"target_url"`
 	Context     string       `json:"context"`
-	Desctiption *string      `json:"description"`
+	Desctiption string       `json:"description"`
 	State       string       `json:"state"`
 	Commit      StatusCommit `json:"commit"`
 	Branches    []Branch     `json:"branches"`
@@ -58,7 +58,7 @@ type PushPayload struct {
 	Created    bool       `json:"created"`
 	Deleted    bool       `json:"deleted"`
 	Forced     bool       `json:"forced"`
-	BaseRef    *string    `json:"base_ref"`
+	BaseRef    string     `json:"base_ref"`
 	Compare    string     `json:"compare"`
 	Commits    []Commit   `json:"commits"`
 	HeadCommit HeadCommit `json:"head_commit"`
@@ -159,7 +159,7 @@ type DeploymentPayload struct {
 	Sender     Sender     `json:"sender"`
 }
 
-// CommitComment contains the information for GitHub's commit_comment hook event
+// CommitCommentPayload contains the information for GitHub's commit_comment hook event
 type CommitCommentPayload struct {
 	Action     string     `json:"action"`
 	RefType    string     `json:"ref_type"`
@@ -245,7 +245,7 @@ type Repository struct {
 	Size             int       `json:"size"`
 	StargazersCount  int       `json:"stargazers_count"`
 	WatchersCount    int       `json:"watchers_count"`
-	Language         *string   `json:"language"`
+	Language         string    `json:"language"`
 	HasIssues        bool      `json:"has_issues"`
 	HasDownloads     bool      `json:"has_downloads"`
 	HasWiki          bool      `json:"has_wiki"`
@@ -326,9 +326,9 @@ type Comment struct {
 	HTMLURL   string    `json:"html_url"`
 	ID        int       `json:"id"`
 	User      User      `json:"user"`
-	Position  *int      `json:"position"`
-	Line      *int      `json:"line"`
-	Path      *string   `json:"path"`
+	Position  int       `json:"position"`
+	Line      int       `json:"line"`
+	Path      string    `json:"path"`
 	CommitID  string    `json:"commit_id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
@@ -344,7 +344,7 @@ type Deployment struct {
 	Task string `json:"task"`
 	//paylod
 	Environment   string    `json:"environment"`
-	Description   *string   `json:"description"`
+	Description   string    `json:"description"`
 	Creator       Creator   `json:"creator"`
 	CreatedAt     time.Time `json:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at"`
@@ -358,7 +358,7 @@ type DeploymentStatus struct {
 	ID            int       `json:"id"`
 	State         string    `json:"state"`
 	Creator       Creator   `json:"creator"`
-	Description   *string   `json:"description"`
+	Description   string    `json:"description"`
 	TargetURL     string    `json:"target_url"`
 	CreatedAt     time.Time `json:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at"`
@@ -374,22 +374,22 @@ type Forkee struct {
 
 // Page contains GitHub's page information
 type Page struct {
-	PageName string  `json:"page_name"`
-	Title    string  `json:"title"`
-	Summary  *string `json:"summary"`
-	Action   string  `json:"action"`
-	SHA      string  `json:"sha"`
-	HTMLURL  string  `json:"html_url"`
+	PageName string `json:"page_name"`
+	Title    string `json:"title"`
+	Summary  string `json:"summary"`
+	Action   string `json:"action"`
+	SHA      string `json:"sha"`
+	HTMLURL  string `json:"html_url"`
 }
 
-// Page contains GitHub's label information
+// Label contains GitHub's label information
 type Label struct {
 	URL   string `json:"url"`
 	Name  string `json:"name"`
 	Color string `json:"color"`
 }
 
-// Page contains GitHub's issue information
+// Issue contains GitHub's issue information
 type Issue struct {
 	URL         string    `json:"url"`
 	LabelsURL   string    `json:"labels_url"`
@@ -403,8 +403,8 @@ type Issue struct {
 	Labels      []Label   `json:"labels"`
 	State       string    `json:"state"`
 	Locked      bool      `json:"locked"`
-	Assignee    *string   `json:"assignee"`
-	Milestone   *string   `json:"milestone"`
+	Assignee    string    `json:"assignee"`
+	Milestone   string    `json:"milestone"`
 	Comments    int       `json:"comments"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
@@ -567,9 +567,9 @@ type PullRequest struct {
 	UpdatedAt         time.Time        `json:"updated_at"`
 	ClosedAt          time.Time        `json:"closed_at"`
 	MergedAt          time.Time        `json:"merged_at"`
-	MergeCommitSHA    *string          `json:"merge_commit_sha"`
-	Assignee          *string          `json:"assignee"`
-	Milestone         *string          `json:"milestone"`
+	MergeCommitSHA    string           `json:"merge_commit_sha"`
+	Assignee          string           `json:"assignee"`
+	Milestone         string           `json:"milestone"`
 	CommitsURL        string           `json:"commits_url"`
 	ReviewCommentsURL string           `json:"review_comments_url"`
 	ReviewCommentURL  string           `json:"review_comment_url"`
@@ -579,9 +579,9 @@ type PullRequest struct {
 	Base              Base             `json:"base"`
 	Links             LinksPullRequest `json:"_links"`
 	Merged            bool             `json:"merged"`
-	Mergable          *bool            `json:"mergeable"`
+	Mergable          bool             `json:"mergeable"`
 	MergableState     string           `json:"mergeable_state"`
-	MergedBy          *string          `json:"merged_by"`
+	MergedBy          string           `json:"merged_by"`
 	Comments          int              `json:"comments"`
 	ReviewComments    int              `json:"review_comments"`
 	Commits           int              `json:"commits"`
@@ -633,10 +633,10 @@ type Release struct {
 	AssetsURL       string    `json:"assets_url"`
 	UploadURL       string    `json:"upload_url"`
 	HTMLURL         string    `json:"html_url"`
-	ID              string    `json:"id"`
+	ID              int       `json:"id"`
 	TagName         string    `json:"tag_name"`
 	TargetCommitish string    `json:"target_commitish"`
-	Name            *string   `json:"name"`
+	Name            string    `json:"name"`
 	Draft           bool      `json:"draft"`
 	Author          Author    `json:"author"`
 	Prelelease      bool      `json:"prerelease"`
@@ -645,7 +645,7 @@ type Release struct {
 	Assets          []string  `json:"assets"`
 	TarballURL      string    `json:"tarball_url"`
 	ZipballURL      string    `json:"zipball_url"`
-	Body            *string   `json:"body"`
+	Body            string    `json:"body"`
 }
 
 // BranchCommit contains GitHub's branch commit information
@@ -695,7 +695,7 @@ type StatusCommit struct {
 	Commit      StatusCommitInner `json:"commit"`
 	URL         string            `json:"url"`
 	HTMLURL     string            `json:"html_url"`
-	CommentsURL string            `json:"comments_url`
+	CommentsURL string            `json:"comments_url"`
 	Author      Author            `json:"author"`
 	Committer   Commiter          `json:"committer"`
 	Parents     []string          `json:"parents"`

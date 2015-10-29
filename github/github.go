@@ -1,15 +1,26 @@
 package github
 
-import "github.com/joeybloggs/webhooks"
+import (
+	"crypto/hmac"
+	"crypto/sha1"
+	"encoding/hex"
+	"encoding/json"
+	"io/ioutil"
+	"net/http"
+
+	"github.com/joeybloggs/webhooks"
+)
 
 // Webhook instance contains all methods needed to process events
 type Webhook struct {
-	provider webhooks.Provider
+	provider   webhooks.Provider
+	secret     string
+	eventFuncs map[Event]webhooks.ProcessPayloadFunc
 }
 
 // Config defines the configuration to create a new GitHubWebhook instance
 type Config struct {
-	Provider webhooks.Provider
+	Secret string
 }
 
 // Event defines a GitHub hook event type
@@ -17,7 +28,6 @@ type Event string
 
 // GitHub hook types
 const (
-	// AnyEvent                      Event = "*"
 	CommitCommentEvent            Event = "commit_comment"
 	CreateEvent                   Event = "create"
 	DeleteEvent                   Event = "delete"
@@ -53,19 +63,89 @@ const (
 	IssueSubtype  EventSubtype = "issues"
 )
 
-// Provider returns the Webhook's provider
-func (w Webhook) Provider() webhooks.Provider {
-	return w.provider
-}
-
-// UnderlyingProvider returns the Config's Provider
-func (c Config) UnderlyingProvider() webhooks.Provider {
-	return c.Provider
-}
-
 // New creates and returns a WebHook instance denoted by the Provider type
 func New(config *Config) *Webhook {
 	return &Webhook{
-		provider: config.Provider,
+		provider:   webhooks.GitHub,
+		secret:     config.Secret,
+		eventFuncs: map[Event]webhooks.ProcessPayloadFunc{},
 	}
+}
+
+// Provider returns the current hooks provider ID
+func (hook Webhook) Provider() webhooks.Provider {
+	return hook.provider
+}
+
+// RegisterEvents registers the function to call when the specified event(s) are encountered
+func (hook Webhook) RegisterEvents(fn webhooks.ProcessPayloadFunc, events ...Event) {
+
+	for _, event := range events {
+		hook.eventFuncs[event] = fn
+	}
+}
+
+// ParsePayload parses and verifies the payload and fires off the mapped function, if it exists.
+func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
+
+	event := r.Header.Get("X-GitHub-Event")
+	if len(event) == 0 {
+		http.Error(w, "400 Bad Request - Missing X-GitHub-Event Header", http.StatusBadRequest)
+		return
+	}
+
+	gitHubEvent := Event(event)
+
+	fn, ok := hook.eventFuncs[gitHubEvent]
+	// if no event registered
+	if !ok {
+		return
+	}
+
+	payload, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// If we have a Secret set, we should check the MAC
+	if len(hook.secret) > 0 {
+
+		signature := r.Header.Get("X-Hub-Signature")
+
+		if len(signature) == 0 {
+			http.Error(w, "403 Forbidden - Missing X-Hub-Signature required for HMAC verification", http.StatusForbidden)
+			return
+		}
+
+		mac := hmac.New(sha1.New, []byte(hook.secret))
+		_, err := mac.Write(payload)
+		if err != nil {
+			http.Error(w, "400 Bad Request - HMAC verification failed with body parsing", http.StatusBadRequest)
+			return
+		}
+
+		expectedMAC := hex.EncodeToString(mac.Sum(nil))
+
+		if !hmac.Equal([]byte(signature[5:]), []byte(expectedMAC)) {
+			http.Error(w, "403 Forbidden - HMAC verification failed", http.StatusForbidden)
+			return
+		}
+	}
+
+	var results interface{}
+
+	switch gitHubEvent {
+	case ReleaseEvent:
+		var release ReleasePayload
+		json.Unmarshal([]byte(payload), &release)
+		results = release
+	}
+
+	go func(fn webhooks.ProcessPayloadFunc, results interface{}) {
+
+		// put in recovery here!
+
+		fn(results)
+	}(fn, results)
 }

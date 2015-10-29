@@ -177,7 +177,7 @@ func TestCommitCommentHook(t *testing.T) {
 
 	json.Unmarshal([]byte(body), &cc)
 
-	Equal(t, cc.Comment.Line, nil)
+	Equal(t, cc.Comment.Line, 0)
 }
 
 func TestCreateHook(t *testing.T) {
