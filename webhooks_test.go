@@ -2,7 +2,6 @@ package webhooks
 
 import (
 	"os"
-	"reflect"
 	"testing"
 
 	. "gopkg.in/go-playground/assert.v1"
@@ -31,7 +30,4 @@ func TestMain(m *testing.M) {
 func TestHooks(t *testing.T) {
 
 	Equal(t, true, true)
-
-	results := New(&GitHubConfig{Provider: GitHub})
-	Equal(t, reflect.TypeOf(results).String(), "*webhooks.GitHubWebhook")
 }

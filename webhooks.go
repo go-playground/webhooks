@@ -19,15 +19,15 @@ type Config interface {
 }
 
 // New creates and returns a WebHook instance denoted by the Provider type
-func New(config Config) Webhook {
+// func New(config Config) Webhook {
 
-	switch config.UnderlyingProvider() {
-	case GitHub:
-		c := config.(*GitHubConfig)
-		return &GitHubWebhook{
-			provider: c.Provider,
-		}
-	default:
-		panic("Invalid config type")
-	}
-}
+// 	switch config.UnderlyingProvider() {
+// 	case GitHub:
+// 		c := config.(*GitHubConfig)
+// 		return &GitHubWebhook{
+// 			provider: c.Provider,
+// 		}
+// 	default:
+// 		panic("Invalid config type")
+// 	}
+// }
