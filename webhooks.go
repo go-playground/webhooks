@@ -1,10 +1,6 @@
 package webhooks
 
-import (
-	"errors"
-	"fmt"
-	"net/http"
-)
+import "net/http"
 
 // Provider defines the type of webhook
 type Provider int
@@ -46,23 +42,11 @@ func Run(hook Webhook, addr string, path string) error {
 
 	s := &http.Server{Addr: addr, Handler: srv}
 
-	return run(s)
-}
-
-// RunTLS runs a server with TLS configuration.
-func RunTLS(hook Webhook, addr string, path string, certFile string, keyFile string) error {
-	srv := &server{
-		hook: hook,
-		path: path,
-	}
-
-	s := &http.Server{Addr: addr, Handler: srv}
-
-	return run(s, certFile, keyFile)
+	return s.ListenAndServe()
 }
 
 // RunServer runs a custom server.
-func RunServer(s *http.Server, hook Webhook, addr string, path string) error {
+func RunServer(s *http.Server, hook Webhook, path string) error {
 
 	srv := &server{
 		hook: hook,
@@ -71,12 +55,16 @@ func RunServer(s *http.Server, hook Webhook, addr string, path string) error {
 
 	s.Handler = srv
 
-	return run(s)
+	return s.ListenAndServe()
 }
 
 // RunTLSServer runs a custom server with TLS configuration.
-// NOTE: http.Server Handler will be overridden by this library, just set it to nil
-func RunTLSServer(s *http.Server, hook Webhook, addr string, path string, certFile string, keyFile string) error {
+// NOTE: http.Server Handler will be overridden by this library, just set it to nil.
+// Setting the Certificates can be done in the http.Server.TLSConfig.Certificates
+// see example here:
+func RunTLSServer(s *http.Server, hook Webhook, path string) error {
+
+	// var err error
 
 	srv := &server{
 		hook: hook,
@@ -85,23 +73,11 @@ func RunTLSServer(s *http.Server, hook Webhook, addr string, path string, certFi
 
 	s.Handler = srv
 
-	return run(s, certFile, keyFile)
-}
-
-func run(s *http.Server, files ...string) error {
-	if len(files) == 0 {
-		return s.ListenAndServe()
-	} else if len(files) == 2 {
-		return s.ListenAndServeTLS(files[0], files[1])
-	}
-
-	return errors.New("invalid server configuration")
+	return s.ListenAndServeTLS("", "")
 }
 
 func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-
-	fmt.Println("GOT HERE!")
 
 	if r.Method != "POST" {
 		http.Error(w, "405 Method not allowed", http.StatusMethodNotAllowed)

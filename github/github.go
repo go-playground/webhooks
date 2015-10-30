@@ -225,9 +225,6 @@ func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 
 func (hook Webhook) runProcessPayloadFunc(fn webhooks.ProcessPayloadFunc, results interface{}) {
 	go func(fn webhooks.ProcessPayloadFunc, results interface{}) {
-
-		// put in recovery here!
-
 		fn(results)
 	}(fn, results)
 }
