@@ -103,8 +103,8 @@ func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 	}
 
 	payload, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	if err != nil || len(payload) == 0 {
+		http.Error(w, "Error reading Body", http.StatusInternalServerError)
 		return
 	}
 
@@ -119,11 +119,7 @@ func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 		}
 
 		mac := hmac.New(sha1.New, []byte(hook.secret))
-		_, err := mac.Write(payload)
-		if err != nil {
-			http.Error(w, "400 Bad Request - HMAC verification failed with body parsing", http.StatusBadRequest)
-			return
-		}
+		mac.Write(payload)
 
 		expectedMAC := hex.EncodeToString(mac.Sum(nil))
 
@@ -218,8 +214,6 @@ func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 		var w WatchPayload
 		json.Unmarshal([]byte(payload), &w)
 		hook.runProcessPayloadFunc(fn, w)
-	default:
-		http.Error(w, "400 Bad Request - Unknown Event "+event, http.StatusBadRequest)
 	}
 }
 
