@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/joeybloggs/webhooks"
-	"github.com/joeybloggs/webhooks/github"
+	"gopkg.in/go-playground/webhooks"
+	"gopkg.in/go-playground/webhooks/github"
 )
 
 const (

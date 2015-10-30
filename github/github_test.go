@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/joeybloggs/webhooks"
 	. "gopkg.in/go-playground/assert.v1"
+	"gopkg.in/go-playground/webhooks"
 )
 
 // NOTES:

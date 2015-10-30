@@ -1,7 +1,7 @@
 Library webhooks
 ================
 
-[![GoDoc](https://godoc.org/github.com/joeybloggs/webhooks?status.svg)](https://godoc.org/github.com/joeybloggs/webhooks)
+[![GoDoc](https://godoc.org/gopkg.in/go-playground/webhooks?status.svg)](https://godoc.org/gopkg.in/go-playground/webhooks)
 
 Library webhooks allows for easy recieving and parsing of GitHub Webhook Events; more services to come i.e. BitBucket...
 
@@ -19,20 +19,20 @@ Installation
 
 Use go get.
 
-	go get github.com/joeybloggs/webhooks
+	go get gopkg.in/go-playground/webhooks
 
 or to update
 
-	go get -u github.com/joeybloggs/webhooks
+	go get -u gopkg.in/go-playground/webhooks
 
 Then import the validator package into your own code.
 
-	import "github.com/joeybloggs/webhooks"
+	import "gopkg.in/go-playground/webhooks"
 
 Usage and documentation
 ------
 
-Please see http://godoc.org/github.com/joeybloggs/webhooks for detailed usage docs.
+Please see http://godoc.org/gopkg.in/go-playground/webhooks for detailed usage docs.
 
 ##### Examples:
 
@@ -44,8 +44,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/joeybloggs/webhooks"
-	"github.com/joeybloggs/webhooks/github"
+	"gopkg.in/go-playground/webhooks"
+	"gopkg.in/go-playground/webhooks/github"
 )
 
 const (
@@ -100,8 +100,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/joeybloggs/webhooks"
-	"github.com/joeybloggs/webhooks/github"
+	"gopkg.in/go-playground/webhooks"
+	"gopkg.in/go-playground/webhooks/github"
 )
 
 const (

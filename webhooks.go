@@ -61,7 +61,7 @@ func RunServer(s *http.Server, hook Webhook, path string) error {
 // RunTLSServer runs a custom server with TLS configuration.
 // NOTE: http.Server Handler will be overridden by this library, just set it to nil.
 // Setting the Certificates can be done in the http.Server.TLSConfig.Certificates
-// see example here: https://github.com/joeybloggs/webhooks/blob/master/webhooks_test.go#L178
+// see example here: https://gopkg.in/go-playground/webhooks/blob/master/webhooks_test.go#L178
 func RunTLSServer(s *http.Server, hook Webhook, path string) error {
 
 	srv := &server{
