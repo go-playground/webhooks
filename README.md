@@ -1,6 +1,7 @@
 Library webhooks
 ================
 
+[![Coverage Status](https://coveralls.io/repos/go-playground/webhooks/badge.svg?branch=v1&service=github)](https://coveralls.io/github/go-playground/webhooks?branch=v1)
 [![GoDoc](https://godoc.org/gopkg.in/go-playground/webhooks?status.svg)](https://godoc.org/gopkg.in/go-playground/webhooks)
 
 Library webhooks allows for easy recieving and parsing of GitHub Webhook Events; more services to come i.e. BitBucket...
