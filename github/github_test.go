@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	. "gopkg.in/go-playground/assert.v1"
-	"gopkg.in/go-playground/webhooks"
+	"gopkg.in/go-playground/webhooks.v1"
 )
 
 // NOTES:
