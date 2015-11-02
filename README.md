@@ -1,8 +1,7 @@
 Library webhooks
 ================
 
-* Library is in a build passing state with 100% test coverage, tests are just failing on the CI server because of blocked ports which should get resolved soon.
-
+[![Build Status](https://semaphoreci.com/api/v1/projects/5b9e2eda-8f8d-40aa-8cb4-e3f6120171fe/587820/badge.svg)](https://semaphoreci.com/joeybloggs/webhooks)
 [![Coverage Status](https://coveralls.io/repos/go-playground/webhooks/badge.svg?branch=v1&service=github)](https://coveralls.io/github/go-playground/webhooks?branch=v1)
 [![GoDoc](https://godoc.org/gopkg.in/go-playground/webhooks.v1?status.svg)](https://godoc.org/gopkg.in/go-playground/webhooks.v1)
 
