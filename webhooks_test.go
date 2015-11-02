@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"testing"
+	"time"
 
 	. "gopkg.in/go-playground/assert.v1"
 )
@@ -48,11 +49,12 @@ func TestMain(m *testing.M) {
 
 func TestRun(t *testing.T) {
 
-	go Run(fakeHook, ":3006", "/webhooks")
+	go Run(fakeHook, "127.0.0.1:3006", "/webhooks")
+	time.Sleep(5000)
 
 	payload := "{}"
 
-	req, err := http.NewRequest("POST", "http://localhost:3006/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3006/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 
 	Equal(t, err, nil)
@@ -68,7 +70,7 @@ func TestRun(t *testing.T) {
 	// While HTTP Server is running test some bad input
 
 	// Test BAD URL
-	req, err = http.NewRequest("POST", "http://localhost:3006", bytes.NewBuffer([]byte(payload)))
+	req, err = http.NewRequest("POST", "http://127.0.0.1:3006", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 
 	Equal(t, err, nil)
@@ -81,7 +83,7 @@ func TestRun(t *testing.T) {
 	Equal(t, resp.StatusCode, http.StatusNotFound)
 
 	// Test BAD METHOD
-	req, err = http.NewRequest("GET", "http://localhost:3006/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err = http.NewRequest("GET", "http://127.0.0.1:3006/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 
 	Equal(t, err, nil)
@@ -96,12 +98,13 @@ func TestRun(t *testing.T) {
 
 func TestRunServer(t *testing.T) {
 
-	server := &http.Server{Addr: ":3007", Handler: nil}
+	server := &http.Server{Addr: "127.0.0.1:3007", Handler: nil}
 	go RunServer(server, fakeHook, "/webhooks")
+	time.Sleep(5000)
 
 	payload := "{}"
 
-	req, err := http.NewRequest("POST", "http://localhost:3007/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3007/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 
 	Equal(t, err, nil)
@@ -117,7 +120,7 @@ func TestRunServer(t *testing.T) {
 	// While HTTP Server is running test some bad input
 
 	// Test BAD URL
-	req, err = http.NewRequest("POST", "http://localhost:3007", bytes.NewBuffer([]byte(payload)))
+	req, err = http.NewRequest("POST", "http://127.0.0.1:3007", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 
 	Equal(t, err, nil)
@@ -130,7 +133,7 @@ func TestRunServer(t *testing.T) {
 	Equal(t, resp.StatusCode, http.StatusNotFound)
 
 	// Test BAD METHOD
-	req, err = http.NewRequest("GET", "http://localhost:3007/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err = http.NewRequest("GET", "http://127.0.0.1:3007/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 
 	Equal(t, err, nil)
@@ -172,17 +175,18 @@ D2lWusoe2/nEqfDVVWGWlyJ7yOmqaVm/iNUN9B2N2g==
 -----END RSA PRIVATE KEY-----
 `
 
-	server := &http.Server{Addr: ":3008", Handler: nil, TLSConfig: &tls.Config{}}
+	server := &http.Server{Addr: "127.0.0.1:3008", Handler: nil, TLSConfig: &tls.Config{}}
 	server.TLSConfig.Certificates = make([]tls.Certificate, 1)
 
 	server.TLSConfig.Certificates[0], err = tls.X509KeyPair([]byte(cert), []byte(key))
 	Equal(t, err, nil)
 
 	go RunTLSServer(server, fakeHook, "/webhooks")
+	time.Sleep(5000)
 
 	payload := "{}"
 
-	req, err := http.NewRequest("POST", "https://localhost:3008/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "https://127.0.0.1:3008/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 
 	Equal(t, err, nil)
@@ -202,7 +206,7 @@ D2lWusoe2/nEqfDVVWGWlyJ7yOmqaVm/iNUN9B2N2g==
 	// While HTTP Server is running test some bad input
 
 	// Test BAD URL
-	req, err = http.NewRequest("POST", "https://localhost:3008", bytes.NewBuffer([]byte(payload)))
+	req, err = http.NewRequest("POST", "https://127.0.0.1:3008", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 
 	Equal(t, err, nil)
@@ -215,7 +219,7 @@ D2lWusoe2/nEqfDVVWGWlyJ7yOmqaVm/iNUN9B2N2g==
 	Equal(t, resp.StatusCode, http.StatusNotFound)
 
 	// Test BAD METHOD
-	req, err = http.NewRequest("GET", "https://localhost:3008/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err = http.NewRequest("GET", "https://127.0.0.1:3008/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 
 	Equal(t, err, nil)
