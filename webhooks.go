@@ -9,6 +9,8 @@ func (p Provider) String() string {
 	switch p {
 	case GitHub:
 		return "GitHub"
+	case Bitbucket:
+		return "Bitbucket"
 	default:
 		return "Unknown"
 	}

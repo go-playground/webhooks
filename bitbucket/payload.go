@@ -40,8 +40,8 @@ type PullRequestMergedPayload struct {
 	Repository  Repository  `json:"repository"`
 }
 
-// PullRequestUnapprovedPayload is the Bitbucket pullrequest:unapproved payload
-type PullRequestUnapprovedPayload struct {
+// PullRequestApprovalRemovedPayload is the Bitbucket pullrequest:unapproved payload
+type PullRequestApprovalRemovedPayload struct {
 	Actor       User        `json:"actor"`
 	PullRequest PullRequest `json:"pullrequest"`
 	Repository  Repository  `json:"repository"`
