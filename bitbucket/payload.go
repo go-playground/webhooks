@@ -2,7 +2,7 @@ package bitbucket
 
 import "time"
 
-// PullRequestCommentDeletedPayload is the BitBucket pull_request:comment_deleted payload
+// PullRequestCommentDeletedPayload is the Bitbucket pull_request:comment_deleted payload
 type PullRequestCommentDeletedPayload struct {
 	Actor       User        `json:"actor"`
 	Repository  Repository  `json:"repository"`
@@ -10,7 +10,7 @@ type PullRequestCommentDeletedPayload struct {
 	Comment     Comment     `json:"comment"`
 }
 
-// PullRequestCommentUpdatedPayload is the BitBucket pullrequest:comment_updated payload
+// PullRequestCommentUpdatedPayload is the Bitbucket pullrequest:comment_updated payload
 type PullRequestCommentUpdatedPayload struct {
 	Actor       User        `json:"actor"`
 	Repository  Repository  `json:"repository"`
@@ -18,7 +18,7 @@ type PullRequestCommentUpdatedPayload struct {
 	Comment     Comment     `json:"comment"`
 }
 
-// PullRequestCommentCreatedPayload is the BitBucket pullrequest:comment_created payload
+// PullRequestCommentCreatedPayload is the Bitbucket pullrequest:comment_created payload
 type PullRequestCommentCreatedPayload struct {
 	Actor       User        `json:"actor"`
 	Repository  Repository  `json:"repository"`
@@ -26,21 +26,21 @@ type PullRequestCommentCreatedPayload struct {
 	Comment     Comment     `json:"comment"`
 }
 
-// PullRequestDeclinedPayload is the BitBucket pullrequest:rejected payload
+// PullRequestDeclinedPayload is the Bitbucket pullrequest:rejected payload
 type PullRequestDeclinedPayload struct {
 	Actor       User        `json:"actor"`
 	PullRequest PullRequest `json:"pullrequest"`
 	Repository  Repository  `json:"repository"`
 }
 
-// PullRequestMergedPayload is the BitBucket pullrequest:fulfilled payload
+// PullRequestMergedPayload is the Bitbucket pullrequest:fulfilled payload
 type PullRequestMergedPayload struct {
 	Actor       User        `json:"actor"`
 	PullRequest PullRequest `json:"pullrequest"`
 	Repository  Repository  `json:"repository"`
 }
 
-// PullRequestUnapprovedPayload is the BitBucket pullrequest:unapproved payload
+// PullRequestUnapprovedPayload is the Bitbucket pullrequest:unapproved payload
 type PullRequestUnapprovedPayload struct {
 	Actor       User        `json:"actor"`
 	PullRequest PullRequest `json:"pullrequest"`
@@ -48,7 +48,7 @@ type PullRequestUnapprovedPayload struct {
 	Approval    Approval    `json:"approval"`
 }
 
-// PullRequestApprovedPayload is the BitBucket pullrequest:approved payload
+// PullRequestApprovedPayload is the Bitbucket pullrequest:approved payload
 type PullRequestApprovedPayload struct {
 	Actor       User        `json:"actor"`
 	PullRequest PullRequest `json:"pullrequest"`
@@ -56,21 +56,21 @@ type PullRequestApprovedPayload struct {
 	Approval    Approval    `json:"approval"`
 }
 
-// PullRequestUpdatedPayload is the BitBucket pullrequest:updated payload
+// PullRequestUpdatedPayload is the Bitbucket pullrequest:updated payload
 type PullRequestUpdatedPayload struct {
 	Actor       User        `json:"actor"`
 	PullRequest PullRequest `json:"pullrequest"`
 	Repository  Repository  `json:"repository"`
 }
 
-// PullRequestCreatedPayload is the BitBucket pullrequest:created payload
+// PullRequestCreatedPayload is the Bitbucket pullrequest:created payload
 type PullRequestCreatedPayload struct {
 	Actor       User        `json:"actor"`
 	PullRequest PullRequest `json:"pullrequest"`
 	Repository  Repository  `json:"repository"`
 }
 
-// IssueCommentCreatedPayload is the BitBucket issue:comment_created payload
+// IssueCommentCreatedPayload is the Bitbucket issue:comment_created payload
 type IssueCommentCreatedPayload struct {
 	Actor      User       `json:"actor"`
 	Repository Repository `json:"repository"`
@@ -78,7 +78,7 @@ type IssueCommentCreatedPayload struct {
 	Comment    Comment    `json:"comment"`
 }
 
-// IssueUpdatedPayload is the BitBucket issue:updated payload
+// IssueUpdatedPayload is the Bitbucket issue:updated payload
 type IssueUpdatedPayload struct {
 	Actor      User         `json:"actor"`
 	Issue      Issue        `json:"issue"`
@@ -87,67 +87,67 @@ type IssueUpdatedPayload struct {
 	Changes    IssueChanges `json:"changes"`
 }
 
-// IssueCreatedPayload is the BitBucket issue:created payload
+// IssueCreatedPayload is the Bitbucket issue:created payload
 type IssueCreatedPayload struct {
 	Actor      User       `json:"actor"`
 	Issue      Issue      `json:"issue"`
 	Repository Repository `json:"repository"`
 }
 
-// RepoCommitStatusUpdatedPayload is the BitBucket repo:commit_status_updated payload
+// RepoCommitStatusUpdatedPayload is the Bitbucket repo:commit_status_updated payload
 type RepoCommitStatusUpdatedPayload struct {
 	Actor        User         `json:"actor"`
 	Repository   Repository   `json:"repository"`
 	CommitStatus CommitStatus `json:"commit_status"`
 }
 
-// RepoCommitStatusCreatedPayload is the BitBucket repo:commit_status_created payload
+// RepoCommitStatusCreatedPayload is the Bitbucket repo:commit_status_created payload
 type RepoCommitStatusCreatedPayload struct {
 	Actor        User         `json:"actor"`
 	Repository   Repository   `json:"repository"`
 	CommitStatus CommitStatus `json:"commit_status"`
 }
 
-// RepoCommitCommentedPayload is the BitBucket repo:commit_comment_created payload
-type RepoCommitCommentedPayload struct {
+// RepoCommitCommentCreatedPayload is the Bitbucket repo:commit_comment_created payload
+type RepoCommitCommentCreatedPayload struct {
 	Actor      User       `json:"actor"`
 	Comment    Comment    `json:"comment"`
 	Repository Repository `json:"repository"`
 	Commit     CommitHash `json:"commit"`
 }
 
-// RepoForkPayload is the BitBucket repo:fork payload
+// RepoForkPayload is the Bitbucket repo:fork payload
 type RepoForkPayload struct {
 	Actor      User       `json:"actor"`
 	Repository Repository `json:"repository"`
 	Fork       Repository `json:"fork"`
 }
 
-// RepoPushPayload is the BitBucket repo:push payload
+// RepoPushPayload is the Bitbucket repo:push payload
 type RepoPushPayload struct {
 	Actor      User       `json:"actor"`
 	Repository Repository `json:"repository"`
 	Push       Push       `json:"push"`
 }
 
-// Approval is the common BitBucket Issue Approval Sub Entity
+// Approval is the common Bitbucket Issue Approval Sub Entity
 type Approval struct {
 	Date time.Time `json:"date"`
 	User User      `json:"user"`
 }
 
-// IssueChanges is the common BitBucket Issue Changes Sub Entity
+// IssueChanges is the common Bitbucket Issue Changes Sub Entity
 type IssueChanges struct {
 	Status IssueChangeStatus `json:"status"`
 }
 
-// IssueChangeStatus is the common BitBucket Issue Change Status Sub Entity
+// IssueChangeStatus is the common Bitbucket Issue Change Status Sub Entity
 type IssueChangeStatus struct {
 	Old string `json:"old"`
 	New string `json:"new"`
 }
 
-// CommitStatus is the common BitBucket CommitStatus Sub Entity
+// CommitStatus is the common Bitbucket CommitStatus Sub Entity
 type CommitStatus struct {
 	Name        string          `json:"name"`
 	Description string          `json:"description"`
@@ -160,12 +160,12 @@ type CommitStatus struct {
 	Links       LinksSelfCommit `json:"links"`
 }
 
-// Push is the common BitBucket Push Sub Entity
+// Push is the common Bitbucket Push Sub Entity
 type Push struct {
 	Changes []Change `json:"changes"`
 }
 
-// Change is the common BitBucket Change Sub Entity
+// Change is the common Bitbucket Change Sub Entity
 type Change struct {
 	New       ChangeData           `json:"new"`
 	Old       ChangeData           `json:"old"`
@@ -177,7 +177,7 @@ type Change struct {
 	Truncated bool                 `json:"truncated"`
 }
 
-// ChangeData is the common BitBucket ChangeData Sub Entity
+// ChangeData is the common Bitbucket ChangeData Sub Entity
 type ChangeData struct {
 	Type   string               `json:"type"`
 	Name   string               `json:"name"`
@@ -185,7 +185,7 @@ type ChangeData struct {
 	Links  LinksHTMLSelfCommits `json:"links"`
 }
 
-// Target is the common BitBucket Target Sub Entity
+// Target is the common Bitbucket Target Sub Entity
 type Target struct {
 	Type    string        `json:"type"`
 	Hash    string        `json:"hash"`
@@ -196,14 +196,14 @@ type Target struct {
 	Links   LinksHTMLSelf `json:"links"`
 }
 
-// Parent is the common BitBucket Parent Sub Entity
+// Parent is the common Bitbucket Parent Sub Entity
 type Parent struct {
 	Type  string        `json:"type"`
 	Hash  string        `json:"hash"`
 	Links LinksHTMLSelf `json:"links"`
 }
 
-// Commit is the common BitBucket Commit Sub Entity
+// Commit is the common Bitbucket Commit Sub Entity
 type Commit struct {
 	Hash    string        `json:"hash"`
 	Type    string        `json:"type"`
@@ -212,7 +212,7 @@ type Commit struct {
 	Links   LinksHTMLSelf `json:"links"`
 }
 
-// User is the common BitBucket User Entity
+// User is the common Bitbucket User Entity
 type User struct {
 	Username    string `json:"username"`
 	DisplayName string `json:"display_name"`
@@ -220,7 +220,7 @@ type User struct {
 	Links       Links  `json:"links"`
 }
 
-// Repository is the common BitBucket Repository Entity
+// Repository is the common Bitbucket Repository Entity
 type Repository struct {
 	Links     Links  `json:"links"`
 	UUID      string `json:"uuid"`
@@ -230,7 +230,7 @@ type Repository struct {
 	IsPrivate bool   `json:"is_private"`
 }
 
-// Issue is the common BitBucket Issue Entity
+// Issue is the common Bitbucket Issue Entity
 type Issue struct {
 	ID        int64         `json:"id"`
 	Component string        `json:"component"`
@@ -246,7 +246,7 @@ type Issue struct {
 	Links     LinksHTMLSelf `json:"links"`
 }
 
-// Comment is the common BitBucket Comment Entity
+// Comment is the common Bitbucket Comment Entity
 type Comment struct {
 	ID        int64         `json:"id"`
 	Parent    ParentID      `json:"parent"`
@@ -257,7 +257,7 @@ type Comment struct {
 	Links     LinksHTMLSelf `json:"links"`
 }
 
-// PullRequest is the common BitBucket PullRequest Entity
+// PullRequest is the common Bitbucket PullRequest Entity
 type PullRequest struct {
 	ID                int64         `json:"id"`
 	Title             string        `json:"title"`
@@ -277,113 +277,113 @@ type PullRequest struct {
 	Links             LinksHTMLSelf `json:"links"`
 }
 
-// Destination is the common BitBucket Destination Sub Entity
+// Destination is the common Bitbucket Destination Sub Entity
 type Destination struct {
 	Branch     Branch     `json:"branch"`
 	Commit     CommitHash `json:"commit"`
 	Repository Repository `json:"repository"`
 }
 
-// Source is the common BitBucket Source Sub Entity
+// Source is the common Bitbucket Source Sub Entity
 type Source struct {
 	Branch     Branch     `json:"branch"`
 	Commit     CommitHash `json:"commit"`
 	Repository Repository `json:"repository"`
 }
 
-// Branch is the common BitBucket Branch Sub Entity
+// Branch is the common Bitbucket Branch Sub Entity
 type Branch struct {
 	Name string `json:"name"`
 }
 
-// CommitHash is the common BitBucket CommitHash Sub Entity
+// CommitHash is the common Bitbucket CommitHash Sub Entity
 type CommitHash struct {
 	Hash string `json:"hash"`
 }
 
-// Inline is the common BitBucket Inline Sub Entity
+// Inline is the common Bitbucket Inline Sub Entity
 type Inline struct {
 	Path string `json:"path"`
 	From *int64 `json:"from"`
 	To   int64  `json:"to"`
 }
 
-// ParentID is the common BitBucket ParentID Sub Entity
+// ParentID is the common Bitbucket ParentID Sub Entity
 type ParentID struct {
 	ID int64 `json:"id"`
 }
 
-// Avatar is the common BitBucket Avatar Sub Entity
+// Avatar is the common Bitbucket Avatar Sub Entity
 type Avatar struct {
 	HREF string `json:"href"`
 }
 
-// HTML is the common BitBucket HTML Sub Entity
+// HTML is the common Bitbucket HTML Sub Entity
 type HTML struct {
 	HREF string `json:"href"`
 }
 
-// Self is the common BitBucket Self Sub Entity
+// Self is the common Bitbucket Self Sub Entity
 type Self struct {
 	HREF string `json:"href"`
 }
 
-// Diff is the common BitBucket Diff Sub Entity
+// Diff is the common Bitbucket Diff Sub Entity
 type Diff struct {
 	HREF string `json:"href"`
 }
 
-// Commits is the common BitBucket Commits Sub Entity
+// Commits is the common Bitbucket Commits Sub Entity
 type Commits struct {
 	HREF string `json:"href"`
 }
 
-// LinksSelfCommit is the common BitBucket LinksSelfCommit Sub Entity
+// LinksSelfCommit is the common Bitbucket LinksSelfCommit Sub Entity
 type LinksSelfCommit struct {
 	Self   Self    `json:"self"`
 	Commit Commits `json:"commit"`
 }
 
-// LinksHTMLSelfCommits is the common BitBucket LinksHTMLSelfCommits Sub Entity
+// LinksHTMLSelfCommits is the common Bitbucket LinksHTMLSelfCommits Sub Entity
 type LinksHTMLSelfCommits struct {
 	Self    Self    `json:"self"`
 	Commits Commits `json:"commits"`
 	HTML    HTML    `json:"html"`
 }
 
-// LinksHTMLDiffCommits is the common BitBucket LinksHTMLDiffCommits Sub Entity
+// LinksHTMLDiffCommits is the common Bitbucket LinksHTMLDiffCommits Sub Entity
 type LinksHTMLDiffCommits struct {
 	HTML    HTML    `json:"html"`
 	Diff    Diff    `json:"diff"`
 	Commits Commits `json:"commits"`
 }
 
-// Links is the common BitBucket Links Sub Entity
+// Links is the common Bitbucket Links Sub Entity
 type Links struct {
 	Avatar Avatar `json:"avatar"`
 	HTML   HTML   `json:"html"`
 	Self   Self   `json:"self"`
 }
 
-// LinksHTMLSelf is the common BitBucket LinksHTMLSelf Sub Entity
+// LinksHTMLSelf is the common Bitbucket LinksHTMLSelf Sub Entity
 type LinksHTMLSelf struct {
 	HTML HTML `json:"html"`
 	Self Self `json:"self"`
 }
 
-// Content is the common BitBucket Content Sub Entity
+// Content is the common Bitbucket Content Sub Entity
 type Content struct {
 	HTML   string `json:"html"`
 	Markup string `json:"markup"`
 	Raw    string `json:"raw"`
 }
 
-// Milestone is the common BitBucket Milestone Sub Entity
+// Milestone is the common Bitbucket Milestone Sub Entity
 type Milestone struct {
 	Name string `json:"name"`
 }
 
-// Version is the common BitBucket Version Sub Entity
+// Version is the common Bitbucket Version Sub Entity
 type Version struct {
 	Name string `json:"name"`
 }

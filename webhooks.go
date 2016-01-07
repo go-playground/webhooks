@@ -17,6 +17,7 @@ func (p Provider) String() string {
 // webhooks available providers
 const (
 	GitHub Provider = iota
+	Bitbucket
 )
 
 // Webhook interface defines a webhook to recieve events
