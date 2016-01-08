@@ -18,7 +18,7 @@ type Webhook struct {
 	eventFuncs map[Event]webhooks.ProcessPayloadFunc
 }
 
-// Config defines the configuration to create a new GitHubWebhook instance
+// Config defines the configuration to create a new GitHub Webhook instance
 type Config struct {
 	Secret string
 }
