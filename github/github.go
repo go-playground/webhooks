@@ -129,96 +129,99 @@ func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	// Make headers available to ProcessPayloadFunc as a webhooks type
+	hd := webhooks.Header(r.Header)
+
 	switch gitHubEvent {
 	case CommitCommentEvent:
 		var cc CommitCommentPayload
 		json.Unmarshal([]byte(payload), &cc)
-		hook.runProcessPayloadFunc(fn, cc)
+		hook.runProcessPayloadFunc(fn, cc, hd)
 	case CreateEvent:
 		var c CreatePayload
 		json.Unmarshal([]byte(payload), &c)
-		hook.runProcessPayloadFunc(fn, c)
+		hook.runProcessPayloadFunc(fn, c, hd)
 	case DeleteEvent:
 		var d DeletePayload
 		json.Unmarshal([]byte(payload), &d)
-		hook.runProcessPayloadFunc(fn, d)
+		hook.runProcessPayloadFunc(fn, d, hd)
 	case DeploymentEvent:
 		var d DeploymentPayload
 		json.Unmarshal([]byte(payload), &d)
-		hook.runProcessPayloadFunc(fn, d)
+		hook.runProcessPayloadFunc(fn, d, hd)
 	case DeploymentStatusEvent:
 		var d DeploymentStatusPayload
 		json.Unmarshal([]byte(payload), &d)
-		hook.runProcessPayloadFunc(fn, d)
+		hook.runProcessPayloadFunc(fn, d, hd)
 	case ForkEvent:
 		var f ForkPayload
 		json.Unmarshal([]byte(payload), &f)
-		hook.runProcessPayloadFunc(fn, f)
+		hook.runProcessPayloadFunc(fn, f, hd)
 	case GollumEvent:
 		var g GollumPayload
 		json.Unmarshal([]byte(payload), &g)
-		hook.runProcessPayloadFunc(fn, g)
+		hook.runProcessPayloadFunc(fn, g, hd)
 	case IssueCommentEvent:
 		var i IssueCommentPayload
 		json.Unmarshal([]byte(payload), &i)
-		hook.runProcessPayloadFunc(fn, i)
+		hook.runProcessPayloadFunc(fn, i, hd)
 	case IssuesEvent:
 		var i IssuesPayload
 		json.Unmarshal([]byte(payload), &i)
-		hook.runProcessPayloadFunc(fn, i)
+		hook.runProcessPayloadFunc(fn, i, hd)
 	case MemberEvent:
 		var m MemberPayload
 		json.Unmarshal([]byte(payload), &m)
-		hook.runProcessPayloadFunc(fn, m)
+		hook.runProcessPayloadFunc(fn, m, hd)
 	case MembershipEvent:
 		var m MembershipPayload
 		json.Unmarshal([]byte(payload), &m)
-		hook.runProcessPayloadFunc(fn, m)
+		hook.runProcessPayloadFunc(fn, m, hd)
 	case PageBuildEvent:
 		var p PageBuildPayload
 		json.Unmarshal([]byte(payload), &p)
-		hook.runProcessPayloadFunc(fn, p)
+		hook.runProcessPayloadFunc(fn, p, hd)
 	case PublicEvent:
 		var p PublicPayload
 		json.Unmarshal([]byte(payload), &p)
-		hook.runProcessPayloadFunc(fn, p)
+		hook.runProcessPayloadFunc(fn, p, hd)
 	case PullRequestReviewCommentEvent:
 		var p PullRequestReviewCommentPayload
 		json.Unmarshal([]byte(payload), &p)
-		hook.runProcessPayloadFunc(fn, p)
+		hook.runProcessPayloadFunc(fn, p, hd)
 	case PullRequestEvent:
 		var p PullRequestPayload
 		json.Unmarshal([]byte(payload), &p)
-		hook.runProcessPayloadFunc(fn, p)
+		hook.runProcessPayloadFunc(fn, p, hd)
 	case PushEvent:
 		var p PushPayload
 		json.Unmarshal([]byte(payload), &p)
-		hook.runProcessPayloadFunc(fn, p)
+		hook.runProcessPayloadFunc(fn, p, hd)
 	case RepositoryEvent:
 		var r RepositoryPayload
 		json.Unmarshal([]byte(payload), &r)
-		hook.runProcessPayloadFunc(fn, r)
+		hook.runProcessPayloadFunc(fn, r, hd)
 	case ReleaseEvent:
 		var r ReleasePayload
 		json.Unmarshal([]byte(payload), &r)
-		hook.runProcessPayloadFunc(fn, r)
+		hook.runProcessPayloadFunc(fn, r, hd)
 	case StatusEvent:
 		var s StatusPayload
 		json.Unmarshal([]byte(payload), &s)
-		hook.runProcessPayloadFunc(fn, s)
+		hook.runProcessPayloadFunc(fn, s, hd)
 	case TeamAddEvent:
 		var t TeamAddPayload
 		json.Unmarshal([]byte(payload), &t)
-		hook.runProcessPayloadFunc(fn, t)
+		hook.runProcessPayloadFunc(fn, t, hd)
 	case WatchEvent:
 		var w WatchPayload
 		json.Unmarshal([]byte(payload), &w)
-		hook.runProcessPayloadFunc(fn, w)
+		hook.runProcessPayloadFunc(fn, w, hd)
 	}
 }
 
-func (hook Webhook) runProcessPayloadFunc(fn webhooks.ProcessPayloadFunc, results interface{}) {
-	go func(fn webhooks.ProcessPayloadFunc, results interface{}) {
-		fn(results)
-	}(fn, results)
+func (hook Webhook) runProcessPayloadFunc(fn webhooks.ProcessPayloadFunc, results interface{}, header webhooks.Header) {
+	go func(fn webhooks.ProcessPayloadFunc, results interface{}, header webhooks.Header) {
+		fn(results, header)
+	}(fn, results, header)
 }

@@ -24,7 +24,7 @@ func main() {
 }
 
 // HandleMultiple handles multiple GitHub events
-func HandleMultiple(payload interface{}) {
+func HandleMultiple(payload interface{}, header webhooks.Header) {
 
 	fmt.Println("Handling Payload..")
 

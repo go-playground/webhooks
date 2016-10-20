@@ -100,80 +100,82 @@ func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	hd := webhooks.Header(r.Header)
+
 	switch bitbucketEvent {
 	case RepoPushEvent:
 		var pl RepoPushPayload
 		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl)
+		hook.runProcessPayloadFunc(fn, pl, hd)
 	case RepoForkEvent:
 		var pl RepoForkPayload
 		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl)
+		hook.runProcessPayloadFunc(fn, pl, hd)
 	case RepoCommitCommentCreatedEvent:
 		var pl RepoCommitCommentCreatedPayload
 		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl)
+		hook.runProcessPayloadFunc(fn, pl, hd)
 	case RepoCommitStatusCreatedEvent:
 		var pl RepoCommitStatusCreatedPayload
 		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl)
+		hook.runProcessPayloadFunc(fn, pl, hd)
 	case RepoCommitStatusUpdatedEvent:
 		var pl RepoCommitStatusUpdatedPayload
 		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl)
+		hook.runProcessPayloadFunc(fn, pl, hd)
 	case IssueCreatedEvent:
 		var pl IssueCreatedPayload
 		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl)
+		hook.runProcessPayloadFunc(fn, pl, hd)
 	case IssueUpdatedEvent:
 		var pl IssueUpdatedPayload
 		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl)
+		hook.runProcessPayloadFunc(fn, pl, hd)
 	case IssueCommentCreatedEvent:
 		var pl IssueCommentCreatedPayload
 		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl)
+		hook.runProcessPayloadFunc(fn, pl, hd)
 	case PullRequestCreatedEvent:
 		var pl PullRequestCreatedPayload
 		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl)
+		hook.runProcessPayloadFunc(fn, pl, hd)
 	case PullRequestUpdatedEvent:
 		var pl PullRequestUpdatedPayload
 		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl)
+		hook.runProcessPayloadFunc(fn, pl, hd)
 	case PullRequestApprovedEvent:
 		var pl PullRequestApprovedPayload
 		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl)
+		hook.runProcessPayloadFunc(fn, pl, hd)
 	case PullRequestApprovalRemovedEvent:
 		var pl PullRequestApprovalRemovedPayload
 		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl)
+		hook.runProcessPayloadFunc(fn, pl, hd)
 	case PullRequestMergedEvent:
 		var pl PullRequestMergedPayload
 		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl)
+		hook.runProcessPayloadFunc(fn, pl, hd)
 	case PullRequestDeclinedEvent:
 		var pl PullRequestDeclinedPayload
 		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl)
+		hook.runProcessPayloadFunc(fn, pl, hd)
 	case PullRequestCommentCreatedEvent:
 		var pl PullRequestCommentCreatedPayload
 		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl)
+		hook.runProcessPayloadFunc(fn, pl, hd)
 	case PullRequestCommentUpdatedEvent:
 		var pl PullRequestCommentUpdatedPayload
 		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl)
+		hook.runProcessPayloadFunc(fn, pl, hd)
 	case PullRequestCommentDeletedEvent:
 		var pl PullRequestCommentDeletedPayload
 		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl)
+		hook.runProcessPayloadFunc(fn, pl, hd)
 	}
 }
 
-func (hook Webhook) runProcessPayloadFunc(fn webhooks.ProcessPayloadFunc, results interface{}) {
-	go func(fn webhooks.ProcessPayloadFunc, results interface{}) {
-		fn(results)
-	}(fn, results)
+func (hook Webhook) runProcessPayloadFunc(fn webhooks.ProcessPayloadFunc, results interface{}, header webhooks.Header) {
+	go func(fn webhooks.ProcessPayloadFunc, results interface{}, header webhooks.Header) {
+		fn(results, header)
+	}(fn, results, header)
 }
