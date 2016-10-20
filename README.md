@@ -70,7 +70,7 @@ func main() {
 }
 
 // HandleRelease handles GitHub release events
-func HandleRelease(payload interface{}) {
+func HandleRelease(payload interface{}, header webhooks.Header) {
 
 	fmt.Println("Handling Release")
 
@@ -86,7 +86,7 @@ func HandleRelease(payload interface{}) {
 }
 
 // HandlePullRequest handles GitHub pull_request events
-func HandlePullRequest(payload interface{}) {
+func HandlePullRequest(payload interface{}, header webhooks.Header) {
 
 	fmt.Println("Handling Pull Request")
 
@@ -125,7 +125,7 @@ func main() {
 }
 
 // HandleMultiple handles multiple GitHub events
-func HandleMultiple(payload interface{}) {
+func HandleMultiple(payload interface{}, header webhooks.Header) {
 
 	fmt.Println("Handling Payload..")
 
