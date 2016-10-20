@@ -29,7 +29,7 @@ const (
 )
 
 // HandlePayload handles GitHub event(s)
-func HandlePayload(payload interface{}) {
+func HandlePayload(payload interface{}, header webhooks.Header) {
 
 }
 

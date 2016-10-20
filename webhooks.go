@@ -2,6 +2,9 @@ package webhooks
 
 import "net/http"
 
+// Webhook provides http.Header to minimize imports
+type Header http.Header
+
 // Provider defines the type of webhook
 type Provider int
 
@@ -34,7 +37,7 @@ type server struct {
 }
 
 // ProcessPayloadFunc is a common function for payload return values
-type ProcessPayloadFunc func(payload interface{})
+type ProcessPayloadFunc func(payload interface{}, header Header)
 
 // Run runs a server
 func Run(hook Webhook, addr string, path string) error {
