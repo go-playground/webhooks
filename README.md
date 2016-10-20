@@ -1,11 +1,14 @@
 Library webhooks
 ================
-
+<img align="right" src="https://raw.githubusercontent.com/go-playground/webhooks/v1/logo.png">
+![Project status](https://img.shields.io/badge/version-1.0-green.svg)
 [![Build Status](https://semaphoreci.com/api/v1/projects/5b9e2eda-8f8d-40aa-8cb4-e3f6120171fe/587820/badge.svg)](https://semaphoreci.com/joeybloggs/webhooks)
 [![Coverage Status](https://coveralls.io/repos/go-playground/webhooks/badge.svg?branch=v1&service=github)](https://coveralls.io/github/go-playground/webhooks?branch=v1)
+[![Go Report Card](https://goreportcard.com/badge/go-playground/webhooks)](https://goreportcard.com/report/go-playground/webhooks)
 [![GoDoc](https://godoc.org/gopkg.in/go-playground/webhooks.v1?status.svg)](https://godoc.org/gopkg.in/go-playground/webhooks.v1)
+![License](https://img.shields.io/dub/l/vibe-d.svg)
 
-Library webhooks allows for easy recieving and parsing of GitHub Webhook Events; more services to come i.e. BitBucket...
+Library webhooks allows for easy recieving and parsing of GitHub & Bitbucket Webhook Events
 
 Features:
 
