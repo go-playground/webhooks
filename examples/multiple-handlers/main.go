@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"gopkg.in/go-playground/webhooks.v1"
-	"gopkg.in/go-playground/webhooks.v1/github"
+	"gopkg.in/go-playground/webhooks.v2"
+	"gopkg.in/go-playground/webhooks.v2/github"
 )
 
 const (
@@ -14,6 +14,7 @@ const (
 )
 
 func main() {
+
 	hook := github.New(&github.Config{Secret: "MyGitHubSuperSecretSecrect...?"})
 	hook.RegisterEvents(HandleRelease, github.ReleaseEvent)
 	hook.RegisterEvents(HandlePullRequest, github.PullRequestEvent)
