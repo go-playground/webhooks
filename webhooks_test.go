@@ -236,5 +236,6 @@ func TestProviderString(t *testing.T) {
 
 	Equal(t, GitHub.String(), "GitHub")
 	Equal(t, Bitbucket.String(), "Bitbucket")
+	Equal(t, GitLab.String(), "GitLab")
 	Equal(t, Provider(999999).String(), "Unknown")
 }

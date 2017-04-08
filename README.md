@@ -7,7 +7,7 @@ Library webhooks
 [![GoDoc](https://godoc.org/gopkg.in/go-playground/webhooks.v2?status.svg)](https://godoc.org/gopkg.in/go-playground/webhooks.v2)
 ![License](https://img.shields.io/dub/l/vibe-d.svg)
 
-Library webhooks allows for easy recieving and parsing of GitHub & Bitbucket Webhook Events
+Library webhooks allows for easy recieving and parsing of GitHub, Bitbucket and GitLab Webhook Events
 
 Features:
 
@@ -16,7 +16,7 @@ Features:
 
 Notes:
 
-* Github - Currently only accepting json payloads.
+* Currently only accepting json payloads.
 
 Installation
 ------------
@@ -27,11 +27,11 @@ Use go get.
 	go get -u gopkg.in/go-playground/webhooks.v2
 ```
 
-Then import the validator package into your own code.
+Then import the package into your own code.
 
 	import "gopkg.in/go-playground/webhooks.v2"
 
-Usage and documentation
+Usage and Documentation
 ------
 
 Please see http://godoc.org/gopkg.in/go-playground/webhooks.v2 for detailed usage docs.
@@ -147,14 +147,9 @@ func HandleMultiple(payload interface{}, header webhooks.Header) {
 Contributing
 ------
 
-Pull requests for other service like BitBucket are welcome!
+Pull requests for other services are welcome!
 
-There will always be a development branch for each version i.e. `v1-development`. In order to contribute, 
-please make your pull requests against those branches.
-
-If the changes being proposed or requested are breaking changes, please create an issue, for discussion
-or create a pull request against the highest development branch for example this package has a
-v1 and v1-development branch however, there will also be a v2-development branch even though v2 doesn't exist yet.
+If the changes being proposed or requested are breaking changes, please create an issue for discussion.
 
 License
 ------

@@ -2,7 +2,7 @@ package webhooks
 
 import "net/http"
 
-// Webhook provides http.Header to minimize imports
+// Header provides http.Header to minimize imports
 type Header http.Header
 
 // Provider defines the type of webhook
@@ -14,6 +14,8 @@ func (p Provider) String() string {
 		return "GitHub"
 	case Bitbucket:
 		return "Bitbucket"
+	case GitLab:
+		return "GitLab"
 	default:
 		return "Unknown"
 	}
@@ -23,6 +25,7 @@ func (p Provider) String() string {
 const (
 	GitHub Provider = iota
 	Bitbucket
+	GitLab
 )
 
 // Webhook interface defines a webhook to recieve events
@@ -67,7 +70,7 @@ func RunServer(s *http.Server, hook Webhook, path string) error {
 // RunTLSServer runs a custom server with TLS configuration.
 // NOTE: http.Server Handler will be overridden by this library, just set it to nil.
 // Setting the Certificates can be done in the http.Server.TLSConfig.Certificates
-// see example here: https://gopkg.in/go-playground/webhooks.v1/blob/master/webhooks_test.go#L178
+// see example here: https://github.com/go-playground/webhooks/blob/v2/webhooks_test.go#L178
 func RunTLSServer(s *http.Server, hook Webhook, path string) error {
 
 	srv := &server{
