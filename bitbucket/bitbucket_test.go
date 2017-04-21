@@ -24,7 +24,7 @@ import (
 //
 //
 const (
-	port = 3010
+	port = 3009
 	path = "/webhooks"
 )
 
@@ -42,7 +42,7 @@ func TestMain(m *testing.M) {
 	hook.RegisterEvents(HandlePayload, RepoPushEvent, RepoForkEvent, RepoCommitCommentCreatedEvent, RepoCommitStatusCreatedEvent, RepoCommitStatusUpdatedEvent, IssueCreatedEvent, IssueUpdatedEvent, IssueCommentCreatedEvent, PullRequestCreatedEvent, PullRequestUpdatedEvent, PullRequestApprovedEvent, PullRequestApprovalRemovedEvent, PullRequestMergedEvent, PullRequestDeclinedEvent, PullRequestCommentCreatedEvent, PullRequestCommentUpdatedEvent, PullRequestCommentDeletedEvent)
 
 	go webhooks.Run(hook, "127.0.0.1:"+strconv.Itoa(port), path)
-	time.Sleep(5000)
+	time.Sleep(time.Millisecond * 500)
 
 	os.Exit(m.Run())
 
@@ -56,7 +56,7 @@ func TestProvider(t *testing.T) {
 func TestUUIDMissingEvent(t *testing.T) {
 	payload := "{}"
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Event-Key", "noneexistant_event")
 
@@ -74,7 +74,7 @@ func TestUUIDMissingEvent(t *testing.T) {
 func TestUUIDDoesNotMatchEvent(t *testing.T) {
 	payload := "{}"
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Hook-UUID", "THIS_DOES_NOT_MATCH")
 
@@ -92,7 +92,7 @@ func TestUUIDDoesNotMatchEvent(t *testing.T) {
 func TestBadNoEventHeader(t *testing.T) {
 	payload := "{}"
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Hook-UUID", "MY_UUID")
 
@@ -110,7 +110,7 @@ func TestBadNoEventHeader(t *testing.T) {
 func TestUnsubscribedEvent(t *testing.T) {
 	payload := "{}"
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Hook-UUID", "MY_UUID")
 	req.Header.Set("X-Event-Key", "noneexistant_event")
@@ -129,7 +129,7 @@ func TestUnsubscribedEvent(t *testing.T) {
 func TestBadBody(t *testing.T) {
 	payload := ""
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Hook-UUID", "MY_UUID")
 	req.Header.Set("X-Event-Key", "repo:push")
@@ -355,7 +355,7 @@ func TestRepoPush(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Hook-UUID", "MY_UUID")
 	req.Header.Set("X-Event-Key", "repo:push")
@@ -429,7 +429,7 @@ func TestRepoFork(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Hook-UUID", "MY_UUID")
 	req.Header.Set("X-Event-Key", "repo:fork")
@@ -514,7 +514,7 @@ func TestRepoCommitCommentCreated(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Hook-UUID", "MY_UUID")
 	req.Header.Set("X-Event-Key", "repo:commit_comment_created")
@@ -588,7 +588,7 @@ func TestRepoCommitStatusCreated(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Hook-UUID", "MY_UUID")
 	req.Header.Set("X-Event-Key", "repo:commit_status_created")
@@ -662,7 +662,7 @@ func TestRepoCommitStatusUpdated(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Hook-UUID", "MY_UUID")
 	req.Header.Set("X-Event-Key", "repo:commit_status_updated")
@@ -747,7 +747,7 @@ func TestIssueCreated(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Hook-UUID", "MY_UUID")
 	req.Header.Set("X-Event-Key", "issue:created")
@@ -864,7 +864,7 @@ func TestIssueUpdated(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Hook-UUID", "MY_UUID")
 	req.Header.Set("X-Event-Key", "issue:updated")
@@ -975,7 +975,7 @@ func TestIssueCommentCreated(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Hook-UUID", "MY_UUID")
 	req.Header.Set("X-Event-Key", "issue:comment_created")
@@ -1172,7 +1172,7 @@ func TestPullRequestCreated(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Hook-UUID", "MY_UUID")
 	req.Header.Set("X-Event-Key", "pullrequest:created")
@@ -1369,7 +1369,7 @@ func TestPullRequestUpdated(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Hook-UUID", "MY_UUID")
 	req.Header.Set("X-Event-Key", "pullrequest:updated")
@@ -1585,7 +1585,7 @@ func TestPullRequestApproved(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Hook-UUID", "MY_UUID")
 	req.Header.Set("X-Event-Key", "pullrequest:approved")
@@ -1801,7 +1801,7 @@ func TestPullRequestApprovalRemoved(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Hook-UUID", "MY_UUID")
 	req.Header.Set("X-Event-Key", "pullrequest:unapproved")
@@ -1998,7 +1998,7 @@ func TestPullRequestMerged(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Hook-UUID", "MY_UUID")
 	req.Header.Set("X-Event-Key", "pullrequest:fulfilled")
@@ -2195,7 +2195,7 @@ func TestPullRequestDeclined(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Hook-UUID", "MY_UUID")
 	req.Header.Set("X-Event-Key", "pullrequest:rejected")
@@ -2418,7 +2418,7 @@ func TestPullRequestCommentCreated(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Hook-UUID", "MY_UUID")
 	req.Header.Set("X-Event-Key", "pullrequest:comment_created")
@@ -2641,7 +2641,7 @@ func TestPullRequestCommentUpdated(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Hook-UUID", "MY_UUID")
 	req.Header.Set("X-Event-Key", "pullrequest:comment_updated")
@@ -2864,7 +2864,7 @@ func TestPullRequestCommentDeleted(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Hook-UUID", "MY_UUID")
 	req.Header.Set("X-Event-Key", "pull_request:comment_deleted")

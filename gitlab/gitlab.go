@@ -25,14 +25,14 @@ type Event string
 
 // GitLab hook types
 const (
-	PushEvents          Event = "Push Hook"
-	TagEvents           Event = "Tag Push Hook"
-	IssuesEvents        Event = "Issue Hook"
-	CommentEvents       Event = "Note Hook"
-	MergerRequestEvents Event = "Merge Request Hook"
-	WikiPageEvents      Event = "Wiki Page Hook"
-	PipelineEvents      Event = "Pipeline Hook"
-	BuildEvents         Event = "Build Hook"
+	PushEvents         Event = "Push Hook"
+	TagEvents          Event = "Tag Push Hook"
+	IssuesEvents       Event = "Issue Hook"
+	CommentEvents      Event = "Note Hook"
+	MergeRequestEvents Event = "Merge Request Hook"
+	WikiPageEvents     Event = "Wiki Page Hook"
+	PipelineEvents     Event = "Pipeline Hook"
+	BuildEvents        Event = "Build Hook"
 )
 
 // New creates and returns a WebHook instance denoted by the Provider type
@@ -115,7 +115,7 @@ func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 		json.Unmarshal([]byte(payload), &ce)
 		hook.runProcessPayloadFunc(fn, ce, hd)
 
-	case MergerRequestEvents:
+	case MergeRequestEvents:
 		var mre MergeRequestEventPayload
 		json.Unmarshal([]byte(payload), &mre)
 		hook.runProcessPayloadFunc(fn, mre, hd)

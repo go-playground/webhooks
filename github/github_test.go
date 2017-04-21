@@ -24,7 +24,7 @@ import (
 //
 
 const (
-	port = 3009
+	port = 3010
 	path = "/webhooks"
 )
 
@@ -42,7 +42,7 @@ func TestMain(m *testing.M) {
 	hook.RegisterEvents(HandlePayload, CommitCommentEvent, CreateEvent, CreateEvent, DeleteEvent, DeploymentEvent, DeploymentStatusEvent, ForkEvent, GollumEvent, IssueCommentEvent, IssuesEvent, MemberEvent, MembershipEvent, PageBuildEvent, PublicEvent, PullRequestReviewCommentEvent, PullRequestEvent, PushEvent, RepositoryEvent, ReleaseEvent, StatusEvent, TeamAddEvent, WatchEvent)
 
 	go webhooks.Run(hook, "127.0.0.1:"+strconv.Itoa(port), path)
-	time.Sleep(5000)
+	time.Sleep(time.Millisecond * 500)
 
 	os.Exit(m.Run())
 
@@ -56,7 +56,7 @@ func TestProvider(t *testing.T) {
 func TestBadNoEventHeader(t *testing.T) {
 	payload := "{}"
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 
 	Equal(t, err, nil)
@@ -73,7 +73,7 @@ func TestBadNoEventHeader(t *testing.T) {
 func TestUnsubscribedEvent(t *testing.T) {
 	payload := "{}"
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "noneexistant_event")
 
@@ -91,7 +91,7 @@ func TestUnsubscribedEvent(t *testing.T) {
 func TestBadBody(t *testing.T) {
 	payload := ""
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "commit_comment")
 	req.Header.Set("X-Hub-Signature", "sha1=156404ad5f721c53151147f3d3d302329f95a3ab")
@@ -110,7 +110,7 @@ func TestBadBody(t *testing.T) {
 func TestBadSignatureLength(t *testing.T) {
 	payload := "{}"
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "commit_comment")
 	req.Header.Set("X-Hub-Signature", "")
@@ -129,7 +129,7 @@ func TestBadSignatureLength(t *testing.T) {
 func TestBadSignatureMatch(t *testing.T) {
 	payload := "{}"
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "commit_comment")
 	req.Header.Set("X-Hub-Signature", "sha1=111")
@@ -289,7 +289,7 @@ func TestCommitCommentEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "commit_comment")
 	req.Header.Set("X-Hub-Signature", "sha1=156404ad5f721c53151147f3d3d302329f95a3ab")
@@ -422,7 +422,7 @@ func TestCreateEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "create")
 	req.Header.Set("X-Hub-Signature", "sha1=77ff16ca116034bbeed77ebfce83b36572a9cbaf")
@@ -553,7 +553,7 @@ func TestDeleteEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "delete")
 	req.Header.Set("X-Hub-Signature", "sha1=4ddef04fd05b504c7041e294fca3ad1804bc7be1")
@@ -715,7 +715,7 @@ func TestDeploymentEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "deployment")
 	req.Header.Set("X-Hub-Signature", "sha1=bb47dc63ceb764a6b1f14fe123e299e5b814c67c")
@@ -907,7 +907,7 @@ func TestDeploymentStatusEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "deployment_status")
 	req.Header.Set("X-Hub-Signature", "sha1=8dc0bd0be97440e282e1b4c9ec8445a8d095dc28")
@@ -1123,7 +1123,7 @@ func TestForkEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "fork")
 	req.Header.Set("X-Hub-Signature", "sha1=cec5f8fb7c383514c622d3eb9e121891dfcca848")
@@ -1261,7 +1261,7 @@ func TestGollumEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "gollum")
 	req.Header.Set("X-Hub-Signature", "sha1=a375a6dc8ceac7231ee022211f8eb85e2a84a5b9")
@@ -1463,7 +1463,7 @@ func TestIssueCommentEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "issue_comment")
 	req.Header.Set("X-Hub-Signature", "sha1=e724c9f811fcf5f511aac32e4251b08ab1a0fd87")
@@ -1637,7 +1637,7 @@ func TestIssuesEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "issues")
 	req.Header.Set("X-Hub-Signature", "sha1=266736f9446195ffefd3d0cfcd1e096ab129ccad")
@@ -1785,7 +1785,7 @@ func TestMemberEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "member")
 	req.Header.Set("X-Hub-Signature", "sha1=597e7d6627a6636d4c3283e36631983fbd57bdd0")
@@ -1866,7 +1866,7 @@ func TestMembershipEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "membership")
 	req.Header.Set("X-Hub-Signature", "sha1=16928c947b3707b0efcf8ceb074a5d5dedc9c76e")
@@ -2025,7 +2025,7 @@ func TestPageBuildEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "page_build")
 	req.Header.Set("X-Hub-Signature", "sha1=b3abad8f9c1b3fc0b01c4eb107447800bb5000f9")
@@ -2153,7 +2153,7 @@ func TestPublicEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "public")
 	req.Header.Set("X-Hub-Signature", "sha1=73edb2a8c69c1ac35efb797ede3dc2cde618c10c")
@@ -2619,7 +2619,7 @@ func TestPullRequestReviewCommentEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "pull_request_review_comment")
 	req.Header.Set("X-Hub-Signature", "sha1=a9ece15dbcbb85fa5f00a0bf409494af2cbc5b60")
@@ -3051,7 +3051,7 @@ func TestPullRequestEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "pull_request")
 	req.Header.Set("X-Hub-Signature", "sha1=5b342f365078abd366111158b17a8edf5b41ef2a")
@@ -3232,7 +3232,7 @@ func TestPushEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "push")
 	req.Header.Set("X-Hub-Signature", "sha1=d683a72295b08a42a55bf6fbf2598dc7603e0b98")
@@ -3371,7 +3371,7 @@ func TestRepositoryEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "repository")
 	req.Header.Set("X-Hub-Signature", "sha1=df442a8af41edd2d42ccdd997938d1d111b0f94e")
@@ -3539,7 +3539,7 @@ func TestReleaseEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "release")
 	req.Header.Set("X-Hub-Signature", "sha1=e62bb4c51bc7dde195b9525971c2e3aecb394390")
@@ -3765,7 +3765,7 @@ func TestStatusEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "status")
 	req.Header.Set("X-Hub-Signature", "sha1=3caa5f062a2deb7cce1482314bb9b4c99bf0ab45")
@@ -3914,7 +3914,7 @@ func TestTeamAddEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "team_add")
 	req.Header.Set("X-Hub-Signature", "sha1=5f3953476e270b79cc6763780346110da880609a")
@@ -4043,7 +4043,7 @@ func TestWatchEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "watch")
 	req.Header.Set("X-Hub-Signature", "sha1=a317bcfe69ccb8bece74c20c7378e5413c4772f1")

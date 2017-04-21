@@ -24,7 +24,7 @@ import (
 //
 
 const (
-	port = 3009
+	port = 3011
 	path = "/webhooks"
 )
 
@@ -44,13 +44,13 @@ func TestMain(m *testing.M) {
 		TagEvents,
 		IssuesEvents,
 		CommentEvents,
-		MergerRequestEvents,
+		MergeRequestEvents,
 		WikiPageEvents,
 		PipelineEvents,
 		BuildEvents,
 	)
 	go webhooks.Run(hook, "127.0.0.1:"+strconv.Itoa(port), path)
-	time.Sleep(5000)
+	time.Sleep(time.Millisecond * 500)
 
 	os.Exit(m.Run())
 
@@ -64,7 +64,7 @@ func TestProvider(t *testing.T) {
 func TestBadNoEventHeader(t *testing.T) {
 	payload := "{}"
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3011/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 
 	Equal(t, err, nil)
@@ -81,7 +81,7 @@ func TestBadNoEventHeader(t *testing.T) {
 func TestUnsubscribedEvent(t *testing.T) {
 	payload := "{}"
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3011/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Gitlab-Event", "noneexistant_event")
 
@@ -99,7 +99,7 @@ func TestUnsubscribedEvent(t *testing.T) {
 func TestBadBody(t *testing.T) {
 	payload := ""
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3011/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Gitlab-Event", "Note Hook")
 
@@ -117,7 +117,7 @@ func TestBadBody(t *testing.T) {
 func TestTokenMissmatch(t *testing.T) {
 	payload := "{}"
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3011/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Gitlab-Event", "Note Hook")
 	req.Header.Set("X-Gitlab-Token", "itsnotasampleToken!")
@@ -203,7 +203,7 @@ func TestPushEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3011/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Gitlab-Event", "Push Hook")
 	req.Header.Set("X-Gitlab-Token", "sampleToken!")
@@ -261,7 +261,7 @@ func TestTagEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3011/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Gitlab-Event", "Tag Push Hook")
 	req.Header.Set("X-Gitlab-Token", "sampleToken!")
@@ -333,7 +333,7 @@ func TestIssueEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3011/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Gitlab-Event", "Issue Hook")
 	req.Header.Set("X-Gitlab-Token", "sampleToken!")
@@ -419,7 +419,7 @@ func TestCommentCommitEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3011/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Gitlab-Event", "Note Hook")
 	req.Header.Set("X-Gitlab-Token", "sampleToken!")
@@ -553,7 +553,7 @@ func TestCommentMergeRequestEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3011/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Gitlab-Event", "Note Hook")
 	req.Header.Set("X-Gitlab-Token", "sampleToken!")
@@ -635,7 +635,7 @@ func TestCommentIssueEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3011/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Gitlab-Event", "Note Hook")
 	req.Header.Set("X-Gitlab-Token", "sampleToken!")
@@ -715,7 +715,7 @@ func TestCommentSunippetEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3011/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Gitlab-Event", "Note Hook")
 	req.Header.Set("X-Gitlab-Token", "sampleToken!")
@@ -812,7 +812,7 @@ func TestMergeRequestEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3011/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Gitlab-Event", "Merge Request Hook")
 	req.Header.Set("X-Gitlab-Token", "sampleToken!")
@@ -872,7 +872,7 @@ func TestWikipageEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3011/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Gitlab-Event", "Wiki Page Hook")
 	req.Header.Set("X-Gitlab-Token", "sampleToken!")
@@ -1045,7 +1045,7 @@ func TestPipelineEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3011/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Gitlab-Event", "Pipeline Hook")
 	req.Header.Set("X-Gitlab-Token", "sampleToken!")
@@ -1107,7 +1107,7 @@ func TestBuildEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3009/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3011/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Gitlab-Event", "Build Hook")
 	req.Header.Set("X-Gitlab-Token", "sampleToken!")
