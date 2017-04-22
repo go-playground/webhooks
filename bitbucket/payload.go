@@ -2,388 +2,508 @@ package bitbucket
 
 import "time"
 
-// PullRequestCommentDeletedPayload is the Bitbucket pull_request:comment_deleted payload
-type PullRequestCommentDeletedPayload struct {
-	Actor       User        `json:"actor"`
-	Repository  Repository  `json:"repository"`
-	PullRequest PullRequest `json:"pullrequest"`
-	Comment     Comment     `json:"comment"`
-}
-
-// PullRequestCommentUpdatedPayload is the Bitbucket pullrequest:comment_updated payload
-type PullRequestCommentUpdatedPayload struct {
-	Actor       User        `json:"actor"`
-	Repository  Repository  `json:"repository"`
-	PullRequest PullRequest `json:"pullrequest"`
-	Comment     Comment     `json:"comment"`
-}
-
-// PullRequestCommentCreatedPayload is the Bitbucket pullrequest:comment_created payload
-type PullRequestCommentCreatedPayload struct {
-	Actor       User        `json:"actor"`
-	Repository  Repository  `json:"repository"`
-	PullRequest PullRequest `json:"pullrequest"`
-	Comment     Comment     `json:"comment"`
-}
-
-// PullRequestDeclinedPayload is the Bitbucket pullrequest:rejected payload
-type PullRequestDeclinedPayload struct {
-	Actor       User        `json:"actor"`
-	PullRequest PullRequest `json:"pullrequest"`
-	Repository  Repository  `json:"repository"`
-}
-
-// PullRequestMergedPayload is the Bitbucket pullrequest:fulfilled payload
-type PullRequestMergedPayload struct {
-	Actor       User        `json:"actor"`
-	PullRequest PullRequest `json:"pullrequest"`
-	Repository  Repository  `json:"repository"`
-}
-
-// PullRequestApprovalRemovedPayload is the Bitbucket pullrequest:unapproved payload
-type PullRequestApprovalRemovedPayload struct {
-	Actor       User        `json:"actor"`
-	PullRequest PullRequest `json:"pullrequest"`
-	Repository  Repository  `json:"repository"`
-	Approval    Approval    `json:"approval"`
-}
-
-// PullRequestApprovedPayload is the Bitbucket pullrequest:approved payload
-type PullRequestApprovedPayload struct {
-	Actor       User        `json:"actor"`
-	PullRequest PullRequest `json:"pullrequest"`
-	Repository  Repository  `json:"repository"`
-	Approval    Approval    `json:"approval"`
-}
-
-// PullRequestUpdatedPayload is the Bitbucket pullrequest:updated payload
-type PullRequestUpdatedPayload struct {
-	Actor       User        `json:"actor"`
-	PullRequest PullRequest `json:"pullrequest"`
-	Repository  Repository  `json:"repository"`
-}
-
-// PullRequestCreatedPayload is the Bitbucket pullrequest:created payload
-type PullRequestCreatedPayload struct {
-	Actor       User        `json:"actor"`
-	PullRequest PullRequest `json:"pullrequest"`
-	Repository  Repository  `json:"repository"`
-}
-
-// IssueCommentCreatedPayload is the Bitbucket issue:comment_created payload
-type IssueCommentCreatedPayload struct {
-	Actor      User       `json:"actor"`
+// RepoPushPayload is the Bitbucket repo:push payload
+type RepoPushPayload struct {
+	Actor      Owner      `json:"actor"`
 	Repository Repository `json:"repository"`
-	Issue      Issue      `json:"issue"`
-	Comment    Comment    `json:"comment"`
-}
-
-// IssueUpdatedPayload is the Bitbucket issue:updated payload
-type IssueUpdatedPayload struct {
-	Actor      User         `json:"actor"`
-	Issue      Issue        `json:"issue"`
-	Repository Repository   `json:"repository"`
-	Comment    Comment      `json:"comment"`
-	Changes    IssueChanges `json:"changes"`
-}
-
-// IssueCreatedPayload is the Bitbucket issue:created payload
-type IssueCreatedPayload struct {
-	Actor      User       `json:"actor"`
-	Issue      Issue      `json:"issue"`
-	Repository Repository `json:"repository"`
-}
-
-// RepoCommitStatusUpdatedPayload is the Bitbucket repo:commit_status_updated payload
-type RepoCommitStatusUpdatedPayload struct {
-	Actor        User         `json:"actor"`
-	Repository   Repository   `json:"repository"`
-	CommitStatus CommitStatus `json:"commit_status"`
-}
-
-// RepoCommitStatusCreatedPayload is the Bitbucket repo:commit_status_created payload
-type RepoCommitStatusCreatedPayload struct {
-	Actor        User         `json:"actor"`
-	Repository   Repository   `json:"repository"`
-	CommitStatus CommitStatus `json:"commit_status"`
-}
-
-// RepoCommitCommentCreatedPayload is the Bitbucket repo:commit_comment_created payload
-type RepoCommitCommentCreatedPayload struct {
-	Actor      User       `json:"actor"`
-	Comment    Comment    `json:"comment"`
-	Repository Repository `json:"repository"`
-	Commit     CommitHash `json:"commit"`
+	Push       struct {
+		Changes []struct {
+			New struct {
+				Type   string `json:"type"`
+				Name   string `json:"name"`
+				Target struct {
+					Type    string    `json:"type"`
+					Hash    string    `json:"hash"`
+					Author  Owner     `json:"author"`
+					Message string    `json:"message"`
+					Date    time.Time `json:"date"`
+					Parents []struct {
+						Type  string `json:"type"`
+						Hash  string `json:"hash"`
+						Links struct {
+							Self struct {
+								Href string `json:"href"`
+							} `json:"self"`
+							HTML struct {
+								Href string `json:"href"`
+							} `json:"html"`
+						} `json:"links"`
+					} `json:"parents"`
+					Links struct {
+						Self struct {
+							Href string `json:"href"`
+						} `json:"self"`
+						HTML struct {
+							Href string `json:"href"`
+						} `json:"html"`
+					} `json:"links"`
+				} `json:"target"`
+				Links struct {
+					Self struct {
+						Href string `json:"href"`
+					} `json:"self"`
+					Commits struct {
+						Href string `json:"href"`
+					} `json:"commits"`
+					HTML struct {
+						Href string `json:"href"`
+					} `json:"html"`
+				} `json:"links"`
+			} `json:"new"`
+			Old struct {
+				Type   string `json:"type"`
+				Name   string `json:"name"`
+				Target struct {
+					Type    string    `json:"type"`
+					Hash    string    `json:"hash"`
+					Author  Owner     `json:"author"`
+					Message string    `json:"message"`
+					Date    time.Time `json:"date"`
+					Parents []struct {
+						Type  string `json:"type"`
+						Hash  string `json:"hash"`
+						Links struct {
+							Self struct {
+								Href string `json:"href"`
+							} `json:"self"`
+							HTML struct {
+								Href string `json:"href"`
+							} `json:"html"`
+						} `json:"links"`
+					} `json:"parents"`
+					Links struct {
+						Self struct {
+							Href string `json:"href"`
+						} `json:"self"`
+						HTML struct {
+							Href string `json:"href"`
+						} `json:"html"`
+					} `json:"links"`
+				} `json:"target"`
+				Links struct {
+					Self struct {
+						Href string `json:"href"`
+					} `json:"self"`
+					Commits struct {
+						Href string `json:"href"`
+					} `json:"commits"`
+					HTML struct {
+						Href string `json:"href"`
+					} `json:"html"`
+				} `json:"links"`
+			} `json:"old"`
+			Links struct {
+				HTML struct {
+					Href string `json:"href"`
+				} `json:"html"`
+				Diff struct {
+					Href string `json:"href"`
+				} `json:"diff"`
+				Commits struct {
+					Href string `json:"href"`
+				} `json:"commits"`
+			} `json:"links"`
+			Created bool `json:"created"`
+			Forced  bool `json:"forced"`
+			Closed  bool `json:"closed"`
+			Commits []struct {
+				Hash    string `json:"hash"`
+				Type    string `json:"type"`
+				Message string `json:"message"`
+				Author  Owner  `json:"author"`
+				Links   struct {
+					Self struct {
+						Href string `json:"href"`
+					} `json:"self"`
+					HTML struct {
+						Href string `json:"href"`
+					} `json:"html"`
+				} `json:"links"`
+			} `json:"commits"`
+			Truncated bool `json:"truncated"`
+		} `json:"changes"`
+	} `json:"push"`
 }
 
 // RepoForkPayload is the Bitbucket repo:fork payload
 type RepoForkPayload struct {
-	Actor      User       `json:"actor"`
+	Actor      Owner      `json:"actor"`
 	Repository Repository `json:"repository"`
 	Fork       Repository `json:"fork"`
 }
 
-// RepoPushPayload is the Bitbucket repo:push payload
-type RepoPushPayload struct {
-	Actor      User       `json:"actor"`
+// RepoUpdatedPayload is the Bitbucket repo:updated payload
+type RepoUpdatedPayload struct {
+	Actor      Owner      `json:"actor"`
 	Repository Repository `json:"repository"`
-	Push       Push       `json:"push"`
+	Changes    struct {
+		Name struct {
+			New string `json:"new"`
+			Old string `json:"old"`
+		} `json:"name"`
+		Website struct {
+			New string `json:"new"`
+			Old string `json:"old"`
+		} `json:"website"`
+		Language struct {
+			New string `json:"new"`
+			Old string `json:"old"`
+		} `json:"language"`
+		Links struct {
+			New struct {
+				Avatar struct {
+					Href string `json:"href"`
+				} `json:"avatar"`
+				Self struct {
+					Href string `json:"href"`
+				} `json:"self"`
+				HTML struct {
+					Href string `json:"href"`
+				} `json:"html"`
+			} `json:"new"`
+			Old struct {
+				Avatar struct {
+					Href string `json:"href"`
+				} `json:"avatar"`
+				Self struct {
+					Href string `json:"href"`
+				} `json:"self"`
+				HTML struct {
+					Href string `json:"href"`
+				} `json:"html"`
+			} `json:"old"`
+		} `json:"links"`
+		Description struct {
+			New string `json:"new"`
+			Old string `json:"old"`
+		} `json:"description"`
+		FullName struct {
+			New string `json:"new"`
+			Old string `json:"old"`
+		} `json:"full_name"`
+	} `json:"changes"`
 }
 
-// Approval is the common Bitbucket Issue Approval Sub Entity
-type Approval struct {
-	Date time.Time `json:"date"`
-	User User      `json:"user"`
+// RepoCommitCommentCreatedPayload is the Bitbucket repo:commit_comment_created payload
+type RepoCommitCommentCreatedPayload struct {
+	Actor      Owner      `json:"actor"`
+	Comment    Comment    `json:"comment"`
+	Repository Repository `json:"repository"`
+	Commit     struct {
+		Hash string `json:"hash"`
+	} `json:"commit"`
 }
 
-// IssueChanges is the common Bitbucket Issue Changes Sub Entity
-type IssueChanges struct {
-	Status IssueChangeStatus `json:"status"`
+// RepoCommitStatusCreatedPayload is the Bitbucket repo:commit_status_created payload
+type RepoCommitStatusCreatedPayload struct {
+	Actor        Owner      `json:"actor"`
+	Repository   Repository `json:"repository"`
+	CommitStatus struct {
+		Name        string    `json:"name"`
+		Description string    `json:"description"`
+		State       string    `json:"state"`
+		Key         string    `json:"key"`
+		URL         string    `json:"url"`
+		Type        string    `json:"type"`
+		CreatedOn   time.Time `json:"created_on"`
+		UpdatedOn   time.Time `json:"updated_on"`
+		Links       struct {
+			Commit struct {
+				Href string `json:"href"`
+			} `json:"commit"`
+			Self struct {
+				Href string `json:"href"`
+			} `json:"self"`
+		} `json:"links"`
+	} `json:"commit_status"`
 }
 
-// IssueChangeStatus is the common Bitbucket Issue Change Status Sub Entity
-type IssueChangeStatus struct {
-	Old string `json:"old"`
-	New string `json:"new"`
+// RepoCommitStatusUpdatedPayload is the Bitbucket repo:commit_status_updated payload
+type RepoCommitStatusUpdatedPayload struct {
+	Actor        Owner      `json:"actor"`
+	Repository   Repository `json:"repository"`
+	CommitStatus struct {
+		Name        string    `json:"name"`
+		Description string    `json:"description"`
+		State       string    `json:"state"`
+		Key         string    `json:"key"`
+		URL         string    `json:"url"`
+		Type        string    `json:"type"`
+		CreatedOn   time.Time `json:"created_on"`
+		UpdatedOn   time.Time `json:"updated_on"`
+		Links       struct {
+			Commit struct {
+				Href string `json:"href"`
+			} `json:"commit"`
+			Self struct {
+				Href string `json:"href"`
+			} `json:"self"`
+		} `json:"links"`
+	} `json:"commit_status"`
 }
 
-// CommitStatus is the common Bitbucket CommitStatus Sub Entity
-type CommitStatus struct {
-	Name        string          `json:"name"`
-	Description string          `json:"description"`
-	State       string          `json:"state"`
-	Key         string          `json:"key"`
-	URL         string          `json:"url"`
-	Type        string          `json:"type"`
-	CreatedOn   time.Time       `json:"created_on"`
-	UpdatedOn   time.Time       `json:"updated_on"`
-	Links       LinksSelfCommit `json:"links"`
+// IssueCreatedPayload is the Bitbucket issue:created payload
+type IssueCreatedPayload struct {
+	Actor      Owner      `json:"actor"`
+	Issue      Issue      `json:"issue"`
+	Repository Repository `json:"repository"`
 }
 
-// Push is the common Bitbucket Push Sub Entity
-type Push struct {
-	Changes []Change `json:"changes"`
+// IssueUpdatedPayload is the Bitbucket issue:updated payload
+type IssueUpdatedPayload struct {
+	Actor      Owner      `json:"actor"`
+	Issue      Issue      `json:"issue"`
+	Repository Repository `json:"repository"`
+	Comment    Comment    `json:"comment"`
+	Changes    struct {
+		Status struct {
+			Old string `json:"old"`
+			New string `json:"new"`
+		} `json:"status"`
+	} `json:"changes"`
 }
 
-// Change is the common Bitbucket Change Sub Entity
-type Change struct {
-	New       ChangeData           `json:"new"`
-	Old       ChangeData           `json:"old"`
-	Links     LinksHTMLDiffCommits `json:"links"`
-	Created   bool                 `json:"created"`
-	Forced    bool                 `json:"forced"`
-	Closed    bool                 `json:"closed"`
-	Commits   []Commit             `json:"commits"`
-	Truncated bool                 `json:"truncated"`
+// IssueCommentCreatedPayload is the Bitbucket pullrequest:created payload
+type IssueCommentCreatedPayload struct {
+	Actor      Owner      `json:"actor"`
+	Repository Repository `json:"repository"`
+	Issue      Issue      `json:"issue"`
+	Comment    Comment    `json:"comment"`
 }
 
-// ChangeData is the common Bitbucket ChangeData Sub Entity
-type ChangeData struct {
-	Type   string               `json:"type"`
-	Name   string               `json:"name"`
-	Target Target               `json:"target"`
-	Links  LinksHTMLSelfCommits `json:"links"`
+// PullRequestCreatedPayload is the Bitbucket pullrequest:created payload
+type PullRequestCreatedPayload struct {
+	Actor       Owner       `json:"actor"`
+	PullRequest PullRequest `json:"pullrequest"`
+	Repository  Repository  `json:"repository"`
 }
 
-// Target is the common Bitbucket Target Sub Entity
-type Target struct {
-	Type    string        `json:"type"`
-	Hash    string        `json:"hash"`
-	Author  User          `json:"author"`
-	Message string        `json:"message"`
-	Date    time.Time     `json:"date"`
-	Parents []Parent      `json:"parents"`
-	Links   LinksHTMLSelf `json:"links"`
+// PullRequestUpdatedPayload is the Bitbucket pullrequest:updated payload
+type PullRequestUpdatedPayload struct {
+	Actor       Owner       `json:"actor"`
+	PullRequest PullRequest `json:"pullrequest"`
+	Repository  Repository  `json:"repository"`
 }
 
-// Parent is the common Bitbucket Parent Sub Entity
-type Parent struct {
-	Type  string        `json:"type"`
-	Hash  string        `json:"hash"`
-	Links LinksHTMLSelf `json:"links"`
+// PullRequestApprovedPayload is the Bitbucket pullrequest:approved payload
+type PullRequestApprovedPayload struct {
+	Actor       Owner       `json:"actor"`
+	PullRequest PullRequest `json:"pullrequest"`
+	Repository  Repository  `json:"repository"`
+	Approval    struct {
+		Date time.Time `json:"date"`
+		User Owner     `json:"user"`
+	} `json:"approval"`
 }
 
-// Commit is the common Bitbucket Commit Sub Entity
-type Commit struct {
-	Hash    string        `json:"hash"`
-	Type    string        `json:"type"`
-	Message string        `json:"message"`
-	Author  User          `json:"author"`
-	Links   LinksHTMLSelf `json:"links"`
+// PullRequestUnapprovedPayload is the Bitbucket pullrequest:unapproved payload
+type PullRequestUnapprovedPayload struct {
+	Actor       Owner       `json:"actor"`
+	PullRequest PullRequest `json:"pullrequest"`
+	Repository  Repository  `json:"repository"`
+	Approval    struct {
+		Date time.Time `json:"date"`
+		User Owner     `json:"user"`
+	} `json:"approval"`
 }
 
-// User is the common Bitbucket User Entity
-type User struct {
+// PullRequestMergedPayload is the Bitbucket pullrequest:fulfilled payload
+type PullRequestMergedPayload struct {
+	Actor       Owner       `json:"actor"`
+	PullRequest PullRequest `json:"pullrequest"`
+	Repository  Repository  `json:"repository"`
+}
+
+// PullRequestDeclinedPayload is the Bitbucket pullrequest:rejected payload
+type PullRequestDeclinedPayload struct {
+	Actor       Owner       `json:"actor"`
+	PullRequest PullRequest `json:"pullrequest"`
+	Repository  Repository  `json:"repository"`
+}
+
+// PullRequestCommentCreatedPayload is the Bitbucket pullrequest:comment_updated payload
+type PullRequestCommentCreatedPayload struct {
+	Actor       Owner       `json:"actor"`
+	Repository  Repository  `json:"repository"`
+	PullRequest PullRequest `json:"pullrequest"`
+	Comment     Comment     `json:"comment"`
+}
+
+// PullRequestCommentUpdatedPayload is the Bitbucket pullrequest:comment_created payload
+type PullRequestCommentUpdatedPayload struct {
+	Actor       Owner       `json:"actor"`
+	Repository  Repository  `json:"repository"`
+	PullRequest PullRequest `json:"pullrequest"`
+	Comment     Comment     `json:"comment"`
+}
+
+// PullRequestCommentDeletedPayload is the Bitbucket pullrequest:comment_deleted payload
+type PullRequestCommentDeletedPayload struct {
+	Actor       Owner       `json:"actor"`
+	Repository  Repository  `json:"repository"`
+	PullRequest PullRequest `json:"pullrequest"`
+	Comment     Comment     `json:"comment"`
+}
+
+// Owner is the common Bitbucket Owner Sub Entity
+type Owner struct {
+	Type        string `json:"type"`
 	Username    string `json:"username"`
 	DisplayName string `json:"display_name"`
 	UUID        string `json:"uuid"`
-	Links       Links  `json:"links"`
+	Links       struct {
+		Self struct {
+			Href string `json:"href"`
+		} `json:"self"`
+		HTML struct {
+			Href string `json:"href"`
+		} `json:"html"`
+		Avatar struct {
+			Href string `json:"href"`
+		} `json:"avatar"`
+	} `json:"links"`
 }
 
-// Repository is the common Bitbucket Repository Entity
+// Repository is the common Bitbucket Repository Sub Entity
 type Repository struct {
-	Links     Links  `json:"links"`
-	UUID      string `json:"uuid"`
-	FullName  string `json:"full_name"`
-	Name      string `json:"name"`
-	Scm       string `json:"scm"`
-	IsPrivate bool   `json:"is_private"`
+	Type  string `json:"type"`
+	Links struct {
+		Self struct {
+			Href string `json:"href"`
+		} `json:"self"`
+		HTML struct {
+			Href string `json:"href"`
+		} `json:"html"`
+		Avatar struct {
+			Href string `json:"href"`
+		} `json:"avatar"`
+	} `json:"links"`
+	UUID      string  `json:"uuid"`
+	Project   Project `json:"project"`
+	FullName  string  `json:"full_name"`
+	Name      string  `json:"name"`
+	Website   string  `json:"website"`
+	Owner     Owner   `json:"owner"`
+	Scm       string  `json:"scm"`
+	IsPrivate bool    `json:"is_private"`
 }
 
-// Issue is the common Bitbucket Issue Entity
+// Project is the common Bitbucket Project Sub Entity
+type Project struct {
+	Type    string `json:"type"`
+	Project string `json:"project"`
+	UUID    string `json:"uuid"`
+	Links   struct {
+		HTML struct {
+			Href string `json:"href"`
+		} `json:"html"`
+		Avatar struct {
+			Href string `json:"href"`
+		} `json:"avatar"`
+	} `json:"links"`
+	Key string `json:"key"`
+}
+
+// Issue is the common Bitbucket Issue Sub Entity
 type Issue struct {
-	ID        int64         `json:"id"`
-	Component string        `json:"component"`
-	Title     string        `json:"title"`
-	Content   Content       `json:"content"`
-	Priority  string        `json:"priority"`
-	State     string        `json:"state"`
-	Type      string        `json:"type"`
-	Milestone Milestone     `json:"milestone"`
-	Version   Version       `json:"version"`
-	CreatedOn time.Time     `json:"created_on"`
-	UpdatedOn time.Time     `json:"updated_on"`
-	Links     LinksHTMLSelf `json:"links"`
+	ID        int64  `json:"id"`
+	Component string `json:"component"`
+	Title     string `json:"title"`
+	Content   struct {
+		Raw    string `json:"raw"`
+		HTML   string `json:"html"`
+		Markup string `json:"markup"`
+	} `json:"content"`
+	Priority  string `json:"priority"`
+	State     string `json:"state"`
+	Type      string `json:"type"`
+	Milestone struct {
+		Name string `json:"name"`
+	} `json:"milestone"`
+	Version struct {
+		Name string `json:"name"`
+	} `json:"version"`
+	CreatedOn time.Time `json:"created_on"`
+	UpdatedOn time.Time `json:"updated_on"`
+	Links     struct {
+		Self struct {
+			Href string `json:"href"`
+		} `json:"self"`
+		HTML struct {
+			Href string `json:"href"`
+		} `json:"html"`
+	} `json:"links"`
 }
 
-// Comment is the common Bitbucket Comment Entity
+// Comment is the common Bitbucket Comment Sub Entity
 type Comment struct {
-	ID        int64         `json:"id"`
-	Parent    ParentID      `json:"parent"`
-	Content   Content       `json:"content"`
-	Inline    Inline        `json:"inline"`
-	CreatedOn time.Time     `json:"created_on"`
-	UpdatedOn time.Time     `json:"updated_on"`
-	Links     LinksHTMLSelf `json:"links"`
+	ID     int64 `json:"id"`
+	Parent struct {
+		ID int64 `json:"id"`
+	} `json:"parent"`
+	Content struct {
+		Raw    string `json:"raw"`
+		HTML   string `json:"html"`
+		Markup string `json:"markup"`
+	} `json:"content"`
+	Inline struct {
+		Path string `json:"path"`
+		From *int64 `json:"from"`
+		To   int64  `json:"to"`
+	} `json:"inline"`
+	CreatedOn time.Time `json:"created_on"`
+	UpdatedOn time.Time `json:"updated_on"`
+	Links     struct {
+		Self struct {
+			Href string `json:"href"`
+		} `json:"self"`
+		HTML struct {
+			Href string `json:"href"`
+		} `json:"html"`
+	} `json:"links"`
 }
 
-// PullRequest is the common Bitbucket PullRequest Entity
+// PullRequest is the common Bitbucket Pull Request Sub Entity
 type PullRequest struct {
-	ID                int64         `json:"id"`
-	Title             string        `json:"title"`
-	Description       string        `json:"description"`
-	State             string        `json:"state"`
-	Author            User          `json:"author"`
-	Source            Source        `json:"source"`
-	Destination       Destination   `json:"destination"`
-	MergeCommit       CommitHash    `json:"merge_commit"`
-	Participants      []User        `json:"participants"`
-	Reviewers         []User        `json:"reviewers"`
-	CloseSourceBranch bool          `json:"close_source_branch"`
-	ClosedBy          User          `json:"closed_by"`
-	Reason            string        `json:"reason"`
-	CreatedOn         time.Time     `json:"created_on"`
-	UpdatedOn         time.Time     `json:"updated_on"`
-	Links             LinksHTMLSelf `json:"links"`
-}
-
-// Destination is the common Bitbucket Destination Sub Entity
-type Destination struct {
-	Branch     Branch     `json:"branch"`
-	Commit     CommitHash `json:"commit"`
-	Repository Repository `json:"repository"`
-}
-
-// Source is the common Bitbucket Source Sub Entity
-type Source struct {
-	Branch     Branch     `json:"branch"`
-	Commit     CommitHash `json:"commit"`
-	Repository Repository `json:"repository"`
-}
-
-// Branch is the common Bitbucket Branch Sub Entity
-type Branch struct {
-	Name string `json:"name"`
-}
-
-// CommitHash is the common Bitbucket CommitHash Sub Entity
-type CommitHash struct {
-	Hash string `json:"hash"`
-}
-
-// Inline is the common Bitbucket Inline Sub Entity
-type Inline struct {
-	Path string `json:"path"`
-	From *int64 `json:"from"`
-	To   int64  `json:"to"`
-}
-
-// ParentID is the common Bitbucket ParentID Sub Entity
-type ParentID struct {
-	ID int64 `json:"id"`
-}
-
-// Avatar is the common Bitbucket Avatar Sub Entity
-type Avatar struct {
-	HREF string `json:"href"`
-}
-
-// HTML is the common Bitbucket HTML Sub Entity
-type HTML struct {
-	HREF string `json:"href"`
-}
-
-// Self is the common Bitbucket Self Sub Entity
-type Self struct {
-	HREF string `json:"href"`
-}
-
-// Diff is the common Bitbucket Diff Sub Entity
-type Diff struct {
-	HREF string `json:"href"`
-}
-
-// Commits is the common Bitbucket Commits Sub Entity
-type Commits struct {
-	HREF string `json:"href"`
-}
-
-// LinksSelfCommit is the common Bitbucket LinksSelfCommit Sub Entity
-type LinksSelfCommit struct {
-	Self   Self    `json:"self"`
-	Commit Commits `json:"commit"`
-}
-
-// LinksHTMLSelfCommits is the common Bitbucket LinksHTMLSelfCommits Sub Entity
-type LinksHTMLSelfCommits struct {
-	Self    Self    `json:"self"`
-	Commits Commits `json:"commits"`
-	HTML    HTML    `json:"html"`
-}
-
-// LinksHTMLDiffCommits is the common Bitbucket LinksHTMLDiffCommits Sub Entity
-type LinksHTMLDiffCommits struct {
-	HTML    HTML    `json:"html"`
-	Diff    Diff    `json:"diff"`
-	Commits Commits `json:"commits"`
-}
-
-// Links is the common Bitbucket Links Sub Entity
-type Links struct {
-	Avatar Avatar `json:"avatar"`
-	HTML   HTML   `json:"html"`
-	Self   Self   `json:"self"`
-}
-
-// LinksHTMLSelf is the common Bitbucket LinksHTMLSelf Sub Entity
-type LinksHTMLSelf struct {
-	HTML HTML `json:"html"`
-	Self Self `json:"self"`
-}
-
-// Content is the common Bitbucket Content Sub Entity
-type Content struct {
-	HTML   string `json:"html"`
-	Markup string `json:"markup"`
-	Raw    string `json:"raw"`
-}
-
-// Milestone is the common Bitbucket Milestone Sub Entity
-type Milestone struct {
-	Name string `json:"name"`
-}
-
-// Version is the common Bitbucket Version Sub Entity
-type Version struct {
-	Name string `json:"name"`
+	ID          int64  `json:"id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	State       string `json:"state"`
+	Author      Owner  `json:"author"`
+	Source      struct {
+		Branch struct {
+			Name string `json:"name"`
+		} `json:"branch"`
+		Commit struct {
+			Hash string `json:"hash"`
+		} `json:"commit"`
+		Repository Repository `json:"repository"`
+	} `json:"source"`
+	Destination struct {
+		Branch struct {
+			Name string `json:"name"`
+		} `json:"branch"`
+		Commit struct {
+			Hash string `json:"hash"`
+		} `json:"commit"`
+		Repository Repository `json:"repository"`
+	} `json:"destination"`
+	MergeCommit struct {
+		Hash string `json:"hash"`
+	} `json:"merge_commit"`
+	Participants      []Owner   `json:"participants"`
+	Reviewers         []Owner   `json:"reviewers"`
+	CloseSourceBranch bool      `json:"close_source_branch"`
+	ClosedBy          Owner     `json:"closed_by"`
+	Reason            string    `json:"reason"`
+	CreatedOn         time.Time `json:"created_on"`
+	UpdatedOn         time.Time `json:"updated_on"`
+	Links             struct {
+		Self struct {
+			Href string `json:"href"`
+		} `json:"self"`
+		HTML struct {
+			Href string `json:"href"`
+		} `json:"html"`
+	} `json:"links"`
 }

@@ -33,7 +33,7 @@ func HandleRelease(payload interface{}, header webhooks.Header) {
 	pl := payload.(github.ReleasePayload)
 
 	// only want to compile on full releases
-	if pl.Release.Draft || pl.Release.Prelelease || pl.Release.TargetCommitish != "master" {
+	if pl.Release.Draft || pl.Release.Prerelease || pl.Release.TargetCommitish != "master" {
 		return
 	}
 

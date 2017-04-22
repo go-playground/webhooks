@@ -25,23 +25,24 @@ type Event string
 
 // Bitbucket hook types
 const (
-	RepoPushEvent                   Event = "repo:push"
-	RepoForkEvent                   Event = "repo:fork"
-	RepoCommitCommentCreatedEvent   Event = "repo:commit_comment_created"
-	RepoCommitStatusCreatedEvent    Event = "repo:commit_status_created"
-	RepoCommitStatusUpdatedEvent    Event = "repo:commit_status_updated"
-	IssueCreatedEvent               Event = "issue:created"
-	IssueUpdatedEvent               Event = "issue:updated"
-	IssueCommentCreatedEvent        Event = "issue:comment_created"
-	PullRequestCreatedEvent         Event = "pullrequest:created"
-	PullRequestUpdatedEvent         Event = "pullrequest:updated"
-	PullRequestApprovedEvent        Event = "pullrequest:approved"
-	PullRequestApprovalRemovedEvent Event = "pullrequest:unapproved"
-	PullRequestMergedEvent          Event = "pullrequest:fulfilled"
-	PullRequestDeclinedEvent        Event = "pullrequest:rejected"
-	PullRequestCommentCreatedEvent  Event = "pullrequest:comment_created"
-	PullRequestCommentUpdatedEvent  Event = "pullrequest:comment_updated"
-	PullRequestCommentDeletedEvent  Event = "pull_request:comment_deleted"
+	RepoPushEvent                  Event = "repo:push"
+	RepoForkEvent                  Event = "repo:fork"
+	RepoUpdatedEvent               Event = "repo:updated"
+	RepoCommitCommentCreatedEvent  Event = "repo:commit_comment_created"
+	RepoCommitStatusCreatedEvent   Event = "repo:commit_status_created"
+	RepoCommitStatusUpdatedEvent   Event = "repo:commit_status_updated"
+	IssueCreatedEvent              Event = "issue:created"
+	IssueUpdatedEvent              Event = "issue:updated"
+	IssueCommentCreatedEvent       Event = "issue:comment_created"
+	PullRequestCreatedEvent        Event = "pullrequest:created"
+	PullRequestUpdatedEvent        Event = "pullrequest:updated"
+	PullRequestApprovedEvent       Event = "pullrequest:approved"
+	PullRequestUnapprovedEvent     Event = "pullrequest:unapproved"
+	PullRequestMergedEvent         Event = "pullrequest:fulfilled"
+	PullRequestDeclinedEvent       Event = "pullrequest:rejected"
+	PullRequestCommentCreatedEvent Event = "pullrequest:comment_created"
+	PullRequestCommentUpdatedEvent Event = "pullrequest:comment_updated"
+	PullRequestCommentDeletedEvent Event = "pull_request:comment_deleted"
 )
 
 // New creates and returns a WebHook instance denoted by the Provider type
@@ -111,6 +112,10 @@ func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 		var pl RepoForkPayload
 		json.Unmarshal([]byte(payload), &pl)
 		hook.runProcessPayloadFunc(fn, pl, hd)
+	case RepoUpdatedEvent:
+		var pl RepoUpdatedPayload
+		json.Unmarshal([]byte(payload), &pl)
+		hook.runProcessPayloadFunc(fn, pl, hd)
 	case RepoCommitCommentCreatedEvent:
 		var pl RepoCommitCommentCreatedPayload
 		json.Unmarshal([]byte(payload), &pl)
@@ -147,8 +152,8 @@ func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 		var pl PullRequestApprovedPayload
 		json.Unmarshal([]byte(payload), &pl)
 		hook.runProcessPayloadFunc(fn, pl, hd)
-	case PullRequestApprovalRemovedEvent:
-		var pl PullRequestApprovalRemovedPayload
+	case PullRequestUnapprovedEvent:
+		var pl PullRequestUnapprovedPayload
 		json.Unmarshal([]byte(payload), &pl)
 		hook.runProcessPayloadFunc(fn, pl, hd)
 	case PullRequestMergedEvent:
