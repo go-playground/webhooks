@@ -137,7 +137,7 @@ type BuildEventPayload struct {
 	Repository        Repository  `json:"repository"`
 }
 
-// Issue contais all of the GitLab issue information
+// Issue contains all of the GitLab issue information
 type Issue struct {
 	ID          int64      `json:"id"`
 	Title       string     `json:"title"`
@@ -154,7 +154,7 @@ type Issue struct {
 	IID         int64      `json:"iid"`
 }
 
-// Build contais all of the GitLab build information
+// Build contains all of the GitLab build information
 type Build struct {
 	ID            int64         `json:"id"`
 	Stage         string        `json:"stage"`
@@ -170,13 +170,13 @@ type Build struct {
 	ArtifactsFile ArtifactsFile `json:"artifactsfile"`
 }
 
-// ArtifactsFile contais all of the GitLab artifact information
+// ArtifactsFile contains all of the GitLab artifact information
 type ArtifactsFile struct {
 	Filename string `json:"filename"`
 	Size     string `json:"size"`
 }
 
-// Wiki contais all of the GitLab wiki information
+// Wiki contains all of the GitLab wiki information
 type Wiki struct {
 	WebURL            string `json:"web_url"`
 	GitSSHURL         string `json:"git_ssh_url"`
@@ -185,7 +185,7 @@ type Wiki struct {
 	DefaultBranch     string `json:"default_branch"`
 }
 
-// Commit contais all of the GitLab commit information
+// Commit contains all of the GitLab commit information
 type Commit struct {
 	ID        string     `json:"id"`
 	Message   string     `json:"message"`
@@ -197,7 +197,7 @@ type Commit struct {
 	Removed   []string   `json:"removed"`
 }
 
-// BuildCommit contais all of the GitLab build commit information
+// BuildCommit contains all of the GitLab build commit information
 type BuildCommit struct {
 	ID          int64      `json:"id"`
 	SHA         string     `json:"sha"`
@@ -210,7 +210,7 @@ type BuildCommit struct {
 	FinishedAt  customTime `json:"finished_at"`
 }
 
-// Snippet contais all of the GitLab snippet information
+// Snippet contains all of the GitLab snippet information
 type Snippet struct {
 	ID              int64      `json:"id"`
 	Title           string     `json:"title"`
@@ -225,14 +225,14 @@ type Snippet struct {
 	VisibilityLevel int64      `json:"visibility_level"`
 }
 
-// User contais all of the GitLab user information
+// User contains all of the GitLab user information
 type User struct {
 	Name      string `json:"name"`
 	UserName  string `json:"username"`
 	AvatarURL string `json:"avatar_url"`
 }
 
-// Project contais all of the GitLab project information
+// Project contains all of the GitLab project information
 type Project struct {
 	Name              string `json:"name"`
 	Description       string `json:"description"`
@@ -250,7 +250,7 @@ type Project struct {
 	HTTPURL           string `json:"http_url"`
 }
 
-// Repository contais all of the GitLab repository information
+// Repository contains all of the GitLab repository information
 type Repository struct {
 	Name        string `json:"name"`
 	URL         string `json:"url"`
@@ -258,7 +258,7 @@ type Repository struct {
 	Homepage    string `json:"homepage"`
 }
 
-// ObjectAttributes contais all of the GitLab object attributes information
+// ObjectAttributes contains all of the GitLab object attributes information
 type ObjectAttributes struct {
 	ID              int64      `json:"id"`
 	Title           string     `json:"title"`
@@ -307,7 +307,7 @@ type ObjectAttributes struct {
 	Assignee        Assignee   `json:"assignee"`
 }
 
-// MergeRequest contais all of the GitLab merge request information
+// MergeRequest contains all of the GitLab merge request information
 type MergeRequest struct {
 	ID              int64      `json:"id"`
 	TargetBranch    string     `json:"target_branch"`
@@ -333,14 +333,14 @@ type MergeRequest struct {
 	Assignee        Assignee   `json:"assignee"`
 }
 
-// Assignee contais all of the GitLab assignee information
+// Assignee contains all of the GitLab assignee information
 type Assignee struct {
 	Name      string `json:"name"`
 	Username  string `json:"username"`
 	AvatarURL string `json:"avatar_url"`
 }
 
-// StDiff contais all of the GitLab diff information
+// StDiff contains all of the GitLab diff information
 type StDiff struct {
 	Diff        string `json:"diff"`
 	NewPath     string `json:"new_path"`
@@ -352,7 +352,7 @@ type StDiff struct {
 	DeletedFile bool   `json:"deleted_file"`
 }
 
-// Source contais all of the GitLab source information
+// Source contains all of the GitLab source information
 type Source struct {
 	Name              string `json:"name"`
 	Description       string `json:"description"`
@@ -370,7 +370,7 @@ type Source struct {
 	HTTPURL           string `json:"http_url"`
 }
 
-// Target contais all of the GitLab target information
+// Target contains all of the GitLab target information
 type Target struct {
 	Name              string `json:"name"`
 	Description       string `json:"description"`
@@ -388,7 +388,7 @@ type Target struct {
 	HTTPURL           string `json:"http_url"`
 }
 
-// LastCommit contais all of the GitLab last commit information
+// LastCommit contains all of the GitLab last commit information
 type LastCommit struct {
 	ID        string     `json:"id"`
 	Message   string     `json:"message"`
@@ -397,7 +397,7 @@ type LastCommit struct {
 	Author    Author     `json:"author"`
 }
 
-// Author contais all of the GitLab author information
+// Author contains all of the GitLab author information
 type Author struct {
 	Name  string `json:"name"`
 	Email string `json:"email"`

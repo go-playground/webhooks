@@ -28,7 +28,7 @@ const (
 	GitLab
 )
 
-// Webhook interface defines a webhook to recieve events
+// Webhook interface defines a webhook to receive events
 type Webhook interface {
 	Provider() Provider
 	ParsePayload(w http.ResponseWriter, r *http.Request)

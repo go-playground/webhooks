@@ -7,7 +7,7 @@ Library webhooks
 [![GoDoc](https://godoc.org/gopkg.in/go-playground/webhooks.v3?status.svg)](https://godoc.org/gopkg.in/go-playground/webhooks.v3)
 ![License](https://img.shields.io/dub/l/vibe-d.svg)
 
-Library webhooks allows for easy recieving and parsing of GitHub, Bitbucket and GitLab Webhook Events
+Library webhooks allows for easy receiving and parsing of GitHub, Bitbucket and GitLab Webhook Events
 
 Features:
 
