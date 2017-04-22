@@ -75,7 +75,7 @@ func HandleRelease(payload interface{}, header webhooks.Header) {
 	pl := payload.(github.ReleasePayload)
 
 	// only want to compile on full releases
-	if pl.Release.Draft || pl.Release.Prelelease || pl.Release.TargetCommitish != "master" {
+	if pl.Release.Draft || pl.Release.Prerelease || pl.Release.TargetCommitish != "master" {
 		return
 	}
 
@@ -93,7 +93,6 @@ func HandlePullRequest(payload interface{}, header webhooks.Header) {
 	// Do whatever you want from here...
 	fmt.Printf("%+v", pl)
 }
-
 ```
 
 Single receiver for events you subscribe to
