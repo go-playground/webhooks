@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	"gopkg.in/go-playground/webhooks.v3"
@@ -97,6 +98,7 @@ func (hook Webhook) RegisterEvents(fn webhooks.ProcessPayloadFunc, events ...Eve
 // ParsePayload parses and verifies the payload and fires off the mapped function, if it exists.
 func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 
+	log.Println("Gettting X-GitHub-Event")
 	event := r.Header.Get("X-GitHub-Event")
 	if len(event) == 0 {
 		http.Error(w, "400 Bad Request - Missing X-GitHub-Event Header", http.StatusBadRequest)
@@ -105,11 +107,14 @@ func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 
 	gitHubEvent := Event(event)
 
+	log.Println("Looking for Hook:", gitHubEvent)
 	fn, ok := hook.eventFuncs[gitHubEvent]
 	// if no event registered
 	if !ok {
 		return
 	}
+
+	log.Println("READING PAYLOAD FROM BODY")
 
 	payload, err := ioutil.ReadAll(r.Body)
 	if err != nil || len(payload) == 0 {
@@ -117,9 +122,12 @@ func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Println("Checking GitHub secret")
+
 	// If we have a Secret set, we should check the MAC
 	if len(hook.secret) > 0 {
 
+		log.Println("Get GitHub signature")
 		signature := r.Header.Get("X-Hub-Signature")
 
 		if len(signature) == 0 {
@@ -132,141 +140,245 @@ func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 
 		expectedMAC := hex.EncodeToString(mac.Sum(nil))
 
+		log.Println("Checking HMAC Equality")
+
 		if !hmac.Equal([]byte(signature[5:]), []byte(expectedMAC)) {
 			http.Error(w, "403 Forbidden - HMAC verification failed", http.StatusForbidden)
 			return
 		}
+
+		log.Println("HMAC Equal")
 	}
 
 	// Make headers available to ProcessPayloadFunc as a webhooks type
 	hd := webhooks.Header(r.Header)
+	var pl interface{}
+
+	log.Println("Unmarshal based on GitHub event:", gitHubEvent)
 
 	switch gitHubEvent {
 	case CommitCommentEvent:
+
 		var cc CommitCommentPayload
-		json.Unmarshal([]byte(payload), &cc)
-		hook.runProcessPayloadFunc(fn, cc, hd)
+
+		err = json.Unmarshal([]byte(payload), &cc)
+		pl = cc
+
 	case CreateEvent:
+
 		var c CreatePayload
-		json.Unmarshal([]byte(payload), &c)
-		hook.runProcessPayloadFunc(fn, c, hd)
+
+		err = json.Unmarshal([]byte(payload), &c)
+		pl = c
+
 	case DeleteEvent:
 		var d DeletePayload
 		json.Unmarshal([]byte(payload), &d)
 		hook.runProcessPayloadFunc(fn, d, hd)
+
 	case DeploymentEvent:
+
 		var d DeploymentPayload
-		json.Unmarshal([]byte(payload), &d)
-		hook.runProcessPayloadFunc(fn, d, hd)
+
+		err = json.Unmarshal([]byte(payload), &d)
+		pl = d
+
 	case DeploymentStatusEvent:
+
 		var d DeploymentStatusPayload
-		json.Unmarshal([]byte(payload), &d)
-		hook.runProcessPayloadFunc(fn, d, hd)
+
+		err = json.Unmarshal([]byte(payload), &d)
+		pl = d
+
 	case ForkEvent:
+
 		var f ForkPayload
-		json.Unmarshal([]byte(payload), &f)
-		hook.runProcessPayloadFunc(fn, f, hd)
+
+		err = json.Unmarshal([]byte(payload), &f)
+		pl = f
+
 	case GollumEvent:
+
 		var g GollumPayload
-		json.Unmarshal([]byte(payload), &g)
-		hook.runProcessPayloadFunc(fn, g, hd)
+
+		err = json.Unmarshal([]byte(payload), &g)
+		pl = g
+
 	case IssueCommentEvent:
+
 		var i IssueCommentPayload
-		json.Unmarshal([]byte(payload), &i)
-		hook.runProcessPayloadFunc(fn, i, hd)
+
+		err = json.Unmarshal([]byte(payload), &i)
+		pl = i
+
 	case IssuesEvent:
+
 		var i IssuesPayload
-		json.Unmarshal([]byte(payload), &i)
-		hook.runProcessPayloadFunc(fn, i, hd)
+
+		err = json.Unmarshal([]byte(payload), &i)
+		pl = i
+
 	case LabelEvent:
+
 		var l LabelPayload
-		json.Unmarshal([]byte(payload), &l)
-		hook.runProcessPayloadFunc(fn, l, hd)
+
+		err = json.Unmarshal([]byte(payload), &l)
+		pl = l
+
 	case MemberEvent:
+
 		var m MemberPayload
-		json.Unmarshal([]byte(payload), &m)
-		hook.runProcessPayloadFunc(fn, m, hd)
+
+		err = json.Unmarshal([]byte(payload), &m)
+		pl = m
+
 	case MembershipEvent:
+
 		var m MembershipPayload
-		json.Unmarshal([]byte(payload), &m)
-		hook.runProcessPayloadFunc(fn, m, hd)
+
+		err = json.Unmarshal([]byte(payload), &m)
+		pl = m
+
 	case MilestoneEvent:
+
 		var m MilestonePayload
-		json.Unmarshal([]byte(payload), &m)
-		hook.runProcessPayloadFunc(fn, m, hd)
+
+		err = json.Unmarshal([]byte(payload), &m)
+		pl = m
+
 	case OrganizationEvent:
+
 		var o OrganizationPayload
-		json.Unmarshal([]byte(payload), &o)
-		hook.runProcessPayloadFunc(fn, o, hd)
+
+		err = json.Unmarshal([]byte(payload), &o)
+		pl = o
+
 	case OrgBlockEvent:
+
 		var o OrgBlockPayload
-		json.Unmarshal([]byte(payload), &o)
-		hook.runProcessPayloadFunc(fn, o, hd)
+
+		err = json.Unmarshal([]byte(payload), &o)
+		pl = o
+
 	case PageBuildEvent:
+
 		var p PageBuildPayload
-		json.Unmarshal([]byte(payload), &p)
-		hook.runProcessPayloadFunc(fn, p, hd)
+
+		err = json.Unmarshal([]byte(payload), &p)
+		pl = p
+
 	case ProjectCardEvent:
+
 		var p ProjectCardPayload
-		json.Unmarshal([]byte(payload), &p)
-		hook.runProcessPayloadFunc(fn, p, hd)
+
+		err = json.Unmarshal([]byte(payload), &p)
+		pl = p
+
 	case ProjectColumnEvent:
+
 		var p ProjectColumnPayload
-		json.Unmarshal([]byte(payload), &p)
-		hook.runProcessPayloadFunc(fn, p, hd)
+
+		err = json.Unmarshal([]byte(payload), &p)
+		pl = p
+
 	case ProjectEvent:
+
 		var p ProjectPayload
-		json.Unmarshal([]byte(payload), &p)
-		hook.runProcessPayloadFunc(fn, p, hd)
+
+		err = json.Unmarshal([]byte(payload), &p)
+		pl = p
+
 	case PublicEvent:
+
 		var p PublicPayload
-		json.Unmarshal([]byte(payload), &p)
-		hook.runProcessPayloadFunc(fn, p, hd)
+
+		err = json.Unmarshal([]byte(payload), &p)
+		pl = p
+
 	case PullRequestEvent:
+
 		var p PullRequestPayload
-		json.Unmarshal([]byte(payload), &p)
-		hook.runProcessPayloadFunc(fn, p, hd)
+
+		err = json.Unmarshal([]byte(payload), &p)
+		pl = p
+
 	case PullRequestReviewEvent:
+
 		var p PullRequestReviewPayload
-		json.Unmarshal([]byte(payload), &p)
-		hook.runProcessPayloadFunc(fn, p, hd)
+
+		err = json.Unmarshal([]byte(payload), &p)
+		pl = p
+
 	case PullRequestReviewCommentEvent:
+
 		var p PullRequestReviewCommentPayload
-		json.Unmarshal([]byte(payload), &p)
-		hook.runProcessPayloadFunc(fn, p, hd)
+
+		err = json.Unmarshal([]byte(payload), &p)
+		pl = p
+
 	case PushEvent:
+
 		var p PushPayload
-		json.Unmarshal([]byte(payload), &p)
-		hook.runProcessPayloadFunc(fn, p, hd)
+
+		err = json.Unmarshal([]byte(payload), &p)
+		pl = p
+
 	case ReleaseEvent:
+
 		var r ReleasePayload
-		json.Unmarshal([]byte(payload), &r)
-		hook.runProcessPayloadFunc(fn, r, hd)
+
+		err = json.Unmarshal([]byte(payload), &r)
+		pl = r
+
 	case RepositoryEvent:
+
 		var r RepositoryPayload
-		json.Unmarshal([]byte(payload), &r)
-		hook.runProcessPayloadFunc(fn, r, hd)
+
+		err = json.Unmarshal([]byte(payload), &r)
+		pl = r
+
 	case StatusEvent:
+
 		var s StatusPayload
-		json.Unmarshal([]byte(payload), &s)
-		hook.runProcessPayloadFunc(fn, s, hd)
+
+		err = json.Unmarshal([]byte(payload), &s)
+		pl = s
+
 	case TeamEvent:
+
 		var t TeamPayload
-		json.Unmarshal([]byte(payload), &t)
-		hook.runProcessPayloadFunc(fn, t, hd)
+
+		err = json.Unmarshal([]byte(payload), &t)
+		pl = t
+
 	case TeamAddEvent:
+
 		var t TeamAddPayload
-		json.Unmarshal([]byte(payload), &t)
-		hook.runProcessPayloadFunc(fn, t, hd)
+
+		err = json.Unmarshal([]byte(payload), &t)
+		pl = t
+
 	case WatchEvent:
+
 		var w WatchPayload
-		json.Unmarshal([]byte(payload), &w)
-		hook.runProcessPayloadFunc(fn, w, hd)
+
+		err = json.Unmarshal([]byte(payload), &w)
+		pl = w
 	}
+
+	if err != nil {
+		log.Println("There was an erro parsing JSON:", err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	log.Println("Running runProcessPayloadFunc")
+	hook.runProcessPayloadFunc(fn, pl, hd)
 }
 
 func (hook Webhook) runProcessPayloadFunc(fn webhooks.ProcessPayloadFunc, results interface{}, header webhooks.Header) {
 	go func(fn webhooks.ProcessPayloadFunc, results interface{}, header webhooks.Header) {
+		log.Println("Calling hook function")
 		fn(results, header)
 	}(fn, results, header)
 }
