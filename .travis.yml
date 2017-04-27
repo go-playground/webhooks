@@ -19,6 +19,9 @@ before_install:
   - go get -u golang.org/x/tools/cmd/cover
   - go get -u github.com/golang/lint/golint
   - go get -u github.com/gordonklaus/ineffassign
+  - mkdir -p $GOPATH/src/gopkg.in
+  - ln -s $GOPATH/src/github.com/$TRAVIS_REPO_SLUG $GOPATH/src/gopkg.in/webhooks.v2
+  - ln -s $GOPATH/src/github.com/$TRAVIS_REPO_SLUG $GOPATH/src/gopkg.in/webhooks.v3
 
 before_script:
   - go vet ./...
