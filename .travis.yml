@@ -1,0 +1,36 @@
+language: go
+go:
+    - 1.7.5
+    - 1.8.1
+    - tip
+matrix:
+  allow_failures:
+    - go: tip
+
+notifications:
+    email:
+        recipients: dean.karn@gmail.com
+        on_success: change
+        on_failure: always
+
+before_install:
+  - go get -u github.com/go-playground/overalls
+  - go get -u github.com/mattn/goveralls
+  - go get -u golang.org/x/tools/cmd/cover
+  - go get -u github.com/golang/lint/golint
+  - go get -u github.com/gordonklaus/ineffassign
+
+before_script:
+  - go vet ./...
+
+script:
+ - gofmt -d -s .
+ - golint ./...
+ - ineffassign ./
+ - go test -v ./...
+ - go test -race
+
+after_success: |
+  [ $TRAVIS_GO_VERSION = 1.8.1 ] &&
+  overalls -project="github.com/go-playground/webhooks" -covermode=count -ignore=.git,examples -debug &&
+  goveralls -coverprofile=overalls.coverprofile -service travis-ci -repotoken $COVERALLS_TOKEN
