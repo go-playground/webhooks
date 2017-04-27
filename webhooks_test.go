@@ -8,6 +8,8 @@ import (
 	"testing"
 	"time"
 
+	"net/http/httptest"
+
 	. "gopkg.in/go-playground/assert.v1"
 )
 
@@ -45,6 +47,43 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 
 	// teardown
+}
+
+func TestHandler(t *testing.T) {
+
+	mux := http.NewServeMux()
+	mux.Handle("/webhooks", Handler(fakeHook))
+
+	s := httptest.NewServer(Handler(fakeHook))
+	defer s.Close()
+
+	payload := "{}"
+
+	req, err := http.NewRequest("POST", s.URL+"/webhooks", bytes.NewBuffer([]byte(payload)))
+	req.Header.Set("Content-Type", "application/json")
+
+	Equal(t, err, nil)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	Equal(t, err, nil)
+
+	defer resp.Body.Close()
+
+	Equal(t, resp.StatusCode, http.StatusOK)
+
+	// Test BAD METHOD
+	req, err = http.NewRequest("GET", s.URL+"/webhooks", bytes.NewBuffer([]byte(payload)))
+	req.Header.Set("Content-Type", "application/json")
+
+	Equal(t, err, nil)
+
+	resp, err = client.Do(req)
+	Equal(t, err, nil)
+
+	defer resp.Body.Close()
+
+	Equal(t, resp.StatusCode, http.StatusMethodNotAllowed)
 }
 
 func TestRun(t *testing.T) {

@@ -35,18 +35,27 @@ type Webhook interface {
 }
 
 type server struct {
-	hook Webhook
-	path string
+	hook             Webhook
+	path             string
+	includePathCheck bool
 }
 
 // ProcessPayloadFunc is a common function for payload return values
 type ProcessPayloadFunc func(payload interface{}, header Header)
 
+// Handler returns the webhook http.Handler for use in your own Mux implementation
+func Handler(hook Webhook) http.Handler {
+	return &server{
+		hook: hook,
+	}
+}
+
 // Run runs a server
 func Run(hook Webhook, addr string, path string) error {
 	srv := &server{
-		hook: hook,
-		path: path,
+		hook:             hook,
+		path:             path,
+		includePathCheck: true,
 	}
 
 	s := &http.Server{Addr: addr, Handler: srv}
@@ -58,8 +67,9 @@ func Run(hook Webhook, addr string, path string) error {
 func RunServer(s *http.Server, hook Webhook, path string) error {
 
 	srv := &server{
-		hook: hook,
-		path: path,
+		hook:             hook,
+		path:             path,
+		includePathCheck: true,
 	}
 
 	s.Handler = srv
@@ -74,8 +84,9 @@ func RunServer(s *http.Server, hook Webhook, path string) error {
 func RunTLSServer(s *http.Server, hook Webhook, path string) error {
 
 	srv := &server{
-		hook: hook,
-		path: path,
+		hook:             hook,
+		path:             path,
+		includePathCheck: true,
 	}
 
 	s.Handler = srv
@@ -91,9 +102,12 @@ func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "405 Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	if r.URL.Path != s.path {
-		http.Error(w, "404 Not found", http.StatusNotFound)
-		return
+
+	if s.includePathCheck {
+		if r.URL.Path != s.path {
+			http.Error(w, "404 Not found", http.StatusNotFound)
+			return
+		}
 	}
 
 	s.hook.ParsePayload(w, r)
