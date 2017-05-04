@@ -3954,6 +3954,7 @@ type PushPayload struct {
 	BaseRef *string `json:"base_ref"`
 	Compare string  `json:"compare"`
 	Commits []struct {
+		Sha       string `json:"sha"`
 		ID        string `json:"id"`
 		TreeID    string `json:"tree_id"`
 		Distinct  bool   `json:"distinct"`
