@@ -2,8 +2,6 @@ package github
 
 import "time"
 
-// PushPayload contains the information for GitHub's push hook event
-
 // CommitCommentPayload contains the information for GitHub's commit_comment hook event
 type CommitCommentPayload struct {
 	Action  string `json:"action"`
