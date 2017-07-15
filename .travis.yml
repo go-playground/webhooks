@@ -1,7 +1,7 @@
 language: go
 go:
-    - 1.7.5
-    - 1.8.1
+    - 1.7.6
+    - 1.8.3
     - tip
 matrix:
   allow_failures:
@@ -34,6 +34,6 @@ script:
  - go test -race
 
 after_success: |
-  [ $TRAVIS_GO_VERSION = 1.8.1 ] &&
+  [ $TRAVIS_GO_VERSION = 1.8.3 ] &&
   overalls -project="github.com/go-playground/webhooks" -covermode=count -ignore=.git,examples -debug &&
   goveralls -coverprofile=overalls.coverprofile -service travis-ci -repotoken $COVERALLS_TOKEN

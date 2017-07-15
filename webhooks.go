@@ -1,6 +1,9 @@
 package webhooks
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
 // Header provides http.Header to minimize imports
 type Header http.Header
@@ -57,9 +60,9 @@ func Run(hook Webhook, addr string, path string) error {
 		path:             path,
 		includePathCheck: true,
 	}
-
 	s := &http.Server{Addr: addr, Handler: srv}
 
+	DefaultLog.Info(fmt.Sprintf("Listening on addr: %s path: %s", addr, path))
 	return s.ListenAndServe()
 }
 
@@ -73,7 +76,7 @@ func RunServer(s *http.Server, hook Webhook, path string) error {
 	}
 
 	s.Handler = srv
-
+	DefaultLog.Info(fmt.Sprintf("Listening on addr: %s path: %s", s.Addr, path))
 	return s.ListenAndServe()
 }
 
@@ -90,21 +93,25 @@ func RunTLSServer(s *http.Server, hook Webhook, path string) error {
 	}
 
 	s.Handler = srv
-
+	DefaultLog.Info(fmt.Sprintf("Listening on addr: %s path: %s", s.Addr, path))
 	return s.ListenAndServeTLS("", "")
 }
 
 // ServeHTTP is the Handler for every posted WebHook Event
 func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
+	DefaultLog.Info("Webhook received")
 
 	if r.Method != "POST" {
+		DefaultLog.Error(fmt.Sprintf("405 Method not allowed, attempt made using Method: %s", r.Method))
 		http.Error(w, "405 Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
+	DefaultLog.Debug(fmt.Sprintf("Include path check: %t", s.includePathCheck))
 	if s.includePathCheck {
 		if r.URL.Path != s.path {
+			DefaultLog.Error(fmt.Sprintf("404 Not found, POST made using path: %s, but expected %s", r.URL.Path, s.path))
 			http.Error(w, "404 Not found", http.StatusNotFound)
 			return
 		}

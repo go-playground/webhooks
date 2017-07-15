@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 
 	"gopkg.in/go-playground/webhooks.v3"
@@ -13,7 +14,31 @@ const (
 	port = 3016
 )
 
+type myLogger struct {
+	PrintDebugs bool
+}
+
+func (l *myLogger) Info(msg string) {
+	log.Println(msg)
+}
+
+func (l *myLogger) Error(msg string) {
+	log.Println(msg)
+}
+
+func (l *myLogger) Debug(msg string) {
+	if !l.PrintDebugs {
+		return
+	}
+	log.Println(msg)
+}
+
 func main() {
+	// webhooks.DefaultLog=webhooks.NewLogger(true)
+	//
+	// or override with your own
+	webhooks.DefaultLog = &myLogger{PrintDebugs: true}
+
 	hook := github.New(&github.Config{Secret: "MyGitHubSuperSecretSecrect...?"})
 	hook.RegisterEvents(HandleMultiple, github.ReleaseEvent, github.PullRequestEvent) // Add as many as you want
 
