@@ -5,6 +5,7 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -96,36 +97,43 @@ func (hook Webhook) RegisterEvents(fn webhooks.ProcessPayloadFunc, events ...Eve
 
 // ParsePayload parses and verifies the payload and fires off the mapped function, if it exists.
 func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
+	webhooks.DefaultLog.Info("Parsing Payload...")
 
 	event := r.Header.Get("X-GitHub-Event")
 	if len(event) == 0 {
+		webhooks.DefaultLog.Error("Missing X-GitHub-Event Header")
 		http.Error(w, "400 Bad Request - Missing X-GitHub-Event Header", http.StatusBadRequest)
 		return
 	}
+	webhooks.DefaultLog.Debug(fmt.Sprintf("X-GitHub-Event:%s", event))
 
 	gitHubEvent := Event(event)
 
 	fn, ok := hook.eventFuncs[gitHubEvent]
 	// if no event registered
 	if !ok {
+		webhooks.DefaultLog.Info(fmt.Sprintf("Webhook Event %s not registered, it is recommended to setup only events in github that will be registered in the webhook to avoid unnecessary traffic and reduce potential attack vectors.", event))
 		return
 	}
 
 	payload, err := ioutil.ReadAll(r.Body)
 	if err != nil || len(payload) == 0 {
-		http.Error(w, "Error reading Body", http.StatusInternalServerError)
+		webhooks.DefaultLog.Error("Issue reading Payload")
+		http.Error(w, "Issue reading Payload", http.StatusInternalServerError)
 		return
 	}
+	webhooks.DefaultLog.Debug(fmt.Sprintf("Payload:%s", string(payload)))
 
 	// If we have a Secret set, we should check the MAC
 	if len(hook.secret) > 0 {
-
+		webhooks.DefaultLog.Info("Checking secret")
 		signature := r.Header.Get("X-Hub-Signature")
-
 		if len(signature) == 0 {
+			webhooks.DefaultLog.Error("Missing X-Hub-Signature required for HMAC verification")
 			http.Error(w, "403 Forbidden - Missing X-Hub-Signature required for HMAC verification", http.StatusForbidden)
 			return
 		}
+		webhooks.DefaultLog.Debug(fmt.Sprintf("X-Hub-Signature:%s", signature))
 
 		mac := hmac.New(sha1.New, []byte(hook.secret))
 		mac.Write(payload)
@@ -133,6 +141,7 @@ func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 		expectedMAC := hex.EncodeToString(mac.Sum(nil))
 
 		if !hmac.Equal([]byte(signature[5:]), []byte(expectedMAC)) {
+			webhooks.DefaultLog.Error("HMAC verification failed")
 			http.Error(w, "403 Forbidden - HMAC verification failed", http.StatusForbidden)
 			return
 		}

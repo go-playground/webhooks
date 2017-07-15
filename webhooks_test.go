@@ -136,7 +136,7 @@ func TestRun(t *testing.T) {
 }
 
 func TestRunServer(t *testing.T) {
-
+	DefaultLog = NewLogger(true)
 	server := &http.Server{Addr: "127.0.0.1:3007", Handler: nil}
 	go RunServer(server, fakeHook, "/webhooks")
 	time.Sleep(5000)

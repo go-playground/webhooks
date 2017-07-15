@@ -2,6 +2,7 @@ package gitlab
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -59,33 +60,39 @@ func (hook Webhook) RegisterEvents(fn webhooks.ProcessPayloadFunc, events ...Eve
 
 // ParsePayload parses and verifies the payload and fires off the mapped function, if it exists.
 func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
+	webhooks.DefaultLog.Info("Parsing Payload...")
 
 	event := r.Header.Get("X-Gitlab-Event")
 	if len(event) == 0 {
+		webhooks.DefaultLog.Error("Missing X-Gitlab-Event Header")
 		http.Error(w, "400 Bad Request - Missing X-Gitlab-Event Header", http.StatusBadRequest)
 		return
 	}
+	webhooks.DefaultLog.Debug(fmt.Sprintf("X-Gitlab-Event:%s", event))
 
 	gitLabEvent := Event(event)
 
 	fn, ok := hook.eventFuncs[gitLabEvent]
 	// if no event registered
 	if !ok {
+		webhooks.DefaultLog.Info(fmt.Sprintf("Webhook Event %s not registered, it is recommended to setup only events in gitlab that will be registered in the webhook to avoid unnecessary traffic and reduce potential attack vectors.", event))
 		return
 	}
 
 	payload, err := ioutil.ReadAll(r.Body)
 	if err != nil || len(payload) == 0 {
-		http.Error(w, "Error reading Body", http.StatusInternalServerError)
+		webhooks.DefaultLog.Error("Issue reading Payload")
+		http.Error(w, "Error reading Payload", http.StatusInternalServerError)
 		return
 	}
+	webhooks.DefaultLog.Debug(fmt.Sprintf("Payload:%s", string(payload)))
 
 	// If we have a Secret set, we should check the MAC
 	if len(hook.secret) > 0 {
-
+		webhooks.DefaultLog.Info("Checking secret")
 		signature := r.Header.Get("X-Gitlab-Token")
-
 		if signature != hook.secret {
+			webhooks.DefaultLog.Error(fmt.Sprintf("Invalid X-Gitlab-Token of '%s'", signature))
 			http.Error(w, "403 Forbidden - Token missmatch", http.StatusForbidden)
 			return
 		}

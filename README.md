@@ -1,6 +1,6 @@
 Library webhooks
 ================
-<img align="right" src="https://raw.githubusercontent.com/go-playground/webhooks/v3/logo.png">![Project status](https://img.shields.io/badge/version-3.1.1-green.svg)
+<img align="right" src="https://raw.githubusercontent.com/go-playground/webhooks/v3/logo.png">![Project status](https://img.shields.io/badge/version-3.2.0-green.svg)
 [![Build Status](https://travis-ci.org/go-playground/webhooks.svg?branch=v3)](https://travis-ci.org/go-playground/webhooks)
 [![Coverage Status](https://coveralls.io/repos/go-playground/webhooks/badge.svg?branch=v3&service=github)](https://coveralls.io/github/go-playground/webhooks?branch=v3)
 [![Go Report Card](https://goreportcard.com/badge/go-playground/webhooks)](https://goreportcard.com/report/go-playground/webhooks)
