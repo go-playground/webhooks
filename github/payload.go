@@ -2940,6 +2940,13 @@ type PullRequestPayload struct {
 		Deletions      int64     `json:"deletions"`
 		ChangedFiles   int64     `json:"changed_files"`
 	} `json:"pull_request"`
+	Label struct {
+		ID      int64  `json:"id"`
+		URL     string `json:"url"`
+		Name    string `json:"name"`
+		Color   string `json:"color"`
+		Default bool   `json:"default"`
+	} `json:"label"`
 	Repository struct {
 		ID       int64  `json:"id"`
 		Name     string `json:"name"`
