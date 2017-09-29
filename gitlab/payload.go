@@ -312,7 +312,7 @@ type MergeRequest struct {
 	ID              int64      `json:"id"`
 	TargetBranch    string     `json:"target_branch"`
 	SourceBranch    string     `json:"source_branch"`
-	SourceProjectID string     `json:"source_project_id"`
+	SourceProjectID int64      `json:"source_project_id"`
 	AssigneeID      int64      `json:"assignee_id"`
 	AuthorID        int64      `json:"author_id"`
 	Title           string     `json:"title"`
