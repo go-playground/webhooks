@@ -40,6 +40,13 @@ type IssueEventPayload struct {
 	Assignee         Assignee         `json:"assignee"`
 }
 
+// ConfidentialIssueEventPayload contains the information for GitLab's confidential issue event
+type ConfidentialIssueEventPayload struct {
+	// The data for confidential issues is currently the same as normal issues,
+	// so we can just embed the normal issue payload type here.
+	IssueEventPayload
+}
+
 // MergeRequestEventPayload contains the information for GitLab's merge request event
 type MergeRequestEventPayload struct {
 	ObjectKind       string           `json:"object_kind"`

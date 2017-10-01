@@ -114,8 +114,10 @@ func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 		hook.runProcessPayloadFunc(fn, te, hd)
 
 	case ConfidentialIssuesEvents:
-		// Confidential issues have the same payload as normal issues.
-		fallthrough
+		var cie ConfidentialIssueEventPayload
+		json.Unmarshal([]byte(payload), &cie)
+		hook.runProcessPayloadFunc(fn, cie, hd)
+
 	case IssuesEvents:
 		var ie IssueEventPayload
 		json.Unmarshal([]byte(payload), &ie)
