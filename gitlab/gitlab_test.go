@@ -43,6 +43,7 @@ func TestMain(m *testing.M) {
 		PushEvents,
 		TagEvents,
 		IssuesEvents,
+		ConfidentialIssuesEvents,
 		CommentEvents,
 		MergeRequestEvents,
 		WikiPageEvents,
@@ -336,6 +337,78 @@ func TestIssueEvent(t *testing.T) {
 	req, err := http.NewRequest("POST", "http://127.0.0.1:3011/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Gitlab-Event", "Issue Hook")
+	req.Header.Set("X-Gitlab-Token", "sampleToken!")
+
+	Equal(t, err, nil)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	Equal(t, err, nil)
+
+	defer resp.Body.Close()
+
+	Equal(t, resp.StatusCode, http.StatusOK)
+}
+
+func TestConfidentialIssueEvent(t *testing.T) {
+
+	payload := `{
+    "object_kind": "issue",
+    "user": {
+      "name": "Administrator",
+      "username": "root",
+      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+    },
+    "project":{
+      "name":"Gitlab Test",
+      "description":"Aut reprehenderit ut est.",
+      "web_url":"http://example.com/gitlabhq/gitlab-test",
+      "avatar_url":null,
+      "git_ssh_url":"git@example.com:gitlabhq/gitlab-test.git",
+      "git_http_url":"http://example.com/gitlabhq/gitlab-test.git",
+      "namespace":"GitlabHQ",
+      "visibility_level":20,
+      "path_with_namespace":"gitlabhq/gitlab-test",
+      "default_branch":"master",
+      "homepage":"http://example.com/gitlabhq/gitlab-test",
+      "url":"http://example.com/gitlabhq/gitlab-test.git",
+      "ssh_url":"git@example.com:gitlabhq/gitlab-test.git",
+      "http_url":"http://example.com/gitlabhq/gitlab-test.git"
+    },
+    "repository":{
+      "name": "Gitlab Test",
+      "url": "http://example.com/gitlabhq/gitlab-test.git",
+      "description": "Aut reprehenderit ut est.",
+      "homepage": "http://example.com/gitlabhq/gitlab-test"
+    },
+    "object_attributes": {
+      "id": 301,
+      "title": "New API: create/update/delete file",
+      "assignee_id": 51,
+      "author_id": 51,
+      "project_id": 14,
+      "created_at": "2013-12-03T17:15:43Z",
+      "updated_at": "2013-12-03T17:15:43Z",
+      "position": 0,
+      "branch_name": null,
+      "description": "Create new API for manipulations with repository",
+      "milestone_id": null,
+      "state": "opened",
+      "iid": 23,
+      "url": "http://example.com/diaspora/issues/23",
+      "action": "open"
+    },
+    "assignee": {
+      "name": "User1",
+      "username": "user1",
+      "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+    }
+  }
+  `
+
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3011/webhooks", bytes.NewBuffer([]byte(payload)))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("X-Gitlab-Event", "Confidential Issue Hook")
 	req.Header.Set("X-Gitlab-Token", "sampleToken!")
 
 	Equal(t, err, nil)
