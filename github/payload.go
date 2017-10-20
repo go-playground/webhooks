@@ -28,13 +28,14 @@ type CommitCommentPayload struct {
 			Type              string `json:"type"`
 			SiteAdmin         bool   `json:"site_admin"`
 		} `json:"user"`
-		Position  *int64    `json:"position"`
-		Line      *int64    `json:"line"`
-		Path      *string   `json:"path"`
-		CommitID  string    `json:"commit_id"`
-		CreatedAt time.Time `json:"created_at"`
-		UpdatedAt time.Time `json:"updated_at"`
-		Body      string    `json:"body"`
+		Position          *int64    `json:"position"`
+		Line              *int64    `json:"line"`
+		Path              *string   `json:"path"`
+		CommitID          string    `json:"commit_id"`
+		CreatedAt         time.Time `json:"created_at"`
+		UpdatedAt         time.Time `json:"updated_at"`
+		Body              string    `json:"body"`
+		AuthorAssociation string    `json:"author_association"`
 	} `json:"comment"`
 	Repository struct {
 		ID       int64  `json:"id"`
@@ -1076,9 +1077,10 @@ type IssueCommentPayload struct {
 			Type              string `json:"type"`
 			SiteAdmin         bool   `json:"site_admin"`
 		} `json:"user"`
-		CreatedAt time.Time `json:"created_at"`
-		UpdatedAt time.Time `json:"updated_at"`
-		Body      string    `json:"body"`
+		CreatedAt         time.Time `json:"created_at"`
+		UpdatedAt         time.Time `json:"updated_at"`
+		Body              string    `json:"body"`
+		AuthorAssociation string    `json:"author_association"`
 	} `json:"comment"`
 	Repository struct {
 		ID       int64  `json:"id"`
@@ -3531,12 +3533,13 @@ type PullRequestReviewCommentPayload struct {
 			Type              string `json:"type"`
 			SiteAdmin         bool   `json:"site_admin"`
 		} `json:"user"`
-		Body           string    `json:"body"`
-		CreatedAt      time.Time `json:"created_at"`
-		UpdatedAt      time.Time `json:"updated_at"`
-		HTMLURL        string    `json:"html_url"`
-		PullRequestURL string    `json:"pull_request_url"`
-		Links          struct {
+		Body              string    `json:"body"`
+		AuthorAssociation string    `json:"author_association"`
+		CreatedAt         time.Time `json:"created_at"`
+		UpdatedAt         time.Time `json:"updated_at"`
+		HTMLURL           string    `json:"html_url"`
+		PullRequestURL    string    `json:"pull_request_url"`
+		Links             struct {
 			Self struct {
 				Href string `json:"href"`
 			} `json:"self"`
