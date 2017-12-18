@@ -38,6 +38,7 @@ type IssueEventPayload struct {
 	Repository       Repository       `json:"repository"`
 	ObjectAttributes ObjectAttributes `json:"object_attributes"`
 	Assignee         Assignee         `json:"assignee"`
+	Changes          Changes          `json:"changes"`
 }
 
 // ConfidentialIssueEventPayload contains the information for GitLab's confidential issue event
@@ -52,6 +53,7 @@ type MergeRequestEventPayload struct {
 	ObjectKind       string           `json:"object_kind"`
 	User             User             `json:"user"`
 	ObjectAttributes ObjectAttributes `json:"object_attributes"`
+	Changes          Changes          `json:"changes"`
 }
 
 // PushEventPayload contains the information for GitLab's push event
@@ -408,4 +410,29 @@ type LastCommit struct {
 type Author struct {
 	Name  string `json:"name"`
 	Email string `json:"email"`
+}
+
+// Changes contains all changes associated with a GitLab issue or MR
+type Changes struct {
+	LabelChanges LabelChanges `json:"labels"`
+}
+
+// LabelChanges contains changes in labels assocatiated with a GitLab issue or MR
+type LabelChanges struct {
+	Previous []Label `json:"previous"`
+	Current  []Label `json:"current"`
+}
+
+// Label contains all of the GitLab label information
+type Label struct {
+	Id          int64      `json:"id"`
+	Title       string     `json:"title"`
+	Color       string     `json:"color"`
+	ProjectId   int64      `json:"project_id"`
+	CreatedAt   customTime `json:"created_at"`
+	UpdatedAt   customTime `json:"updated_at"`
+	Template    bool       `json:"template"`
+	Description string     `json:"description"`
+	Type        string     `json:"type"`
+	GroupId     int64      `json:"group_id"`
 }
