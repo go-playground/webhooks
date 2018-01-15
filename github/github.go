@@ -47,6 +47,7 @@ const (
 	OrganizationEvent             Event = "organization"
 	OrgBlockEvent                 Event = "org_block"
 	PageBuildEvent                Event = "page_build"
+	PingEvent                     Event = "ping"
 	ProjectCardEvent              Event = "project_card"
 	ProjectColumnEvent            Event = "project_column"
 	ProjectEvent                  Event = "project"
@@ -219,6 +220,10 @@ func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 		hook.runProcessPayloadFunc(fn, o, hd)
 	case PageBuildEvent:
 		var p PageBuildPayload
+		json.Unmarshal([]byte(payload), &p)
+		hook.runProcessPayloadFunc(fn, p, hd)
+	case PingEvent:
+		var p PingPayload
 		json.Unmarshal([]byte(payload), &p)
 		hook.runProcessPayloadFunc(fn, p, hd)
 	case ProjectCardEvent:

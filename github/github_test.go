@@ -59,6 +59,7 @@ func TestMain(m *testing.M) {
 		OrganizationEvent,
 		OrgBlockEvent,
 		PageBuildEvent,
+		PingEvent,
 		ProjectCardEvent,
 		ProjectColumnEvent,
 		ProjectEvent,
@@ -2730,6 +2731,48 @@ func TestPageBuildEvent(t *testing.T) {
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "page_build")
 	req.Header.Set("X-Hub-Signature", "sha1=b3abad8f9c1b3fc0b01c4eb107447800bb5000f9")
+
+	Equal(t, err, nil)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	Equal(t, err, nil)
+
+	defer resp.Body.Close()
+
+	Equal(t, resp.StatusCode, http.StatusOK)
+}
+
+func TestPingEvent(t *testing.T) {
+
+	payload := `{
+    "zen": "Keep it logically awesome.",
+    "hook_id": 20081052,
+    "hook": {
+        "type": "App",
+        "id": 20081052,
+        "name": "web",
+        "active": true,
+        "events": [
+            "pull_request"
+        ],
+        "config": {
+            "content_type": "json",
+            "insecure_ssl": "0",
+            "secret": "********",
+            "url": "https://ngrok.io/webhook"
+        },
+        "updated_at": "2018-01-15T10:48:54Z",
+        "created_at": "2018-01-15T10:48:54Z",
+        "app_id": 8157
+    }
+}
+`
+
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("X-Github-Event", "ping")
+	req.Header.Set("X-Hub-Signature", "sha1=f82267eb5c6408d5986209da906747f57c11b33b")
 
 	Equal(t, err, nil)
 

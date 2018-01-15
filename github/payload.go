@@ -2162,6 +2162,27 @@ type PageBuildPayload struct {
 	} `json:"sender"`
 }
 
+// PingPayload contains the information for GitHub's ping hook event
+type PingPayload struct {
+	HookID int `json:"hook_id"`
+	Hook   struct {
+		Type   string   `json:"type"`
+		ID     int64    `json:"id"`
+		Name   string   `json:"name"`
+		Active bool     `json:"active"`
+		Events []string `json:"events"`
+		AppID  int      `json:"app_id"`
+		Config struct {
+			ContentType string `json:"content_type"`
+			InsecureSSL int    `json:"insecure_ssl"`
+			Secret      string `json:"secret"`
+			URL         string `json:"url"`
+		} `json:"config"`
+		CreatedAt time.Time `json:"created_at"`
+		UpdatedAt time.Time `json:"updated_at"`
+	} `json:"hook"`
+}
+
 // ProjectCardPayload contains the information for GitHub's project_payload hook event
 type ProjectCardPayload struct {
 	Action      string `json:"action"`
