@@ -36,6 +36,8 @@ const (
 	DeploymentStatusEvent         Event = "deployment_status"
 	ForkEvent                     Event = "fork"
 	GollumEvent                   Event = "gollum"
+	InstallationEvent             Event = "installation"
+	IntegrationInstallationEvent  Event = "integration_installation"
 	IssueCommentEvent             Event = "issue_comment"
 	IssuesEvent                   Event = "issues"
 	LabelEvent                    Event = "label"
@@ -179,6 +181,10 @@ func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 		var g GollumPayload
 		json.Unmarshal([]byte(payload), &g)
 		hook.runProcessPayloadFunc(fn, g, hd)
+	case InstallationEvent, IntegrationInstallationEvent:
+		var i InstallationPayload
+		json.Unmarshal([]byte(payload), &i)
+		hook.runProcessPayloadFunc(fn, i, hd)
 	case IssueCommentEvent:
 		var i IssueCommentPayload
 		json.Unmarshal([]byte(payload), &i)

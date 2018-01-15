@@ -48,6 +48,8 @@ func TestMain(m *testing.M) {
 		DeploymentStatusEvent,
 		ForkEvent,
 		GollumEvent,
+		InstallationEvent,
+		IntegrationInstallationEvent,
 		IssueCommentEvent,
 		IssuesEvent,
 		LabelEvent,
@@ -1297,6 +1299,186 @@ func TestGollumEvent(t *testing.T) {
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "gollum")
 	req.Header.Set("X-Hub-Signature", "sha1=a375a6dc8ceac7231ee022211f8eb85e2a84a5b9")
+
+	Equal(t, err, nil)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	Equal(t, err, nil)
+
+	defer resp.Body.Close()
+
+	Equal(t, resp.StatusCode, http.StatusOK)
+}
+
+func TestInstallationEvent(t *testing.T) {
+
+	payload := `{
+    "action": "created",
+    "installation": {
+        "id": 80429,
+        "account": {
+            "login": "PombeirP",
+            "id": 138074,
+            "avatar_url": "https://avatars1.githubusercontent.com/u/138074?v=4",
+            "gravatar_id": "",
+            "url": "https://api.github.com/users/PombeirP",
+            "html_url": "https://github.com/PombeirP",
+            "followers_url": "https://api.github.com/users/PombeirP/followers",
+            "following_url": "https://api.github.com/users/PombeirP/following{/other_user}",
+            "gists_url": "https://api.github.com/users/PombeirP/gists{/gist_id}",
+            "starred_url": "https://api.github.com/users/PombeirP/starred{/owner}{/repo}",
+            "subscriptions_url": "https://api.github.com/users/PombeirP/subscriptions",
+            "organizations_url": "https://api.github.com/users/PombeirP/orgs",
+            "repos_url": "https://api.github.com/users/PombeirP/repos",
+            "events_url": "https://api.github.com/users/PombeirP/events{/privacy}",
+            "received_events_url": "https://api.github.com/users/PombeirP/received_events",
+            "type": "User",
+            "site_admin": false
+        },
+        "repository_selection": "selected",
+        "access_tokens_url": "https://api.github.com/installations/80429/access_tokens",
+        "repositories_url": "https://api.github.com/installation/repositories",
+        "html_url": "https://github.com/settings/installations/80429",
+        "app_id": 8157,
+        "target_id": 138074,
+        "target_type": "User",
+        "permissions": {
+            "repository_projects": "write",
+            "issues": "read",
+            "metadata": "read",
+            "pull_requests": "read"
+        },
+        "events": [
+            "pull_request"
+        ],
+        "created_at": 1516025475,
+        "updated_at": 1516025475,
+        "single_file_name": null
+    },
+    "repositories": [
+        {
+            "id": 117381220,
+            "name": "status-github-bot",
+            "full_name": "PombeirP/status-github-bot"
+        }
+    ],
+    "sender": {
+        "login": "PombeirP",
+        "id": 138074,
+        "avatar_url": "https://avatars1.githubusercontent.com/u/138074?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/PombeirP",
+        "html_url": "https://github.com/PombeirP",
+        "followers_url": "https://api.github.com/users/PombeirP/followers",
+        "following_url": "https://api.github.com/users/PombeirP/following{/other_user}",
+        "gists_url": "https://api.github.com/users/PombeirP/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/PombeirP/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/PombeirP/subscriptions",
+        "organizations_url": "https://api.github.com/users/PombeirP/orgs",
+        "repos_url": "https://api.github.com/users/PombeirP/repos",
+        "events_url": "https://api.github.com/users/PombeirP/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/PombeirP/received_events",
+        "type": "User",
+        "site_admin": false
+    }
+}
+`
+
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("X-Github-Event", "installation")
+	req.Header.Set("X-Hub-Signature", "sha1=987338c6e5c21794ab6c258abe51284f9b1df728")
+
+	Equal(t, err, nil)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	Equal(t, err, nil)
+
+	defer resp.Body.Close()
+
+	Equal(t, resp.StatusCode, http.StatusOK)
+}
+
+func TestIntegrationInstallationEvent(t *testing.T) {
+
+	payload := `{
+    "action": "created",
+    "installation": {
+        "id": 80429,
+        "account": {
+            "login": "PombeirP",
+            "id": 138074,
+            "avatar_url": "https://avatars1.githubusercontent.com/u/138074?v=4",
+            "gravatar_id": "",
+            "url": "https://api.github.com/users/PombeirP",
+            "html_url": "https://github.com/PombeirP",
+            "followers_url": "https://api.github.com/users/PombeirP/followers",
+            "following_url": "https://api.github.com/users/PombeirP/following{/other_user}",
+            "gists_url": "https://api.github.com/users/PombeirP/gists{/gist_id}",
+            "starred_url": "https://api.github.com/users/PombeirP/starred{/owner}{/repo}",
+            "subscriptions_url": "https://api.github.com/users/PombeirP/subscriptions",
+            "organizations_url": "https://api.github.com/users/PombeirP/orgs",
+            "repos_url": "https://api.github.com/users/PombeirP/repos",
+            "events_url": "https://api.github.com/users/PombeirP/events{/privacy}",
+            "received_events_url": "https://api.github.com/users/PombeirP/received_events",
+            "type": "User",
+            "site_admin": false
+        },
+        "repository_selection": "selected",
+        "access_tokens_url": "https://api.github.com/installations/80429/access_tokens",
+        "repositories_url": "https://api.github.com/installation/repositories",
+        "html_url": "https://github.com/settings/installations/80429",
+        "app_id": 8157,
+        "target_id": 138074,
+        "target_type": "User",
+        "permissions": {
+            "repository_projects": "write",
+            "issues": "read",
+            "metadata": "read",
+            "pull_requests": "read"
+        },
+        "events": [
+            "pull_request"
+        ],
+        "created_at": 1516025475,
+        "updated_at": 1516025475,
+        "single_file_name": null
+    },
+    "repositories": [
+        {
+            "id": 117381220,
+            "name": "status-github-bot",
+            "full_name": "PombeirP/status-github-bot"
+        }
+    ],
+    "sender": {
+        "login": "PombeirP",
+        "id": 138074,
+        "avatar_url": "https://avatars1.githubusercontent.com/u/138074?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/PombeirP",
+        "html_url": "https://github.com/PombeirP",
+        "followers_url": "https://api.github.com/users/PombeirP/followers",
+        "following_url": "https://api.github.com/users/PombeirP/following{/other_user}",
+        "gists_url": "https://api.github.com/users/PombeirP/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/PombeirP/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/PombeirP/subscriptions",
+        "organizations_url": "https://api.github.com/users/PombeirP/orgs",
+        "repos_url": "https://api.github.com/users/PombeirP/repos",
+        "events_url": "https://api.github.com/users/PombeirP/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/PombeirP/received_events",
+        "type": "User",
+        "site_admin": false
+    }
+}
+`
+
+	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("X-Github-Event", "integration_installation")
+	req.Header.Set("X-Hub-Signature", "sha1=987338c6e5c21794ab6c258abe51284f9b1df728")
 
 	Equal(t, err, nil)
 
