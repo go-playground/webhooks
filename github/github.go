@@ -36,6 +36,8 @@ const (
 	DeploymentStatusEvent         Event = "deployment_status"
 	ForkEvent                     Event = "fork"
 	GollumEvent                   Event = "gollum"
+	InstallationEvent             Event = "installation"
+	IntegrationInstallationEvent  Event = "integration_installation"
 	IssueCommentEvent             Event = "issue_comment"
 	IssuesEvent                   Event = "issues"
 	LabelEvent                    Event = "label"
@@ -45,6 +47,7 @@ const (
 	OrganizationEvent             Event = "organization"
 	OrgBlockEvent                 Event = "org_block"
 	PageBuildEvent                Event = "page_build"
+	PingEvent                     Event = "ping"
 	ProjectCardEvent              Event = "project_card"
 	ProjectColumnEvent            Event = "project_column"
 	ProjectEvent                  Event = "project"
@@ -179,6 +182,10 @@ func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 		var g GollumPayload
 		json.Unmarshal([]byte(payload), &g)
 		hook.runProcessPayloadFunc(fn, g, hd)
+	case InstallationEvent, IntegrationInstallationEvent:
+		var i InstallationPayload
+		json.Unmarshal([]byte(payload), &i)
+		hook.runProcessPayloadFunc(fn, i, hd)
 	case IssueCommentEvent:
 		var i IssueCommentPayload
 		json.Unmarshal([]byte(payload), &i)
@@ -213,6 +220,10 @@ func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 		hook.runProcessPayloadFunc(fn, o, hd)
 	case PageBuildEvent:
 		var p PageBuildPayload
+		json.Unmarshal([]byte(payload), &p)
+		hook.runProcessPayloadFunc(fn, p, hd)
+	case PingEvent:
+		var p PingPayload
 		json.Unmarshal([]byte(payload), &p)
 		hook.runProcessPayloadFunc(fn, p, hd)
 	case ProjectCardEvent:
