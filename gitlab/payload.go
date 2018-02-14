@@ -54,6 +54,8 @@ type MergeRequestEventPayload struct {
 	User             User             `json:"user"`
 	ObjectAttributes ObjectAttributes `json:"object_attributes"`
 	Changes          Changes          `json:"changes"`
+	Project          Project          `json:"project"`
+	Repository       Repository       `json:"repository"`
 }
 
 // PushEventPayload contains the information for GitLab's push event
