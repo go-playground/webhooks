@@ -80,10 +80,14 @@ func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 	}
 	webhooks.DefaultLog.Debug(fmt.Sprintf("X-Hook-UUID:%s", uuid))
 
-	if uuid != hook.uuid {
-		webhooks.DefaultLog.Error(fmt.Sprintf("X-Hook-UUID does not match configured uuid of %s", hook.uuid))
-		http.Error(w, "403 Forbidden - X-Hook-UUID does not match", http.StatusForbidden)
-		return
+	if len(hook.uuid) > 0 {
+		if uuid != hook.uuid {
+			webhooks.DefaultLog.Error(fmt.Sprintf("X-Hook-UUID %s does not match configured uuid of %s", uuid, hook.uuid))
+			http.Error(w, "403 Forbidden - X-Hook-UUID does not match", http.StatusForbidden)
+			return
+		}
+	} else {
+		webhooks.DefaultLog.Debug("hook uuid not defined - recommend setting for improved security")
 	}
 
 	event := r.Header.Get("X-Event-Key")
