@@ -19,6 +19,8 @@ func (p Provider) String() string {
 		return "Bitbucket"
 	case GitLab:
 		return "GitLab"
+	case Gogs:
+		return "Gogs"
 	default:
 		return "Unknown"
 	}
@@ -26,9 +28,10 @@ func (p Provider) String() string {
 
 // webhooks available providers
 const (
-	GitHub Provider = iota
+	GitHub    Provider = iota
 	Bitbucket
 	GitLab
+	Gogs
 )
 
 // Webhook interface defines a webhook to receive events
