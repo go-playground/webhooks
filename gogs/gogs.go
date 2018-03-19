@@ -14,8 +14,7 @@ import (
 	"github.com/naiba/webhooks"
 	client "github.com/gogits/go-gogs-client"
 	"crypto/hmac"
-	"crypto/sha1"
-	"encoding/hex"
+	"crypto/sha256"
 )
 
 // Webhook instance contains all methods needed to process events
@@ -107,12 +106,12 @@ func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 		}
 		webhooks.DefaultLog.Debug(fmt.Sprintf("X-Gogs-Signature:%s", signature))
 
-		mac := hmac.New(sha1.New, []byte(hook.secret))
+		mac := hmac.New(sha256.New, []byte(hook.secret))
 		mac.Write(payload)
 
-		expectedMAC := hex.EncodeToString(mac.Sum(nil))
+		expectedMAC := mac.Sum(nil)
 
-		if !hmac.Equal([]byte(signature[5:]), []byte(expectedMAC)) {
+		if !hmac.Equal([]byte(signature), expectedMAC) {
 			webhooks.DefaultLog.Error("HMAC verification failed")
 			http.Error(w, "403 Forbidden - HMAC verification failed", http.StatusForbidden)
 			return
