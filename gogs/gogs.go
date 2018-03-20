@@ -15,6 +15,7 @@ import (
 	client "github.com/gogits/go-gogs-client"
 	"crypto/hmac"
 	"crypto/sha256"
+	"encoding/hex"
 )
 
 // Webhook instance contains all methods needed to process events
@@ -109,10 +110,14 @@ func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 		mac := hmac.New(sha256.New, []byte(hook.secret))
 		mac.Write(payload)
 
-		expectedMAC := mac.Sum(nil)
+		expectedMAC := hex.EncodeToString(mac.Sum(nil))
 
-		if !hmac.Equal([]byte(signature), expectedMAC) {
+		if !hmac.Equal([]byte(signature), []byte(expectedMAC)) {
 			webhooks.DefaultLog.Error("HMAC verification failed")
+			webhooks.DefaultLog.Debug("LocalHMAC:" + expectedMAC)
+			webhooks.DefaultLog.Debug("RemoteHMAC:" + signature)
+			webhooks.DefaultLog.Debug("Secret:" + hook.secret)
+			webhooks.DefaultLog.Debug(string(payload))
 			http.Error(w, "403 Forbidden - HMAC verification failed", http.StatusForbidden)
 			return
 		}
