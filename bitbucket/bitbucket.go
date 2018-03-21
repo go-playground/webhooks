@@ -43,7 +43,7 @@ const (
 	PullRequestDeclinedEvent       Event = "pullrequest:rejected"
 	PullRequestCommentCreatedEvent Event = "pullrequest:comment_created"
 	PullRequestCommentUpdatedEvent Event = "pullrequest:comment_updated"
-	PullRequestCommentDeletedEvent Event = "pull_request:comment_deleted"
+	PullRequestCommentDeletedEvent Event = "pullrequest:comment_deleted"
 )
 
 // New creates and returns a WebHook instance denoted by the Provider type
