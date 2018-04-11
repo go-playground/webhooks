@@ -2791,6 +2791,13 @@ type PullRequestPayload struct {
 			Type              string `json:"type"`
 			SiteAdmin         bool   `json:"site_admin"`
 		} `json:"requested_reviewers,omitempty"`
+		Labels []struct {
+			ID      int64  `json:"id"`
+			URL     string `json:"url"`
+			Name    string `json:"name"`
+			Color   string `json:"color"`
+			Default bool   `json:"default"`
+		} `json:"labels"`
 		Head struct {
 			Label string `json:"label"`
 			Ref   string `json:"ref"`
