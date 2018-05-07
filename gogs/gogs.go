@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2018, 奶爸<1@5.nu>
- * All rights reserved.
- */
-
 package gogs
 
 import (
@@ -11,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/naiba/webhooks"
+	"gopkg.in/go-playground/webhooks.v3"
 	client "github.com/gogits/go-gogs-client"
 	"crypto/hmac"
 	"crypto/sha256"

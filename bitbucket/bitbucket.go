@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/naiba/webhooks"
+	"gopkg.in/go-playground/webhooks.v3"
 )
 
 // Webhook instance contains all methods needed to process events
