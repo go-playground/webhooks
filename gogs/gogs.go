@@ -6,11 +6,11 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"gopkg.in/go-playground/webhooks.v3"
-	client "github.com/gogits/go-gogs-client"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
+	client "github.com/gogits/go-gogs-client"
+	"gopkg.in/go-playground/webhooks.v3"
 )
 
 // Webhook instance contains all methods needed to process events

@@ -28,7 +28,7 @@ func (p Provider) String() string {
 
 // webhooks available providers
 const (
-	GitHub    Provider = iota
+	GitHub Provider = iota
 	Bitbucket
 	GitLab
 	Gogs
