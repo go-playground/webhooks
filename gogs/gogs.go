@@ -108,10 +108,6 @@ func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 		expectedMAC := hex.EncodeToString(mac.Sum(nil))
 
 		if !hmac.Equal([]byte(signature), []byte(expectedMAC)) {
-			webhooks.DefaultLog.Error("HMAC verification failed")
-			webhooks.DefaultLog.Debug("LocalHMAC:" + expectedMAC)
-			webhooks.DefaultLog.Debug("RemoteHMAC:" + signature)
-			webhooks.DefaultLog.Debug("Secret:" + hook.secret)
 			webhooks.DefaultLog.Debug(string(payload))
 			http.Error(w, "403 Forbidden - HMAC verification failed", http.StatusForbidden)
 			return
