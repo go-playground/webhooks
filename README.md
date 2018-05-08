@@ -24,7 +24,7 @@ Installation
 Use go get.
 
 ```shell
-	go get -u gopkg.in/go-playground/webhooks.v3
+go get -u gopkg.in/go-playground/webhooks.v3
 ```
 
 Then import the package into your own code.
