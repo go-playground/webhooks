@@ -21,6 +21,7 @@ before_install:
   - mkdir -p $GOPATH/src/gopkg.in
   - ln -s $GOPATH/src/github.com/$TRAVIS_REPO_SLUG $GOPATH/src/gopkg.in/webhooks.v2
   - ln -s $GOPATH/src/github.com/$TRAVIS_REPO_SLUG $GOPATH/src/gopkg.in/webhooks.v3
+  - ln -s $GOPATH/src/github.com/$TRAVIS_REPO_SLUG $GOPATH/src/gopkg.in/webhooks.v4
 
 before_script:
   - go vet ./...

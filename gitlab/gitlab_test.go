@@ -9,7 +9,7 @@ import (
 	"time"
 
 	. "gopkg.in/go-playground/assert.v1"
-	"gopkg.in/go-playground/webhooks.v3"
+	"gopkg.in/go-playground/webhooks.v4"
 )
 
 // NOTES:
@@ -945,7 +945,7 @@ func TestMergeRequestEvent(t *testing.T) {
         }]
       }
     }
-  }  
+  }
 `
 
 	req, err := http.NewRequest("POST", "http://127.0.0.1:3011/webhooks", bytes.NewBuffer([]byte(payload)))

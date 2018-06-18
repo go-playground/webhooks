@@ -5,8 +5,8 @@ import (
 	"log"
 	"strconv"
 
-	"gopkg.in/go-playground/webhooks.v3"
-	"gopkg.in/go-playground/webhooks.v3/github"
+	"gopkg.in/go-playground/webhooks.v4"
+	"gopkg.in/go-playground/webhooks.v4/github"
 )
 
 const (
@@ -18,15 +18,15 @@ type myLogger struct {
 	PrintDebugs bool
 }
 
-func (l *myLogger) Info(msg string) {
+func (l *myLogger) Info(msg ...interface{}) {
 	log.Println(msg)
 }
 
-func (l *myLogger) Error(msg string) {
+func (l *myLogger) Error(msg ...interface{}) {
 	log.Println(msg)
 }
 
-func (l *myLogger) Debug(msg string) {
+func (l *myLogger) Debug(msg ...interface{}) {
 	if !l.PrintDebugs {
 		return
 	}

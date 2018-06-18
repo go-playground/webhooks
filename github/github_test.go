@@ -9,7 +9,7 @@ import (
 	"time"
 
 	. "gopkg.in/go-playground/assert.v1"
-	"gopkg.in/go-playground/webhooks.v3"
+	"gopkg.in/go-playground/webhooks.v4"
 )
 
 // NOTES:
