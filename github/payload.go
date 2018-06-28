@@ -381,8 +381,7 @@ type DeploymentPayload struct {
 		Sha     string `json:"sha"`
 		Ref     string `json:"ref"`
 		Task    string `json:"task"`
-		Payload struct {
-		} `json:"payload"`
+		Payload string `json:"payload"`
 		Environment string  `json:"environment"`
 		Description *string `json:"description"`
 		Creator     struct {
@@ -555,8 +554,7 @@ type DeploymentStatusPayload struct {
 		Sha     string `json:"sha"`
 		Ref     string `json:"ref"`
 		Task    string `json:"task"`
-		Payload struct {
-		} `json:"payload"`
+		Payload string `json:"payload"`
 		Environment string  `json:"environment"`
 		Description *string `json:"description"`
 		Creator     struct {
