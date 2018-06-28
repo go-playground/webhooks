@@ -10,7 +10,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	client "github.com/gogits/go-gogs-client"
-	"gopkg.in/go-playground/webhooks.v3"
+	"gopkg.in/go-playground/webhooks.v4"
 )
 
 // Webhook instance contains all methods needed to process events

@@ -9,11 +9,11 @@ var DefaultLog Logger = new(logger)
 // Logger allows for customizable logging
 type Logger interface {
 	// Info prints basic information.
-	Info(string)
+	Info(...interface{})
 	// Error prints error information.
-	Error(string)
+	Error(...interface{})
 	// Debug prints information usefull for debugging.
-	Debug(string)
+	Debug(...interface{})
 }
 
 // NewLogger returns a new logger for use.
@@ -26,17 +26,17 @@ type logger struct {
 }
 
 // Info prints basic information.
-func (l *logger) Info(msg string) {
+func (l *logger) Info(msg ...interface{}) {
 	log.Println("INFO:", msg)
 }
 
 // v prints error information.
-func (l *logger) Error(msg string) {
+func (l *logger) Error(msg ...interface{}) {
 	log.Println("ERROR:", msg)
 }
 
 // Debug prints information usefull for debugging.
-func (l *logger) Debug(msg string) {
+func (l *logger) Debug(msg ...interface{}) {
 	if !l.PrintDebugs {
 		return
 	}
