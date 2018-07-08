@@ -321,8 +321,7 @@ func TestCommitCommentEvent(t *testing.T) {
     "type": "User",
     "site_admin": false
   }
-}
-`
+}`
 
 	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
@@ -4763,137 +4762,160 @@ func TestPullRequestReviewCommentEvent(t *testing.T) {
 func TestPushEvent(t *testing.T) {
 
 	payload := `{
-  "ref": "refs/heads/changes",
-  "before": "9049f1265b7d61be4a8904a9a27120d2064dab3b",
-  "after": "0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c",
+  "ref": "refs/heads/master",
+  "before": "737d38c599c1b2991664dfc6155d6bf516fcce36",
+  "after": "fd489864e7642b48eaad6e3f155c10e46810ec72",
   "created": false,
   "deleted": false,
   "forced": false,
   "base_ref": null,
-  "compare": "https://github.com/baxterthehacker/public-repo/compare/9049f1265b7d...0d1a26e67d8f",
+  "compare": "https://github.com/binkkatal/sample_app/compare/737d38c599c1...fd489864e764",
   "commits": [
     {
-      "id": "0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c",
-      "tree_id": "f9d2a07e9488b91af2641b26b9407fe22a451433",
+      "id": "fd489864e7642b48eaad6e3f155c10e46810ec72",
+      "tree_id": "55e08136e14d5168b699038f88c73e175ddffd3b",
       "distinct": true,
-      "message": "Update README.md",
-      "timestamp": "2015-05-05T19:40:15-04:00",
-      "url": "https://github.com/baxterthehacker/public-repo/commit/0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c",
+      "message": "test a push event",
+      "timestamp": "2018-06-29T19:34:13+05:30",
+      "url": "https://github.com/binkkatal/sample_app/commit/fd489864e7642b48eaad6e3f155c10e46810ec72",
       "author": {
-        "name": "baxterthehacker",
-        "email": "baxterthehacker@users.noreply.github.com",
-        "username": "baxterthehacker"
+        "name": "binkkatal",
+        "email": "binkkatal.r@gmail.com",
+        "username": "binkkatal"
       },
       "committer": {
-        "name": "baxterthehacker",
-        "email": "baxterthehacker@users.noreply.github.com",
-        "username": "baxterthehacker"
+        "name": "binkkatal",
+        "email": "binkkatal.r@gmail.com",
+        "username": "binkkatal"
       },
       "added": [
-
+        ".razorops.yaml"
       ],
       "removed": [
 
       ],
       "modified": [
-        "README.md"
+        "app/controllers/application_controller.rb"
       ]
     }
   ],
   "head_commit": {
-    "id": "0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c",
-    "tree_id": "f9d2a07e9488b91af2641b26b9407fe22a451433",
+    "id": "fd489864e7642b48eaad6e3f155c10e46810ec72",
+    "tree_id": "55e08136e14d5168b699038f88c73e175ddffd3b",
     "distinct": true,
-    "message": "Update README.md",
-    "timestamp": "2015-05-05T19:40:15-04:00",
-    "url": "https://github.com/baxterthehacker/public-repo/commit/0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c",
+    "message": "test a push event",
+    "timestamp": "2018-06-29T19:34:13+05:30",
+    "url": "https://github.com/binkkatal/sample_app/commit/fd489864e7642b48eaad6e3f155c10e46810ec72",
     "author": {
-      "name": "baxterthehacker",
-      "email": "baxterthehacker@users.noreply.github.com",
-      "username": "baxterthehacker"
+      "name": "binkkatal",
+      "email": "binkkatal.r@gmail.com",
+      "username": "binkkatal"
     },
     "committer": {
-      "name": "baxterthehacker",
-      "email": "baxterthehacker@users.noreply.github.com",
-      "username": "baxterthehacker"
+      "name": "binkkatal",
+      "email": "binkkatal.r@gmail.com",
+      "username": "binkkatal"
     },
     "added": [
-
+      ".razorops.yaml"
     ],
     "removed": [
 
     ],
     "modified": [
-      "README.md"
+      "app/controllers/application_controller.rb"
     ]
   },
   "repository": {
-    "id": 35129377,
-    "name": "public-repo",
-    "full_name": "baxterthehacker/public-repo",
+    "id": 63933911,
+    "node_id": "MDEwOlJlcG9zaXRvcnk2MzkzMzkxMQ==",
+    "name": "sample_app",
+    "full_name": "binkkatal/sample_app",
     "owner": {
-      "name": "baxterthehacker",
-      "email": "baxterthehacker@users.noreply.github.com"
+      "name": "binkkatal",
+      "email": "binkkatal.r@gmail.com",
+      "login": "binkkatal",
+      "id": 13351472,
+      "node_id": "MDQ6VXNlcjEzMzUxNDcy",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/13351472?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/binkkatal",
+      "html_url": "https://github.com/binkkatal",
+      "followers_url": "https://api.github.com/users/binkkatal/followers",
+      "following_url": "https://api.github.com/users/binkkatal/following{/other_user}",
+      "gists_url": "https://api.github.com/users/binkkatal/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/binkkatal/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/binkkatal/subscriptions",
+      "organizations_url": "https://api.github.com/users/binkkatal/orgs",
+      "repos_url": "https://api.github.com/users/binkkatal/repos",
+      "events_url": "https://api.github.com/users/binkkatal/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/binkkatal/received_events",
+      "type": "User",
+      "site_admin": false
     },
     "private": false,
-    "html_url": "https://github.com/baxterthehacker/public-repo",
-    "description": "",
+    "html_url": "https://github.com/binkkatal/sample_app",
+    "description": null,
     "fork": false,
-    "url": "https://github.com/baxterthehacker/public-repo",
-    "forks_url": "https://api.github.com/repos/baxterthehacker/public-repo/forks",
-    "keys_url": "https://api.github.com/repos/baxterthehacker/public-repo/keys{/key_id}",
-    "collaborators_url": "https://api.github.com/repos/baxterthehacker/public-repo/collaborators{/collaborator}",
-    "teams_url": "https://api.github.com/repos/baxterthehacker/public-repo/teams",
-    "hooks_url": "https://api.github.com/repos/baxterthehacker/public-repo/hooks",
-    "issue_events_url": "https://api.github.com/repos/baxterthehacker/public-repo/issues/events{/number}",
-    "events_url": "https://api.github.com/repos/baxterthehacker/public-repo/events",
-    "assignees_url": "https://api.github.com/repos/baxterthehacker/public-repo/assignees{/user}",
-    "branches_url": "https://api.github.com/repos/baxterthehacker/public-repo/branches{/branch}",
-    "tags_url": "https://api.github.com/repos/baxterthehacker/public-repo/tags",
-    "blobs_url": "https://api.github.com/repos/baxterthehacker/public-repo/git/blobs{/sha}",
-    "git_tags_url": "https://api.github.com/repos/baxterthehacker/public-repo/git/tags{/sha}",
-    "git_refs_url": "https://api.github.com/repos/baxterthehacker/public-repo/git/refs{/sha}",
-    "trees_url": "https://api.github.com/repos/baxterthehacker/public-repo/git/trees{/sha}",
-    "statuses_url": "https://api.github.com/repos/baxterthehacker/public-repo/statuses/{sha}",
-    "languages_url": "https://api.github.com/repos/baxterthehacker/public-repo/languages",
-    "stargazers_url": "https://api.github.com/repos/baxterthehacker/public-repo/stargazers",
-    "contributors_url": "https://api.github.com/repos/baxterthehacker/public-repo/contributors",
-    "subscribers_url": "https://api.github.com/repos/baxterthehacker/public-repo/subscribers",
-    "subscription_url": "https://api.github.com/repos/baxterthehacker/public-repo/subscription",
-    "commits_url": "https://api.github.com/repos/baxterthehacker/public-repo/commits{/sha}",
-    "git_commits_url": "https://api.github.com/repos/baxterthehacker/public-repo/git/commits{/sha}",
-    "comments_url": "https://api.github.com/repos/baxterthehacker/public-repo/comments{/number}",
-    "issue_comment_url": "https://api.github.com/repos/baxterthehacker/public-repo/issues/comments{/number}",
-    "contents_url": "https://api.github.com/repos/baxterthehacker/public-repo/contents/{+path}",
-    "compare_url": "https://api.github.com/repos/baxterthehacker/public-repo/compare/{base}...{head}",
-    "merges_url": "https://api.github.com/repos/baxterthehacker/public-repo/merges",
-    "archive_url": "https://api.github.com/repos/baxterthehacker/public-repo/{archive_format}{/ref}",
-    "downloads_url": "https://api.github.com/repos/baxterthehacker/public-repo/downloads",
-    "issues_url": "https://api.github.com/repos/baxterthehacker/public-repo/issues{/number}",
-    "pulls_url": "https://api.github.com/repos/baxterthehacker/public-repo/pulls{/number}",
-    "milestones_url": "https://api.github.com/repos/baxterthehacker/public-repo/milestones{/number}",
-    "notifications_url": "https://api.github.com/repos/baxterthehacker/public-repo/notifications{?since,all,participating}",
-    "labels_url": "https://api.github.com/repos/baxterthehacker/public-repo/labels{/name}",
-    "releases_url": "https://api.github.com/repos/baxterthehacker/public-repo/releases{/id}",
-    "created_at": 1430869212,
-    "updated_at": "2015-05-05T23:40:12Z",
-    "pushed_at": 1430869217,
-    "git_url": "git://github.com/baxterthehacker/public-repo.git",
-    "ssh_url": "git@github.com:baxterthehacker/public-repo.git",
-    "clone_url": "https://github.com/baxterthehacker/public-repo.git",
-    "svn_url": "https://github.com/baxterthehacker/public-repo",
+    "url": "https://github.com/binkkatal/sample_app",
+    "forks_url": "https://api.github.com/repos/binkkatal/sample_app/forks",
+    "keys_url": "https://api.github.com/repos/binkkatal/sample_app/keys{/key_id}",
+    "collaborators_url": "https://api.github.com/repos/binkkatal/sample_app/collaborators{/collaborator}",
+    "teams_url": "https://api.github.com/repos/binkkatal/sample_app/teams",
+    "hooks_url": "https://api.github.com/repos/binkkatal/sample_app/hooks",
+    "issue_events_url": "https://api.github.com/repos/binkkatal/sample_app/issues/events{/number}",
+    "events_url": "https://api.github.com/repos/binkkatal/sample_app/events",
+    "assignees_url": "https://api.github.com/repos/binkkatal/sample_app/assignees{/user}",
+    "branches_url": "https://api.github.com/repos/binkkatal/sample_app/branches{/branch}",
+    "tags_url": "https://api.github.com/repos/binkkatal/sample_app/tags",
+    "blobs_url": "https://api.github.com/repos/binkkatal/sample_app/git/blobs{/sha}",
+    "git_tags_url": "https://api.github.com/repos/binkkatal/sample_app/git/tags{/sha}",
+    "git_refs_url": "https://api.github.com/repos/binkkatal/sample_app/git/refs{/sha}",
+    "trees_url": "https://api.github.com/repos/binkkatal/sample_app/git/trees{/sha}",
+    "statuses_url": "https://api.github.com/repos/binkkatal/sample_app/statuses/{sha}",
+    "languages_url": "https://api.github.com/repos/binkkatal/sample_app/languages",
+    "stargazers_url": "https://api.github.com/repos/binkkatal/sample_app/stargazers",
+    "contributors_url": "https://api.github.com/repos/binkkatal/sample_app/contributors",
+    "subscribers_url": "https://api.github.com/repos/binkkatal/sample_app/subscribers",
+    "subscription_url": "https://api.github.com/repos/binkkatal/sample_app/subscription",
+    "commits_url": "https://api.github.com/repos/binkkatal/sample_app/commits{/sha}",
+    "git_commits_url": "https://api.github.com/repos/binkkatal/sample_app/git/commits{/sha}",
+    "comments_url": "https://api.github.com/repos/binkkatal/sample_app/comments{/number}",
+    "issue_comment_url": "https://api.github.com/repos/binkkatal/sample_app/issues/comments{/number}",
+    "contents_url": "https://api.github.com/repos/binkkatal/sample_app/contents/{+path}",
+    "compare_url": "https://api.github.com/repos/binkkatal/sample_app/compare/{base}...{head}",
+    "merges_url": "https://api.github.com/repos/binkkatal/sample_app/merges",
+    "archive_url": "https://api.github.com/repos/binkkatal/sample_app/{archive_format}{/ref}",
+    "downloads_url": "https://api.github.com/repos/binkkatal/sample_app/downloads",
+    "issues_url": "https://api.github.com/repos/binkkatal/sample_app/issues{/number}",
+    "pulls_url": "https://api.github.com/repos/binkkatal/sample_app/pulls{/number}",
+    "milestones_url": "https://api.github.com/repos/binkkatal/sample_app/milestones{/number}",
+    "notifications_url": "https://api.github.com/repos/binkkatal/sample_app/notifications{?since,all,participating}",
+    "labels_url": "https://api.github.com/repos/binkkatal/sample_app/labels{/name}",
+    "releases_url": "https://api.github.com/repos/binkkatal/sample_app/releases{/id}",
+    "deployments_url": "https://api.github.com/repos/binkkatal/sample_app/deployments",
+    "created_at": 1469173225,
+    "updated_at": "2016-07-22T07:48:39Z",
+    "pushed_at": 1530281075,
+    "git_url": "git://github.com/binkkatal/sample_app.git",
+    "ssh_url": "git@github.com:binkkatal/sample_app.git",
+    "clone_url": "https://github.com/binkkatal/sample_app.git",
+    "svn_url": "https://github.com/binkkatal/sample_app",
     "homepage": null,
-    "size": 0,
+    "size": 23,
     "stargazers_count": 0,
     "watchers_count": 0,
-    "language": null,
+    "language": "Ruby",
     "has_issues": true,
+    "has_projects": true,
     "has_downloads": true,
     "has_wiki": true,
-    "has_pages": true,
+    "has_pages": false,
     "forks_count": 0,
     "mirror_url": null,
+    "archived": false,
     "open_issues_count": 0,
+    "license": null,
     "forks": 0,
     "open_issues": 0,
     "watchers": 0,
@@ -4902,35 +4924,35 @@ func TestPushEvent(t *testing.T) {
     "master_branch": "master"
   },
   "pusher": {
-    "name": "baxterthehacker",
-    "email": "baxterthehacker@users.noreply.github.com"
+    "name": "binkkatal",
+    "email": "binkkatal.r@gmail.com"
   },
   "sender": {
-    "login": "baxterthehacker",
-    "id": 6752317,
-    "avatar_url": "https://avatars.githubusercontent.com/u/6752317?v=3",
+    "login": "binkkatal",
+    "id": 13351472,
+    "node_id": "MDQ6VXNlcjEzMzUxNDcy",
+    "avatar_url": "https://avatars3.githubusercontent.com/u/13351472?v=4",
     "gravatar_id": "",
-    "url": "https://api.github.com/users/baxterthehacker",
-    "html_url": "https://github.com/baxterthehacker",
-    "followers_url": "https://api.github.com/users/baxterthehacker/followers",
-    "following_url": "https://api.github.com/users/baxterthehacker/following{/other_user}",
-    "gists_url": "https://api.github.com/users/baxterthehacker/gists{/gist_id}",
-    "starred_url": "https://api.github.com/users/baxterthehacker/starred{/owner}{/repo}",
-    "subscriptions_url": "https://api.github.com/users/baxterthehacker/subscriptions",
-    "organizations_url": "https://api.github.com/users/baxterthehacker/orgs",
-    "repos_url": "https://api.github.com/users/baxterthehacker/repos",
-    "events_url": "https://api.github.com/users/baxterthehacker/events{/privacy}",
-    "received_events_url": "https://api.github.com/users/baxterthehacker/received_events",
+    "url": "https://api.github.com/users/binkkatal",
+    "html_url": "https://github.com/binkkatal",
+    "followers_url": "https://api.github.com/users/binkkatal/followers",
+    "following_url": "https://api.github.com/users/binkkatal/following{/other_user}",
+    "gists_url": "https://api.github.com/users/binkkatal/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/binkkatal/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/binkkatal/subscriptions",
+    "organizations_url": "https://api.github.com/users/binkkatal/orgs",
+    "repos_url": "https://api.github.com/users/binkkatal/repos",
+    "events_url": "https://api.github.com/users/binkkatal/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/binkkatal/received_events",
     "type": "User",
     "site_admin": false
   }
-}
-`
+}`
 
 	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "push")
-	req.Header.Set("X-Hub-Signature", "sha1=c7097badc10db8a2ec615e340534956e75a483c6")
+	req.Header.Set("X-Hub-Signature", "sha1=0534736f52c2fc5896ef1bd5a043127b20d233ba")
 
 	Equal(t, err, nil)
 
@@ -4941,6 +4963,7 @@ func TestPushEvent(t *testing.T) {
 	defer resp.Body.Close()
 
 	Equal(t, resp.StatusCode, http.StatusOK)
+
 }
 
 func TestReleaseEvent(t *testing.T) {
