@@ -181,7 +181,6 @@ func TestBadSignatureMatch(t *testing.T) {
 }
 
 func TestCommitCommentEvent(t *testing.T) {
-	t.Skip()
 	payload := `{
   "action": "created",
   "comment": {
@@ -321,7 +320,8 @@ func TestCommitCommentEvent(t *testing.T) {
     "type": "User",
     "site_admin": false
   }
-}`
+}
+`
 
 	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
 	req.Header.Set("Content-Type", "application/json")
