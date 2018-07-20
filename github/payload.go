@@ -4229,6 +4229,9 @@ type PushPayload struct {
 		Type              string `json:"type"`
 		SiteAdmin         bool   `json:"site_admin"`
 	} `json:"sender"`
+	Installation struct {
+		Id int `json:"id"`
+	} `json:"installation"`
 }
 
 // ReleasePayload contains the information for GitHub's release hook event
