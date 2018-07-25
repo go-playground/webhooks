@@ -41,7 +41,7 @@ type Webhook interface {
 }
 
 type server struct {
-	hook             Webhook
+	hooks            []Webhook
 	path             string
 	includePathCheck bool
 }
@@ -52,14 +52,27 @@ type ProcessPayloadFunc func(payload interface{}, header Header)
 // Handler returns the webhook http.Handler for use in your own Mux implementation
 func Handler(hook Webhook) http.Handler {
 	return &server{
-		hook: hook,
+		hooks: []Webhook{hook},
 	}
 }
 
 // Run runs a server
 func Run(hook Webhook, addr string, path string) error {
 	srv := &server{
-		hook:             hook,
+		hooks:            []Webhook{hook},
+		path:             path,
+		includePathCheck: true,
+	}
+	s := &http.Server{Addr: addr, Handler: srv}
+
+	DefaultLog.Info(fmt.Sprintf("Listening on addr: %s path: %s", addr, path))
+	return s.ListenAndServe()
+}
+
+// RunMultiple runs a server listening for multiple webhooks
+func RunMultiple(hooks []Webhook, addr string, path string) error {
+	srv := &server{
+		hooks:            hooks,
 		path:             path,
 		includePathCheck: true,
 	}
@@ -73,7 +86,7 @@ func Run(hook Webhook, addr string, path string) error {
 func RunServer(s *http.Server, hook Webhook, path string) error {
 
 	srv := &server{
-		hook:             hook,
+		hooks:            []Webhook{hook},
 		path:             path,
 		includePathCheck: true,
 	}
@@ -90,7 +103,7 @@ func RunServer(s *http.Server, hook Webhook, path string) error {
 func RunTLSServer(s *http.Server, hook Webhook, path string) error {
 
 	srv := &server{
-		hook:             hook,
+		hooks:            []Webhook{hook},
 		path:             path,
 		includePathCheck: true,
 	}
@@ -120,5 +133,7 @@ func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	s.hook.ParsePayload(w, r)
+	for _, hook := range s.hooks {
+		hook.ParsePayload(w, r)
+	}
 }

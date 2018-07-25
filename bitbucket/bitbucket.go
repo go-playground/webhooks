@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"gopkg.in/go-playground/webhooks.v4"
+	webhooks "gopkg.in/go-playground/webhooks.v4"
 )
 
 // Webhook instance contains all methods needed to process events
@@ -82,9 +82,11 @@ func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 
 	if len(hook.uuid) > 0 {
 		if uuid != hook.uuid {
-			webhooks.DefaultLog.Error(fmt.Sprintf("X-Hook-UUID %s does not match configured uuid of %s", uuid, hook.uuid))
-			http.Error(w, "403 Forbidden - X-Hook-UUID does not match", http.StatusForbidden)
+			// means this is a different hook - ignore
 			return
+			// webhooks.DefaultLog.Error(fmt.Sprintf("X-Hook-UUID %s does not match configured uuid of %s", uuid, hook.uuid))
+			// http.Error(w, "403 Forbidden - X-Hook-UUID does not match", http.StatusForbidden)
+			// return
 		}
 	} else {
 		webhooks.DefaultLog.Debug("hook uuid not defined - recommend setting for improved security")
