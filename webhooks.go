@@ -1,11 +1,7 @@
 package webhooks
 
-import (
-	"net/http"
-)
-
 // Header provides http.Header to minimize imports
-type Header http.Header
+// type Header http.Header
 
 // // Provider defines the type of webhook
 // type Provider int
@@ -46,7 +42,7 @@ type Header http.Header
 // }
 
 // ProcessPayloadFunc is a common function for payload return values
-type ProcessPayloadFunc func(payload interface{}, header Header) error
+// type ProcessPayloadFunc func(payload interface{}, header Header) error
 
 // // Handler returns the webhook http.Handler for use in your own Mux implementation
 // func Handler(hook Webhook) http.Handler {

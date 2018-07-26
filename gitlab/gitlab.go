@@ -2,27 +2,12 @@ package gitlab
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
-
-	"gopkg.in/go-playground/webhooks.v5"
 )
-
-// Webhook instance contains all methods needed to process events
-type Webhook struct {
-	provider   webhooks.Provider
-	secret     string
-	eventFuncs map[Event]webhooks.ProcessPayloadFunc
-}
-
-// Config defines the configuration to create a new GitHub Webhook instance
-type Config struct {
-	Secret string
-}
-
-// Event defines a GitHub hook event type
-type Event string
 
 // GitLab hook types
 const (
@@ -37,121 +22,145 @@ const (
 	BuildEvents              Event = "Build Hook"
 )
 
+// Option is a configuration option for the webhook
+type Option func(*Webhook) error
+
+// Options is a namespace var for configuration options
+var Options = WebhookOptions{}
+
+// WebhookOptions is a namespace for configuration option methods
+type WebhookOptions struct{}
+
+// Secret registers the GitLab secret
+func (WebhookOptions) Secret(secret string) Option {
+	return func(hook *Webhook) error {
+		hook.secret = secret
+		return nil
+	}
+}
+
+// Webhook instance contains all methods needed to process events
+type Webhook struct {
+	secret string
+}
+
+// Event defines a GitHub hook event type
+type Event string
+
 // New creates and returns a WebHook instance denoted by the Provider type
-func New(config *Config) *Webhook {
-	return &Webhook{
-		provider:   webhooks.GitLab,
-		secret:     config.Secret,
-		eventFuncs: map[Event]webhooks.ProcessPayloadFunc{},
+func New(options ...Option) (*Webhook, error) {
+	hook := new(Webhook)
+	for _, opt := range options {
+		if err := opt(hook); err != nil {
+			return nil, errors.New("Error applying Option")
+		}
 	}
+	return hook, nil
 }
 
-// Provider returns the current hooks provider ID
-func (hook Webhook) Provider() webhooks.Provider {
-	return hook.provider
-}
+// parse errros
+var (
+	ErrEventNotSpecifiedToParse = errors.New("No Event specified to parse")
+	ErrInvalidHTTPMethod        = errors.New("Invalid HTTP Method")
+	ErrMissingGitLabEventHeader = errors.New("Missing X-Gitlab-Event Header")
+	ErrMissingGitLabTokenHeader = errors.New("Missing X-Gitlab-Token Header")
+	ErrEventNotFound            = errors.New("Event not defined to be parsed")
+	ErrParsingPayload           = errors.New("Error parsing payload")
+	// ErrHMACVerificationFailed    = errors.New("HMAC verification failed")
+)
 
-// RegisterEvents registers the function to call when the specified event(s) are encountered
-func (hook Webhook) RegisterEvents(fn webhooks.ProcessPayloadFunc, events ...Event) {
+// Parse verifies and parses the events specified and returns the payload object or an error
+func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error) {
+	defer func() {
+		_, _ = io.Copy(ioutil.Discard, r.Body)
+		_ = r.Body.Close()
+	}()
 
-	for _, event := range events {
-		hook.eventFuncs[event] = fn
+	if len(events) == 0 {
+		return nil, ErrEventNotSpecifiedToParse
 	}
-}
-
-// ParsePayload parses and verifies the payload and fires off the mapped function, if it exists.
-func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
-	webhooks.DefaultLog.Info("Parsing Payload...")
+	if r.Method != http.MethodPost {
+		return nil, ErrInvalidHTTPMethod
+	}
 
 	event := r.Header.Get("X-Gitlab-Event")
 	if len(event) == 0 {
-		webhooks.DefaultLog.Error("Missing X-Gitlab-Event Header")
-		http.Error(w, "400 Bad Request - Missing X-Gitlab-Event Header", http.StatusBadRequest)
-		return
+		return nil, ErrMissingGitLabEventHeader
 	}
-	webhooks.DefaultLog.Debug(fmt.Sprintf("X-Gitlab-Event:%s", event))
 
 	gitLabEvent := Event(event)
 
-	fn, ok := hook.eventFuncs[gitLabEvent]
-	// if no event registered
-	if !ok {
-		webhooks.DefaultLog.Info(fmt.Sprintf("Webhook Event %s not registered, it is recommended to setup only events in gitlab that will be registered in the webhook to avoid unnecessary traffic and reduce potential attack vectors.", event))
-		return
+	var found bool
+	for _, evt := range events {
+		if evt == gitLabEvent {
+			found = true
+			break
+		}
+	}
+	// event not defined to be parsed
+	if !found {
+		return nil, ErrEventNotFound
 	}
 
 	payload, err := ioutil.ReadAll(r.Body)
 	if err != nil || len(payload) == 0 {
-		webhooks.DefaultLog.Error("Issue reading Payload")
-		http.Error(w, "Error reading Payload", http.StatusInternalServerError)
-		return
+		return nil, ErrParsingPayload
 	}
-	webhooks.DefaultLog.Debug(fmt.Sprintf("Payload:%s", string(payload)))
 
 	// If we have a Secret set, we should check the MAC
 	if len(hook.secret) > 0 {
-		webhooks.DefaultLog.Info("Checking secret")
 		signature := r.Header.Get("X-Gitlab-Token")
 		if signature != hook.secret {
-			webhooks.DefaultLog.Error(fmt.Sprintf("Invalid X-Gitlab-Token of '%s'", signature))
-			http.Error(w, "403 Forbidden - Token missmatch", http.StatusForbidden)
-			return
+			return nil, ErrMissingGitLabTokenHeader
 		}
 	}
 
-	// Make headers available to ProcessPayloadFunc as a webhooks type
-	hd := webhooks.Header(r.Header)
-
 	switch gitLabEvent {
 	case PushEvents:
-		var pe PushEventPayload
-		json.Unmarshal([]byte(payload), &pe)
-		hook.runProcessPayloadFunc(fn, pe, hd)
+		var pl PushEventPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 
 	case TagEvents:
-		var te TagEventPayload
-		json.Unmarshal([]byte(payload), &te)
-		hook.runProcessPayloadFunc(fn, te, hd)
+		var pl TagEventPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 
 	case ConfidentialIssuesEvents:
-		var cie ConfidentialIssueEventPayload
-		json.Unmarshal([]byte(payload), &cie)
-		hook.runProcessPayloadFunc(fn, cie, hd)
+		var pl ConfidentialIssueEventPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 
 	case IssuesEvents:
-		var ie IssueEventPayload
-		json.Unmarshal([]byte(payload), &ie)
-		hook.runProcessPayloadFunc(fn, ie, hd)
+		var pl IssueEventPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 
 	case CommentEvents:
-		var ce CommentEventPayload
-		json.Unmarshal([]byte(payload), &ce)
-		hook.runProcessPayloadFunc(fn, ce, hd)
+		var pl CommentEventPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 
 	case MergeRequestEvents:
-		var mre MergeRequestEventPayload
-		json.Unmarshal([]byte(payload), &mre)
-		hook.runProcessPayloadFunc(fn, mre, hd)
+		var pl MergeRequestEventPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 
 	case WikiPageEvents:
-		var wpe WikiPageEventPayload
-		json.Unmarshal([]byte(payload), &wpe)
-		hook.runProcessPayloadFunc(fn, wpe, hd)
+		var pl WikiPageEventPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 
 	case PipelineEvents:
-		var pe PipelineEventPayload
-		json.Unmarshal([]byte(payload), &pe)
-		hook.runProcessPayloadFunc(fn, pe, hd)
+		var pl PipelineEventPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 
 	case BuildEvents:
-		var be BuildEventPayload
-		json.Unmarshal([]byte(payload), &be)
-		hook.runProcessPayloadFunc(fn, be, hd)
+		var pl BuildEventPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
+	default:
+		return nil, fmt.Errorf("unknown event %s", gitLabEvent)
 	}
-}
-
-func (hook Webhook) runProcessPayloadFunc(fn webhooks.ProcessPayloadFunc, results interface{}, header webhooks.Header) {
-	go func(fn webhooks.ProcessPayloadFunc, results interface{}, header webhooks.Header) {
-		fn(results, header)
-	}(fn, results, header)
 }

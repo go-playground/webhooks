@@ -2,7 +2,9 @@ package gogs
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 
@@ -11,19 +13,28 @@ import (
 	"encoding/hex"
 
 	client "github.com/gogits/go-gogs-client"
-	"gopkg.in/go-playground/webhooks.v5"
 )
+
+// Option is a configuration option for the webhook
+type Option func(*Webhook) error
+
+// Options is a namespace var for configuration options
+var Options = WebhookOptions{}
+
+// WebhookOptions is a namespace for configuration option methods
+type WebhookOptions struct{}
+
+// Secret registers the GitLab secret
+func (WebhookOptions) Secret(secret string) Option {
+	return func(hook *Webhook) error {
+		hook.secret = secret
+		return nil
+	}
+}
 
 // Webhook instance contains all methods needed to process events
 type Webhook struct {
-	provider   webhooks.Provider
-	secret     string
-	eventFuncs map[Event]webhooks.ProcessPayloadFunc
-}
-
-// Config defines the configuration to create a new Gogs Webhook instance
-type Config struct {
-	Secret string
+	secret string
 }
 
 // Event defines a Gogs hook event type
@@ -42,66 +53,71 @@ const (
 )
 
 // New creates and returns a WebHook instance denoted by the Provider type
-func New(config *Config) *Webhook {
-	return &Webhook{
-		provider:   webhooks.Gogs,
-		secret:     config.Secret,
-		eventFuncs: map[Event]webhooks.ProcessPayloadFunc{},
+func New(options ...Option) (*Webhook, error) {
+	hook := new(Webhook)
+	for _, opt := range options {
+		if err := opt(hook); err != nil {
+			return nil, errors.New("Error applying Option")
+		}
 	}
+	return hook, nil
 }
 
-// Provider returns the current hooks provider ID
-func (hook Webhook) Provider() webhooks.Provider {
-	return hook.provider
-}
+// parse errros
+var (
+	ErrEventNotSpecifiedToParse   = errors.New("No Event specified to parse")
+	ErrInvalidHTTPMethod          = errors.New("Invalid HTTP Method")
+	ErrMissingGogsEventHeader     = errors.New("Missing X-Gogs-Event Header")
+	ErrMissingGogsSignatureHeader = errors.New("Missing X-Gogs-Signature Header")
+	ErrEventNotFound              = errors.New("Event not defined to be parsed")
+	ErrParsingPayload             = errors.New("Error parsing payload")
+	ErrHMACVerificationFailed     = errors.New("HMAC verification failed")
+)
 
-// RegisterEvents registers the function to call when the specified event(s) are encountered
-func (hook Webhook) RegisterEvents(fn webhooks.ProcessPayloadFunc, events ...Event) {
+// Parse verifies and parses the events specified and returns the payload object or an error
+func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error) {
+	defer func() {
+		_, _ = io.Copy(ioutil.Discard, r.Body)
+		_ = r.Body.Close()
+	}()
 
-	for _, event := range events {
-		hook.eventFuncs[event] = fn
+	if len(events) == 0 {
+		return nil, ErrEventNotSpecifiedToParse
 	}
-}
-
-// ParsePayload parses and verifies the payload and fires off the mapped function, if it exists.
-func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
-	webhooks.DefaultLog.Info("Parsing Payload...")
+	if r.Method != http.MethodPost {
+		return nil, ErrInvalidHTTPMethod
+	}
 
 	event := r.Header.Get("X-Gogs-Event")
 	if len(event) == 0 {
-		webhooks.DefaultLog.Error("Missing X-Gogs-Event Header")
-		http.Error(w, "400 Bad Request - Missing X-Gogs-Event Header", http.StatusBadRequest)
-		return
+		return nil, ErrMissingGogsEventHeader
 	}
-	webhooks.DefaultLog.Debug(fmt.Sprintf("X-Gogs-Event:%s", event))
 
 	gogsEvent := Event(event)
 
-	fn, ok := hook.eventFuncs[gogsEvent]
-	// if no event registered
-	if !ok {
-		webhooks.DefaultLog.Info(fmt.Sprintf("Webhook Event %s not registered, it is recommended to setup only events in gogs that will be registered in the webhook to avoid unnecessary traffic and reduce potential attack vectors.", event))
-		return
+	var found bool
+	for _, evt := range events {
+		if evt == gogsEvent {
+			found = true
+			break
+		}
+	}
+	// event not defined to be parsed
+	if !found {
+		return nil, ErrEventNotFound
 	}
 
 	payload, err := ioutil.ReadAll(r.Body)
 	if err != nil || len(payload) == 0 {
-		webhooks.DefaultLog.Error("Issue reading Payload")
-		http.Error(w, "Issue reading Payload", http.StatusInternalServerError)
-		return
+		return nil, ErrParsingPayload
 	}
-	webhooks.DefaultLog.Debug(fmt.Sprintf("Payload:%s", string(payload)))
 
 	// If we have a Secret set, we should check the MAC
 	if len(hook.secret) > 0 {
-		webhooks.DefaultLog.Info("Checking secret")
 		signature := r.Header.Get("X-Gogs-Signature")
 		if len(signature) == 0 {
-			webhooks.DefaultLog.Error("Missing X-Gogs-Signature required for HMAC verification")
-			http.Error(w, "403 Forbidden - Missing X-Gogs-Signature required for HMAC verification", http.StatusForbidden)
-			return
+			return nil, ErrMissingGogsSignatureHeader
 		}
-		webhooks.DefaultLog.Debug(fmt.Sprintf("X-Gogs-Signature:%s", signature))
 
 		mac := hmac.New(sha256.New, []byte(hook.secret))
 		mac.Write(payload)
@@ -109,60 +125,52 @@ func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
 		expectedMAC := hex.EncodeToString(mac.Sum(nil))
 
 		if !hmac.Equal([]byte(signature), []byte(expectedMAC)) {
-			webhooks.DefaultLog.Debug(string(payload))
-			http.Error(w, "403 Forbidden - HMAC verification failed", http.StatusForbidden)
-			return
+			return nil, ErrHMACVerificationFailed
 		}
 	}
 
-	// Make headers available to ProcessPayloadFunc as a webhooks type
-	hd := webhooks.Header(r.Header)
-
 	switch gogsEvent {
 	case CreateEvent:
-		var pe client.CreatePayload
-		json.Unmarshal([]byte(payload), &pe)
-		hook.runProcessPayloadFunc(fn, pe, hd)
+		var pl client.CreatePayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 
 	case ReleaseEvent:
-		var re client.ReleasePayload
-		json.Unmarshal([]byte(payload), &re)
-		hook.runProcessPayloadFunc(fn, re, hd)
+		var pl client.ReleasePayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 
 	case PushEvent:
-		var pe client.PushPayload
-		json.Unmarshal([]byte(payload), &pe)
-		hook.runProcessPayloadFunc(fn, pe, hd)
+		var pl client.PushPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 
 	case DeleteEvent:
-		var de client.DeletePayload
-		json.Unmarshal([]byte(payload), &de)
-		hook.runProcessPayloadFunc(fn, de, hd)
+		var pl client.DeletePayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 
 	case ForkEvent:
-		var fe client.ForkPayload
-		json.Unmarshal([]byte(payload), &fe)
-		hook.runProcessPayloadFunc(fn, fe, hd)
+		var pl client.ForkPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 
 	case IssuesEvent:
-		var ie client.IssuesPayload
-		json.Unmarshal([]byte(payload), &ie)
-		hook.runProcessPayloadFunc(fn, ie, hd)
+		var pl client.IssuesPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 
 	case IssueCommentEvent:
-		var ice client.IssueCommentPayload
-		json.Unmarshal([]byte(payload), &ice)
-		hook.runProcessPayloadFunc(fn, ice, hd)
+		var pl client.IssueCommentPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 
 	case PullRequestEvent:
-		var pre client.PullRequestPayload
-		json.Unmarshal([]byte(payload), &pre)
-		hook.runProcessPayloadFunc(fn, pre, hd)
-	}
-}
+		var pl client.PullRequestPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 
-func (hook Webhook) runProcessPayloadFunc(fn webhooks.ProcessPayloadFunc, results interface{}, header webhooks.Header) {
-	go func(fn webhooks.ProcessPayloadFunc, results interface{}, header webhooks.Header) {
-		fn(results, header)
-	}(fn, results, header)
+	default:
+		return nil, fmt.Errorf("unknown event %s", gogsEvent)
+	}
 }

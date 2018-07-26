@@ -17,9 +17,9 @@ var (
 	ErrEventNotSpecifiedToParse  = errors.New("No Event specified to parse")
 	ErrInvalidHTTPMethod         = errors.New("Invalid HTTP Method")
 	ErrMissingGithubEventHeader  = errors.New("Missing X-GitHub-Event Header")
-	ErrMissingHubSignatureHeader = errors.New("Missing X-Hub-Signature")
+	ErrMissingHubSignatureHeader = errors.New("Missing X-Hub-Signature Header")
 	ErrEventNotFound             = errors.New("Event not defined to be parsed")
-	ErrParsingPayload            = errors.New("Error Reading Payload")
+	ErrParsingPayload            = errors.New("Error parsing payload")
 	ErrHMACVerificationFailed    = errors.New("HMAC verification failed")
 )
 
@@ -123,7 +123,7 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 	}
 
 	event := r.Header.Get("X-GitHub-Event")
-	if len(event) == 0 {
+	if event == "" {
 		return nil, ErrMissingGithubEventHeader
 	}
 	gitHubEvent := Event(event)

@@ -2,23 +2,27 @@ package bitbucket
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
+)
 
-	"gopkg.in/go-playground/webhooks.v5"
+// parse errros
+var (
+	ErrEventNotSpecifiedToParse = errors.New("No Event specified to parse")
+	ErrInvalidHTTPMethod        = errors.New("Invalid HTTP Method")
+	ErrMissingHookUUIDHeader    = errors.New("Missing X-Hook-UUID Header")
+	ErrMissingEventKeyHeader    = errors.New("Missing X-Event-Key Header")
+	ErrEventNotFound            = errors.New("Event not defined to be parsed")
+	ErrParsingPayload           = errors.New("Error parsing payload")
+	ErrUUIDVerificationFailed   = errors.New("UUID verification failed")
 )
 
 // Webhook instance contains all methods needed to process events
 type Webhook struct {
-	provider   webhooks.Provider
-	uuid       string
-	eventFuncs map[Event]webhooks.ProcessPayloadFunc
-}
-
-// Config defines the configuration to create a new Bitbucket Webhook instance
-type Config struct {
-	UUID string
+	uuid string
 }
 
 // Event defines a Bitbucket hook event type
@@ -46,154 +50,154 @@ const (
 	PullRequestCommentDeletedEvent Event = "pullrequest:comment_deleted"
 )
 
+// Option is a configuration option for the webhook
+type Option func(*Webhook) error
+
+// Options is a namespace var for configuration options
+var Options = WebhookOptions{}
+
+// WebhookOptions is a namespace for configuration option methods
+type WebhookOptions struct{}
+
+// UUID registers the BitBucket secret
+func (WebhookOptions) UUID(uuid string) Option {
+	return func(hook *Webhook) error {
+		hook.uuid = uuid
+		return nil
+	}
+}
+
 // New creates and returns a WebHook instance denoted by the Provider type
-func New(config *Config) *Webhook {
-	return &Webhook{
-		provider:   webhooks.Bitbucket,
-		uuid:       config.UUID,
-		eventFuncs: map[Event]webhooks.ProcessPayloadFunc{},
+func New(options ...Option) (*Webhook, error) {
+	hook := new(Webhook)
+	for _, opt := range options {
+		if err := opt(hook); err != nil {
+			return nil, errors.New("Error applying Option")
+		}
 	}
+	return hook, nil
 }
 
-// Provider returns the current hooks provider ID
-func (hook Webhook) Provider() webhooks.Provider {
-	return hook.provider
-}
+// Parse verifies and parses the events specified and returns the payload object or an error
+func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error) {
+	defer func() {
+		_, _ = io.Copy(ioutil.Discard, r.Body)
+		_ = r.Body.Close()
+	}()
 
-// RegisterEvents registers the function to call when the specified event(s) are encountered
-func (hook Webhook) RegisterEvents(fn webhooks.ProcessPayloadFunc, events ...Event) {
-
-	for _, event := range events {
-		hook.eventFuncs[event] = fn
+	if len(events) == 0 {
+		return nil, ErrEventNotSpecifiedToParse
 	}
-}
-
-// ParsePayload parses and verifies the payload and fires off the mapped function, if it exists.
-func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
-	webhooks.DefaultLog.Info("Parsing Payload...")
+	if r.Method != http.MethodPost {
+		return nil, ErrInvalidHTTPMethod
+	}
 
 	uuid := r.Header.Get("X-Hook-UUID")
 	if uuid == "" {
-		webhooks.DefaultLog.Error("Missing X-Hook-UUID Header")
-		http.Error(w, "400 Bad Request - Missing X-Hook-UUID Header", http.StatusBadRequest)
-		return
+		return nil, ErrMissingHookUUIDHeader
 	}
-	webhooks.DefaultLog.Debug(fmt.Sprintf("X-Hook-UUID:%s", uuid))
-
-	if len(hook.uuid) > 0 {
-		if uuid != hook.uuid {
-			webhooks.DefaultLog.Error(fmt.Sprintf("X-Hook-UUID %s does not match configured uuid of %s", uuid, hook.uuid))
-			http.Error(w, "403 Forbidden - X-Hook-UUID does not match", http.StatusForbidden)
-			return
-		}
-	} else {
-		webhooks.DefaultLog.Debug("hook uuid not defined - recommend setting for improved security")
+	if len(hook.uuid) > 0 && uuid != hook.uuid {
+		return nil, ErrUUIDVerificationFailed
 	}
 
 	event := r.Header.Get("X-Event-Key")
 	if event == "" {
-		webhooks.DefaultLog.Error("Missing X-Event-Key Header")
-		http.Error(w, "400 Bad Request - Missing X-Event-Key Header", http.StatusBadRequest)
-		return
+		return nil, ErrMissingEventKeyHeader
 	}
-	webhooks.DefaultLog.Debug(fmt.Sprintf("X-Event-Key:%s", event))
 
 	bitbucketEvent := Event(event)
 
-	fn, ok := hook.eventFuncs[bitbucketEvent]
-	// if no event registered
-	if !ok {
-		webhooks.DefaultLog.Info(fmt.Sprintf("Webhook Event %s not registered, it is recommended to setup only events in bitbucket that will be registered in the webhook to avoid unnecessary traffic and reduce potential attack vectors.", event))
-		return
+	var found bool
+	for _, evt := range events {
+		if evt == bitbucketEvent {
+			found = true
+			break
+		}
+	}
+	// event not defined to be parsed
+	if !found {
+		return nil, ErrEventNotFound
 	}
 
 	payload, err := ioutil.ReadAll(r.Body)
 	if err != nil || len(payload) == 0 {
-		webhooks.DefaultLog.Error("Issue reading Payload")
-		http.Error(w, "Issue reading Payload", http.StatusInternalServerError)
-		return
+		return nil, ErrParsingPayload
 	}
-	webhooks.DefaultLog.Debug(fmt.Sprintf("Payload:%s", string(payload)))
-	hd := webhooks.Header(r.Header)
 
 	switch bitbucketEvent {
 	case RepoPushEvent:
 		var pl RepoPushPayload
-		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl, hd)
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case RepoForkEvent:
 		var pl RepoForkPayload
-		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl, hd)
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case RepoUpdatedEvent:
 		var pl RepoUpdatedPayload
-		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl, hd)
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case RepoCommitCommentCreatedEvent:
 		var pl RepoCommitCommentCreatedPayload
-		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl, hd)
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case RepoCommitStatusCreatedEvent:
 		var pl RepoCommitStatusCreatedPayload
-		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl, hd)
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case RepoCommitStatusUpdatedEvent:
 		var pl RepoCommitStatusUpdatedPayload
-		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl, hd)
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case IssueCreatedEvent:
 		var pl IssueCreatedPayload
-		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl, hd)
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case IssueUpdatedEvent:
 		var pl IssueUpdatedPayload
-		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl, hd)
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case IssueCommentCreatedEvent:
 		var pl IssueCommentCreatedPayload
-		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl, hd)
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case PullRequestCreatedEvent:
 		var pl PullRequestCreatedPayload
-		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl, hd)
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case PullRequestUpdatedEvent:
 		var pl PullRequestUpdatedPayload
-		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl, hd)
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case PullRequestApprovedEvent:
 		var pl PullRequestApprovedPayload
-		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl, hd)
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case PullRequestUnapprovedEvent:
 		var pl PullRequestUnapprovedPayload
-		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl, hd)
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case PullRequestMergedEvent:
 		var pl PullRequestMergedPayload
-		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl, hd)
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case PullRequestDeclinedEvent:
 		var pl PullRequestDeclinedPayload
-		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl, hd)
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case PullRequestCommentCreatedEvent:
 		var pl PullRequestCommentCreatedPayload
-		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl, hd)
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case PullRequestCommentUpdatedEvent:
 		var pl PullRequestCommentUpdatedPayload
-		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl, hd)
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case PullRequestCommentDeletedEvent:
 		var pl PullRequestCommentDeletedPayload
-		json.Unmarshal([]byte(payload), &pl)
-		hook.runProcessPayloadFunc(fn, pl, hd)
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
+	default:
+		return nil, fmt.Errorf("unknown event %s", bitbucketEvent)
 	}
-}
-
-func (hook Webhook) runProcessPayloadFunc(fn webhooks.ProcessPayloadFunc, results interface{}, header webhooks.Header) {
-	go func(fn webhooks.ProcessPayloadFunc, results interface{}, header webhooks.Header) {
-		fn(results, header)
-	}(fn, results, header)
 }
