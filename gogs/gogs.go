@@ -9,8 +9,9 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
+
 	client "github.com/gogits/go-gogs-client"
-	"gopkg.in/go-playground/webhooks.v4"
+	"gopkg.in/go-playground/webhooks.v5"
 )
 
 // Webhook instance contains all methods needed to process events

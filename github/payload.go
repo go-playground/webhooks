@@ -376,14 +376,14 @@ type DeletePayload struct {
 // DeploymentPayload contains the information for GitHub's deployment hook
 type DeploymentPayload struct {
 	Deployment struct {
-		URL         string  `json:"url"`
-		ID          int64   `json:"id"`
-		Sha         string  `json:"sha"`
-		Ref         string  `json:"ref"`
-		Task        string  `json:"task"`
-		Payload     string  `json:"payload"`
-		Environment string  `json:"environment"`
-		Description *string `json:"description"`
+		URL         string   `json:"url"`
+		ID          int64    `json:"id"`
+		Sha         string   `json:"sha"`
+		Ref         string   `json:"ref"`
+		Task        string   `json:"task"`
+		Payload     struct{} `json:"payload"`
+		Environment string   `json:"environment"`
+		Description *string  `json:"description"`
 		Creator     struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
@@ -549,14 +549,14 @@ type DeploymentStatusPayload struct {
 		RepositoryURL string    `json:"repository_url"`
 	} `json:"deployment_status"`
 	Deployment struct {
-		URL         string  `json:"url"`
-		ID          int64   `json:"id"`
-		Sha         string  `json:"sha"`
-		Ref         string  `json:"ref"`
-		Task        string  `json:"task"`
-		Payload     string  `json:"payload"`
-		Environment string  `json:"environment"`
-		Description *string `json:"description"`
+		URL         string   `json:"url"`
+		ID          int64    `json:"id"`
+		Sha         string   `json:"sha"`
+		Ref         string   `json:"ref"`
+		Task        string   `json:"task"`
+		Payload     struct{} `json:"payload"`
+		Environment string   `json:"environment"`
+		Description *string  `json:"description"`
 		Creator     struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
@@ -2172,7 +2172,7 @@ type PingPayload struct {
 		AppID  int      `json:"app_id"`
 		Config struct {
 			ContentType string `json:"content_type"`
-			InsecureSSL int    `json:"insecure_ssl"`
+			InsecureSSL string `json:"insecure_ssl"`
 			Secret      string `json:"secret"`
 			URL         string `json:"url"`
 		} `json:"config"`
@@ -4230,7 +4230,7 @@ type PushPayload struct {
 		SiteAdmin         bool   `json:"site_admin"`
 	} `json:"sender"`
 	Installation struct {
-		Id int `json:"id"`
+		ID int `json:"id"`
 	} `json:"installation"`
 }
 

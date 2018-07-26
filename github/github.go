@@ -5,24 +5,23 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
-
-	"gopkg.in/go-playground/webhooks.v4"
 )
 
-// Webhook instance contains all methods needed to process events
-type Webhook struct {
-	provider   webhooks.Provider
-	secret     string
-	eventFuncs map[Event]webhooks.ProcessPayloadFunc
-}
-
-// Config defines the configuration to create a new GitHub Webhook instance
-type Config struct {
-	Secret string
-}
+// parse errros
+var (
+	ErrEventNotSpecifiedToParse  = errors.New("No Event specified to parse")
+	ErrInvalidHTTPMethod         = errors.New("Invalid HTTP Method")
+	ErrMissingGithubEventHeader  = errors.New("Missing X-GitHub-Event Header")
+	ErrMissingHubSignatureHeader = errors.New("Missing X-Hub-Signature")
+	ErrEventNotFound             = errors.New("Event not defined to be parsed")
+	ErrParsingPayload            = errors.New("Error Reading Payload")
+	ErrHMACVerificationFailed    = errors.New("HMAC verification failed")
+)
 
 // Event defines a GitHub hook event type
 type Event string
@@ -76,217 +75,221 @@ const (
 	IssueSubtype  EventSubtype = "issues"
 )
 
+// Option is a configuration option for the webhook
+type Option func(*Webhook) error
+
+// Options is a namespace var for configuration options
+var Options = WebhookOptions{}
+
+// WebhookOptions is a namespace for configuration option methods
+type WebhookOptions struct{}
+
+// Secret registers the GitHub secret
+func (WebhookOptions) Secret(secret string) Option {
+	return func(hook *Webhook) error {
+		hook.secret = secret
+		return nil
+	}
+}
+
+// Webhook instance contains all methods needed to process events
+type Webhook struct {
+	secret string
+}
+
 // New creates and returns a WebHook instance denoted by the Provider type
-func New(config *Config) *Webhook {
-	return &Webhook{
-		provider:   webhooks.GitHub,
-		secret:     config.Secret,
-		eventFuncs: map[Event]webhooks.ProcessPayloadFunc{},
+func New(options ...Option) (*Webhook, error) {
+	hook := new(Webhook)
+	for _, opt := range options {
+		if err := opt(hook); err != nil {
+			return nil, errors.New("Error applying Option")
+		}
 	}
+	return hook, nil
 }
 
-// Provider returns the current hooks provider ID
-func (hook Webhook) Provider() webhooks.Provider {
-	return hook.provider
-}
+// Parse verifies and parses the events specified and returns the payload object or an error
+func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error) {
+	defer func() {
+		_, _ = io.Copy(ioutil.Discard, r.Body)
+		_ = r.Body.Close()
+	}()
 
-// RegisterEvents registers the function to call when the specified event(s) are encountered
-func (hook Webhook) RegisterEvents(fn webhooks.ProcessPayloadFunc, events ...Event) {
-
-	for _, event := range events {
-		hook.eventFuncs[event] = fn
+	if len(events) == 0 {
+		return nil, ErrEventNotSpecifiedToParse
 	}
-}
-
-// ParsePayload parses and verifies the payload and fires off the mapped function, if it exists.
-func (hook Webhook) ParsePayload(w http.ResponseWriter, r *http.Request) {
-	webhooks.DefaultLog.Info("Parsing Payload...")
+	if r.Method != http.MethodPost {
+		return nil, ErrInvalidHTTPMethod
+	}
 
 	event := r.Header.Get("X-GitHub-Event")
 	if len(event) == 0 {
-		webhooks.DefaultLog.Error("Missing X-GitHub-Event Header")
-		http.Error(w, "400 Bad Request - Missing X-GitHub-Event Header", http.StatusBadRequest)
-		return
+		return nil, ErrMissingGithubEventHeader
 	}
-	webhooks.DefaultLog.Debug(fmt.Sprintf("X-GitHub-Event:%s", event))
-
 	gitHubEvent := Event(event)
 
-	fn, ok := hook.eventFuncs[gitHubEvent]
-	// if no event registered
-	if !ok {
-		webhooks.DefaultLog.Info(fmt.Sprintf("Webhook Event %s not registered, it is recommended to setup only events in github that will be registered in the webhook to avoid unnecessary traffic and reduce potential attack vectors.", event))
-		return
+	var found bool
+	for _, evt := range events {
+		if evt == gitHubEvent {
+			found = true
+			break
+		}
+	}
+	// event not defined to be parsed
+	if !found {
+		return nil, ErrEventNotFound
 	}
 
 	payload, err := ioutil.ReadAll(r.Body)
 	if err != nil || len(payload) == 0 {
-		webhooks.DefaultLog.Error("Issue reading Payload")
-		http.Error(w, "Issue reading Payload", http.StatusInternalServerError)
-		return
+		return nil, ErrParsingPayload
 	}
-	webhooks.DefaultLog.Debug(fmt.Sprintf("Payload:%s", string(payload)))
 
 	// If we have a Secret set, we should check the MAC
 	if len(hook.secret) > 0 {
-		webhooks.DefaultLog.Info("Checking secret")
 		signature := r.Header.Get("X-Hub-Signature")
 		if len(signature) == 0 {
-			webhooks.DefaultLog.Error("Missing X-Hub-Signature required for HMAC verification")
-			http.Error(w, "403 Forbidden - Missing X-Hub-Signature required for HMAC verification", http.StatusForbidden)
-			return
+			return nil, ErrMissingHubSignatureHeader
 		}
-		webhooks.DefaultLog.Debug(fmt.Sprintf("X-Hub-Signature:%s", signature))
-
 		mac := hmac.New(sha1.New, []byte(hook.secret))
 		mac.Write(payload)
-
 		expectedMAC := hex.EncodeToString(mac.Sum(nil))
 
 		if !hmac.Equal([]byte(signature[5:]), []byte(expectedMAC)) {
-			webhooks.DefaultLog.Error("HMAC verification failed")
-			http.Error(w, "403 Forbidden - HMAC verification failed", http.StatusForbidden)
-			return
+			return nil, ErrHMACVerificationFailed
 		}
 	}
 
-	// Make headers available to ProcessPayloadFunc as a webhooks type
-	hd := webhooks.Header(r.Header)
-
 	switch gitHubEvent {
 	case CommitCommentEvent:
-		var cc CommitCommentPayload
-		json.Unmarshal([]byte(payload), &cc)
-		hook.runProcessPayloadFunc(fn, cc, hd)
+		var pl CommitCommentPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case CreateEvent:
-		var c CreatePayload
-		json.Unmarshal([]byte(payload), &c)
-		hook.runProcessPayloadFunc(fn, c, hd)
+		var pl CreatePayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case DeleteEvent:
-		var d DeletePayload
-		json.Unmarshal([]byte(payload), &d)
-		hook.runProcessPayloadFunc(fn, d, hd)
+		var pl DeletePayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case DeploymentEvent:
-		var d DeploymentPayload
-		json.Unmarshal([]byte(payload), &d)
-		hook.runProcessPayloadFunc(fn, d, hd)
+		var pl DeploymentPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case DeploymentStatusEvent:
-		var d DeploymentStatusPayload
-		json.Unmarshal([]byte(payload), &d)
-		hook.runProcessPayloadFunc(fn, d, hd)
+		var pl DeploymentStatusPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case ForkEvent:
-		var f ForkPayload
-		json.Unmarshal([]byte(payload), &f)
-		hook.runProcessPayloadFunc(fn, f, hd)
+		var pl ForkPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case GollumEvent:
-		var g GollumPayload
-		json.Unmarshal([]byte(payload), &g)
-		hook.runProcessPayloadFunc(fn, g, hd)
+		var pl GollumPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case InstallationEvent, IntegrationInstallationEvent:
-		var i InstallationPayload
-		json.Unmarshal([]byte(payload), &i)
-		hook.runProcessPayloadFunc(fn, i, hd)
+		var pl InstallationPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case IssueCommentEvent:
-		var i IssueCommentPayload
-		json.Unmarshal([]byte(payload), &i)
-		hook.runProcessPayloadFunc(fn, i, hd)
+		var pl IssueCommentPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case IssuesEvent:
-		var i IssuesPayload
-		json.Unmarshal([]byte(payload), &i)
-		hook.runProcessPayloadFunc(fn, i, hd)
+		var pl IssuesPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case LabelEvent:
-		var l LabelPayload
-		json.Unmarshal([]byte(payload), &l)
-		hook.runProcessPayloadFunc(fn, l, hd)
+		var pl LabelPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case MemberEvent:
-		var m MemberPayload
-		json.Unmarshal([]byte(payload), &m)
-		hook.runProcessPayloadFunc(fn, m, hd)
+		var pl MemberPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case MembershipEvent:
-		var m MembershipPayload
-		json.Unmarshal([]byte(payload), &m)
-		hook.runProcessPayloadFunc(fn, m, hd)
+		var pl MembershipPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case MilestoneEvent:
-		var m MilestonePayload
-		json.Unmarshal([]byte(payload), &m)
-		hook.runProcessPayloadFunc(fn, m, hd)
+		var pl MilestonePayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case OrganizationEvent:
-		var o OrganizationPayload
-		json.Unmarshal([]byte(payload), &o)
-		hook.runProcessPayloadFunc(fn, o, hd)
+		var pl OrganizationPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case OrgBlockEvent:
-		var o OrgBlockPayload
-		json.Unmarshal([]byte(payload), &o)
-		hook.runProcessPayloadFunc(fn, o, hd)
+		var pl OrgBlockPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case PageBuildEvent:
-		var p PageBuildPayload
-		json.Unmarshal([]byte(payload), &p)
-		hook.runProcessPayloadFunc(fn, p, hd)
+		var pl PageBuildPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case PingEvent:
-		var p PingPayload
-		json.Unmarshal([]byte(payload), &p)
-		hook.runProcessPayloadFunc(fn, p, hd)
+		var pl PingPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case ProjectCardEvent:
-		var p ProjectCardPayload
-		json.Unmarshal([]byte(payload), &p)
-		hook.runProcessPayloadFunc(fn, p, hd)
+		var pl ProjectCardPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case ProjectColumnEvent:
-		var p ProjectColumnPayload
-		json.Unmarshal([]byte(payload), &p)
-		hook.runProcessPayloadFunc(fn, p, hd)
+		var pl ProjectColumnPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case ProjectEvent:
-		var p ProjectPayload
-		json.Unmarshal([]byte(payload), &p)
-		hook.runProcessPayloadFunc(fn, p, hd)
+		var pl ProjectPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case PublicEvent:
-		var p PublicPayload
-		json.Unmarshal([]byte(payload), &p)
-		hook.runProcessPayloadFunc(fn, p, hd)
+		var pl PublicPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case PullRequestEvent:
-		var p PullRequestPayload
-		json.Unmarshal([]byte(payload), &p)
-		hook.runProcessPayloadFunc(fn, p, hd)
+		var pl PullRequestPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case PullRequestReviewEvent:
-		var p PullRequestReviewPayload
-		json.Unmarshal([]byte(payload), &p)
-		hook.runProcessPayloadFunc(fn, p, hd)
+		var pl PullRequestReviewPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case PullRequestReviewCommentEvent:
-		var p PullRequestReviewCommentPayload
-		json.Unmarshal([]byte(payload), &p)
-		hook.runProcessPayloadFunc(fn, p, hd)
+		var pl PullRequestReviewCommentPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case PushEvent:
-		var p PushPayload
-		json.Unmarshal([]byte(payload), &p)
-		hook.runProcessPayloadFunc(fn, p, hd)
+		var pl PushPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case ReleaseEvent:
-		var r ReleasePayload
-		json.Unmarshal([]byte(payload), &r)
-		hook.runProcessPayloadFunc(fn, r, hd)
+		var pl ReleasePayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case RepositoryEvent:
-		var r RepositoryPayload
-		json.Unmarshal([]byte(payload), &r)
-		hook.runProcessPayloadFunc(fn, r, hd)
+		var pl RepositoryPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case StatusEvent:
-		var s StatusPayload
-		json.Unmarshal([]byte(payload), &s)
-		hook.runProcessPayloadFunc(fn, s, hd)
+		var pl StatusPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case TeamEvent:
-		var t TeamPayload
-		json.Unmarshal([]byte(payload), &t)
-		hook.runProcessPayloadFunc(fn, t, hd)
+		var pl TeamPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case TeamAddEvent:
-		var t TeamAddPayload
-		json.Unmarshal([]byte(payload), &t)
-		hook.runProcessPayloadFunc(fn, t, hd)
+		var pl TeamAddPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case WatchEvent:
-		var w WatchPayload
-		json.Unmarshal([]byte(payload), &w)
-		hook.runProcessPayloadFunc(fn, w, hd)
+		var pl WatchPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
+	default:
+		return nil, fmt.Errorf("unknown event %s", gitHubEvent)
 	}
-}
-
-func (hook Webhook) runProcessPayloadFunc(fn webhooks.ProcessPayloadFunc, results interface{}, header webhooks.Header) {
-	go func(fn webhooks.ProcessPayloadFunc, results interface{}, header webhooks.Header) {
-		fn(results, header)
-	}(fn, results, header)
 }

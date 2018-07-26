@@ -2,14 +2,13 @@ package github
 
 import (
 	"bytes"
+	"log"
 	"net/http"
+	"net/http/httptest"
 	"os"
-	"strconv"
 	"testing"
-	"time"
 
 	. "gopkg.in/go-playground/assert.v1"
-	"gopkg.in/go-playground/webhooks.v4"
 )
 
 // NOTES:
@@ -24,109 +23,81 @@ import (
 //
 
 const (
-	port = 3010
 	path = "/webhooks"
 )
-
-// HandlePayload handles GitHub event(s)
-func HandlePayload(payload interface{}, header webhooks.Header) {
-
-}
 
 var hook *Webhook
 
 func TestMain(m *testing.M) {
 
 	// setup
-	hook = New(&Config{Secret: "IsWishesWereHorsesWedAllBeEatingSteak!"})
-	hook.RegisterEvents(
-		HandlePayload,
-		CommitCommentEvent,
-		CreateEvent,
-		DeleteEvent,
-		DeploymentEvent,
-		DeploymentStatusEvent,
-		ForkEvent,
-		GollumEvent,
-		InstallationEvent,
-		IntegrationInstallationEvent,
-		IssueCommentEvent,
-		IssuesEvent,
-		LabelEvent,
-		MemberEvent,
-		MembershipEvent,
-		MilestoneEvent,
-		OrganizationEvent,
-		OrgBlockEvent,
-		PageBuildEvent,
-		PingEvent,
-		ProjectCardEvent,
-		ProjectColumnEvent,
-		ProjectEvent,
-		PublicEvent,
-		PullRequestEvent,
-		PullRequestReviewEvent,
-		PullRequestReviewCommentEvent,
-		PushEvent,
-		ReleaseEvent,
-		RepositoryEvent,
-		StatusEvent,
-		TeamEvent,
-		TeamAddEvent,
-		WatchEvent,
-	)
-
-	go webhooks.Run(hook, "127.0.0.1:"+strconv.Itoa(port), path)
-	time.Sleep(time.Millisecond * 500)
-
+	var err error
+	hook, err = New(Options.Secret("IsWishesWereHorsesWedAllBeEatingSteak!"))
+	if err != nil {
+		log.Fatal(err)
+	}
 	os.Exit(m.Run())
-
 	// teardown
 }
 
-func TestProvider(t *testing.T) {
-	Equal(t, hook.Provider(), webhooks.GitHub)
+func newServer(handler http.HandlerFunc) *httptest.Server {
+	mux := http.NewServeMux()
+	mux.HandleFunc(path, handler)
+	return httptest.NewServer(mux)
 }
 
 func TestBadNoEventHeader(t *testing.T) {
+	var parseError error
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		_, parseError = hook.Parse(r, CreateEvent)
+	})
+	defer server.Close()
+
 	payload := "{}"
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
-	req.Header.Set("Content-Type", "application/json")
-
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
 	Equal(t, err, nil)
+
+	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
-	Equal(t, resp.StatusCode, http.StatusBadRequest)
+	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, ErrMissingGithubEventHeader)
 }
 
 func TestUnsubscribedEvent(t *testing.T) {
+	var parseError error
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		_, parseError = hook.Parse(r, CreateEvent)
+	})
+	defer server.Close()
 	payload := "{}"
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
+
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "noneexistant_event")
-
-	Equal(t, err, nil)
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, ErrEventNotFound)
 }
 
 func TestBadBody(t *testing.T) {
+	var parseError error
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		_, parseError = hook.Parse(r, CommitCommentEvent)
+	})
+	defer server.Close()
 	payload := ""
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "commit_comment")
 	req.Header.Set("X-Hub-Signature", "sha1=156404ad5f721c53151147f3d3d302329f95a3ab")
@@ -136,16 +107,20 @@ func TestBadBody(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
-	Equal(t, resp.StatusCode, http.StatusInternalServerError)
+	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, ErrParsingPayload)
 }
 
 func TestBadSignatureLength(t *testing.T) {
+	var parseError error
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		_, parseError = hook.Parse(r, CommitCommentEvent)
+	})
+	defer server.Close()
 	payload := "{}"
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "commit_comment")
 	req.Header.Set("X-Hub-Signature", "")
@@ -155,16 +130,20 @@ func TestBadSignatureLength(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
-	Equal(t, resp.StatusCode, http.StatusForbidden)
+	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, ErrMissingHubSignatureHeader)
 }
 
 func TestBadSignatureMatch(t *testing.T) {
+	var parseError error
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		_, parseError = hook.Parse(r, CommitCommentEvent)
+	})
+	defer server.Close()
 	payload := "{}"
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "commit_comment")
 	req.Header.Set("X-Hub-Signature", "sha1=111")
@@ -174,10 +153,8 @@ func TestBadSignatureMatch(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
-	Equal(t, resp.StatusCode, http.StatusForbidden)
+	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, ErrHMACVerificationFailed)
 }
 
 func TestCommitCommentEvent(t *testing.T) {
@@ -323,7 +300,15 @@ func TestCommitCommentEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, CommitCommentEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "commit_comment")
 	req.Header.Set("X-Hub-Signature", "sha1=156404ad5f721c53151147f3d3d302329f95a3ab")
@@ -333,10 +318,10 @@ func TestCommitCommentEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(CommitCommentPayload)
+	Equal(t, ok, true)
 }
 
 func TestCreateEvent(t *testing.T) {
@@ -456,7 +441,15 @@ func TestCreateEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, CreateEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "create")
 	req.Header.Set("X-Hub-Signature", "sha1=77ff16ca116034bbeed77ebfce83b36572a9cbaf")
@@ -466,14 +459,13 @@ func TestCreateEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(CreatePayload)
+	Equal(t, ok, true)
 }
 
 func TestDeleteEvent(t *testing.T) {
-
 	payload := `{
   "ref": "simple-tag",
   "ref_type": "tag",
@@ -587,7 +579,15 @@ func TestDeleteEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, DeleteEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "delete")
 	req.Header.Set("X-Hub-Signature", "sha1=4ddef04fd05b504c7041e294fca3ad1804bc7be1")
@@ -597,14 +597,13 @@ func TestDeleteEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(DeletePayload)
+	Equal(t, ok, true)
 }
 
 func TestDeploymentEvent(t *testing.T) {
-
 	payload := `{
   "deployment": {
     "url": "https://api.github.com/repos/baxterthehacker/public-repo/deployments/710692",
@@ -749,7 +748,15 @@ func TestDeploymentEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, DeploymentEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "deployment")
 	req.Header.Set("X-Hub-Signature", "sha1=bb47dc63ceb764a6b1f14fe123e299e5b814c67c")
@@ -759,14 +766,13 @@ func TestDeploymentEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(DeploymentPayload)
+	Equal(t, ok, true)
 }
 
 func TestDeploymentStatusEvent(t *testing.T) {
-
 	payload := `{
   "deployment_status": {
     "url": "https://api.github.com/repos/baxterthehacker/public-repo/deployments/710692/statuses/1115122",
@@ -940,8 +946,15 @@ func TestDeploymentStatusEvent(t *testing.T) {
   }
 }
 `
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, DeploymentStatusEvent)
+	})
+	defer server.Close()
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "deployment_status")
 	req.Header.Set("X-Hub-Signature", "sha1=1b2ce08e0c3487fdf22bed12c63dc734cf6dc8a4")
@@ -951,14 +964,13 @@ func TestDeploymentStatusEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(DeploymentStatusPayload)
+	Equal(t, ok, true)
 }
 
 func TestForkEvent(t *testing.T) {
-
 	payload := `{
   "forkee": {
     "id": 35129393,
@@ -1156,8 +1168,15 @@ func TestForkEvent(t *testing.T) {
   }
 }
 `
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, ForkEvent)
+	})
+	defer server.Close()
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "fork")
 	req.Header.Set("X-Hub-Signature", "sha1=cec5f8fb7c383514c622d3eb9e121891dfcca848")
@@ -1167,14 +1186,13 @@ func TestForkEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(ForkPayload)
+	Equal(t, ok, true)
 }
 
 func TestGollumEvent(t *testing.T) {
-
 	payload := `{
   "pages": [
     {
@@ -1294,8 +1312,15 @@ func TestGollumEvent(t *testing.T) {
   }
 }
 `
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, GollumEvent)
+	})
+	defer server.Close()
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "gollum")
 	req.Header.Set("X-Hub-Signature", "sha1=a375a6dc8ceac7231ee022211f8eb85e2a84a5b9")
@@ -1305,14 +1330,13 @@ func TestGollumEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(GollumPayload)
+	Equal(t, ok, true)
 }
 
 func TestInstallationEvent(t *testing.T) {
-
 	payload := `{
     "action": "created",
     "installation": {
@@ -1384,8 +1408,15 @@ func TestInstallationEvent(t *testing.T) {
     }
 }
 `
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, InstallationEvent)
+	})
+	defer server.Close()
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "installation")
 	req.Header.Set("X-Hub-Signature", "sha1=987338c6e5c21794ab6c258abe51284f9b1df728")
@@ -1395,14 +1426,13 @@ func TestInstallationEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(InstallationPayload)
+	Equal(t, ok, true)
 }
 
 func TestIntegrationInstallationEvent(t *testing.T) {
-
 	payload := `{
     "action": "created",
     "installation": {
@@ -1474,8 +1504,15 @@ func TestIntegrationInstallationEvent(t *testing.T) {
     }
 }
 `
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, IntegrationInstallationEvent)
+	})
+	defer server.Close()
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "integration_installation")
 	req.Header.Set("X-Hub-Signature", "sha1=987338c6e5c21794ab6c258abe51284f9b1df728")
@@ -1485,14 +1522,13 @@ func TestIntegrationInstallationEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(InstallationPayload)
+	Equal(t, ok, true)
 }
 
 func TestIssueCommentEvent(t *testing.T) {
-
 	payload := `{
   "action": "created",
   "issue": {
@@ -1677,7 +1713,15 @@ func TestIssueCommentEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, IssueCommentEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "issue_comment")
 	req.Header.Set("X-Hub-Signature", "sha1=e724c9f811fcf5f511aac32e4251b08ab1a0fd87")
@@ -1687,10 +1731,10 @@ func TestIssueCommentEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(IssueCommentPayload)
+	Equal(t, ok, true)
 }
 
 func TestIssuesEvent(t *testing.T) {
@@ -1853,7 +1897,15 @@ func TestIssuesEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, IssuesEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "issues")
 	req.Header.Set("X-Hub-Signature", "sha1=dfc9a3428f3df86e4ecd78e34b41c55bba5d0b21")
@@ -1863,10 +1915,10 @@ func TestIssuesEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(IssuesPayload)
+	Equal(t, ok, true)
 }
 
 func TestLabelEvent(t *testing.T) {
@@ -2000,7 +2052,15 @@ func TestLabelEvent(t *testing.T) {
   }
 }
 `
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, LabelEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "label")
 	req.Header.Set("X-Hub-Signature", "sha1=efc13e7ad816235222e4a6b3f96d3fd1e162dbd4")
@@ -2010,10 +2070,10 @@ func TestLabelEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(LabelPayload)
+	Equal(t, ok, true)
 }
 
 func TestMemberEvent(t *testing.T) {
@@ -2148,7 +2208,15 @@ func TestMemberEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, MemberEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "member")
 	req.Header.Set("X-Hub-Signature", "sha1=597e7d6627a6636d4c3283e36631983fbd57bdd0")
@@ -2158,10 +2226,10 @@ func TestMemberEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(MemberPayload)
+	Equal(t, ok, true)
 }
 
 func TestMembershipEvent(t *testing.T) {
@@ -2229,7 +2297,15 @@ func TestMembershipEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, MembershipEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "membership")
 	req.Header.Set("X-Hub-Signature", "sha1=16928c947b3707b0efcf8ceb074a5d5dedc9c76e")
@@ -2239,10 +2315,10 @@ func TestMembershipEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(MembershipPayload)
+	Equal(t, ok, true)
 }
 
 func TestMilestoneEvent(t *testing.T) {
@@ -2407,7 +2483,15 @@ func TestMilestoneEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, MilestoneEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "milestone")
 	req.Header.Set("X-Hub-Signature", "sha1=8b63f58ea58e6a59dcfc5ecbaea0d1741a6bf9ec")
@@ -2417,10 +2501,10 @@ func TestMilestoneEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(MilestonePayload)
+	Equal(t, ok, true)
 }
 
 func TestOrganizationEvent(t *testing.T) {
@@ -2493,7 +2577,15 @@ func TestOrganizationEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, OrganizationEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "organization")
 	req.Header.Set("X-Hub-Signature", "sha1=7e5ad88557be0a05fb89e86c7893d987386aa0d5")
@@ -2503,10 +2595,10 @@ func TestOrganizationEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(OrganizationPayload)
+	Equal(t, ok, true)
 }
 
 func TestOrgBlockEvent(t *testing.T) {
@@ -2567,7 +2659,15 @@ func TestOrgBlockEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, OrgBlockEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "org_block")
 	req.Header.Set("X-Hub-Signature", "sha1=21fe61da3f014c011edb60b0b9dfc9aa7059a24b")
@@ -2577,10 +2677,10 @@ func TestOrgBlockEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(OrgBlockPayload)
+	Equal(t, ok, true)
 }
 
 func TestPageBuildEvent(t *testing.T) {
@@ -2726,7 +2826,15 @@ func TestPageBuildEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, PageBuildEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "page_build")
 	req.Header.Set("X-Hub-Signature", "sha1=b3abad8f9c1b3fc0b01c4eb107447800bb5000f9")
@@ -2736,10 +2844,10 @@ func TestPageBuildEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(PageBuildPayload)
+	Equal(t, ok, true)
 }
 
 func TestPingEvent(t *testing.T) {
@@ -2768,7 +2876,15 @@ func TestPingEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, PingEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "ping")
 	req.Header.Set("X-Hub-Signature", "sha1=f82267eb5c6408d5986209da906747f57c11b33b")
@@ -2778,10 +2894,10 @@ func TestPingEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(PingPayload)
+	Equal(t, ok, true)
 }
 
 func TestProjectCardEvent(t *testing.T) {
@@ -2936,7 +3052,15 @@ func TestProjectCardEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, ProjectCardEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "project_card")
 	req.Header.Set("X-Hub-Signature", "sha1=495dec0d6449d16b71f2ddcd37d595cb9b04b1d8")
@@ -2946,10 +3070,10 @@ func TestProjectCardEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(ProjectCardPayload)
+	Equal(t, ok, true)
 }
 
 func TestProjectColumnEvent(t *testing.T) {
@@ -3084,7 +3208,15 @@ func TestProjectColumnEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, ProjectColumnEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "project_column")
 	req.Header.Set("X-Hub-Signature", "sha1=7d5dd49d9863e982a4f577170717ea8350a69db0")
@@ -3094,10 +3226,10 @@ func TestProjectColumnEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(ProjectColumnPayload)
+	Equal(t, ok, true)
 }
 
 func TestProjectEvent(t *testing.T) {
@@ -3254,7 +3386,15 @@ func TestProjectEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, ProjectEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "project")
 	req.Header.Set("X-Hub-Signature", "sha1=7295ab4f205434208f1b86edf2b55adae34c6c92")
@@ -3264,10 +3404,10 @@ func TestProjectEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(ProjectPayload)
+	Equal(t, ok, true)
 }
 
 func TestPublicEvent(t *testing.T) {
@@ -3382,7 +3522,15 @@ func TestPublicEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, PublicEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "public")
 	req.Header.Set("X-Hub-Signature", "sha1=73edb2a8c69c1ac35efb797ede3dc2cde618c10c")
@@ -3392,10 +3540,10 @@ func TestPublicEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(PublicPayload)
+	Equal(t, ok, true)
 }
 
 func TestPullRequestEvent(t *testing.T) {
@@ -3817,7 +3965,15 @@ func TestPullRequestEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, PullRequestEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "pull_request")
 	req.Header.Set("X-Hub-Signature", "sha1=35712c8d2bc197b7d07621dcf20d2fb44620508f")
@@ -3827,10 +3983,10 @@ func TestPullRequestEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(PullRequestPayload)
+	Equal(t, ok, true)
 }
 
 func TestPullRequestReviewEvent(t *testing.T) {
@@ -4277,7 +4433,15 @@ func TestPullRequestReviewEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, PullRequestReviewEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "pull_request_review")
 	req.Header.Set("X-Hub-Signature", "sha1=55345ce92be7849f97d39b9426b95261d4bd4465")
@@ -4287,10 +4451,10 @@ func TestPullRequestReviewEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(PullRequestReviewPayload)
+	Equal(t, ok, true)
 }
 
 func TestPullRequestReviewCommentEvent(t *testing.T) {
@@ -4743,7 +4907,15 @@ func TestPullRequestReviewCommentEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, PullRequestReviewCommentEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "pull_request_review_comment")
 	req.Header.Set("X-Hub-Signature", "sha1=a9ece15dbcbb85fa5f00a0bf409494af2cbc5b60")
@@ -4753,10 +4925,10 @@ func TestPullRequestReviewCommentEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(PullRequestReviewCommentPayload)
+	Equal(t, ok, true)
 }
 
 func TestPushEvent(t *testing.T) {
@@ -4949,7 +5121,15 @@ func TestPushEvent(t *testing.T) {
   }
 }`
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, PushEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "push")
 	req.Header.Set("X-Hub-Signature", "sha1=0534736f52c2fc5896ef1bd5a043127b20d233ba")
@@ -4959,11 +5139,10 @@ func TestPushEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
-
+	Equal(t, parseError, nil)
+	_, ok := results.(PushPayload)
+	Equal(t, ok, true)
 }
 
 func TestReleaseEvent(t *testing.T) {
@@ -5118,7 +5297,15 @@ func TestReleaseEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, ReleaseEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "release")
 	req.Header.Set("X-Hub-Signature", "sha1=e62bb4c51bc7dde195b9525971c2e3aecb394390")
@@ -5128,10 +5315,10 @@ func TestReleaseEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(ReleasePayload)
+	Equal(t, ok, true)
 }
 
 func TestRepositoryEvent(t *testing.T) {
@@ -5257,7 +5444,15 @@ func TestRepositoryEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, RepositoryEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "repository")
 	req.Header.Set("X-Hub-Signature", "sha1=df442a8af41edd2d42ccdd997938d1d111b0f94e")
@@ -5267,10 +5462,10 @@ func TestRepositoryEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(RepositoryPayload)
+	Equal(t, ok, true)
 }
 
 func TestStatusEvent(t *testing.T) {
@@ -5483,7 +5678,15 @@ func TestStatusEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, StatusEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "status")
 	req.Header.Set("X-Hub-Signature", "sha1=3caa5f062a2deb7cce1482314bb9b4c99bf0ab45")
@@ -5493,10 +5696,10 @@ func TestStatusEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(StatusPayload)
+	Equal(t, ok, true)
 }
 
 func TestTeamEvent(t *testing.T) {
@@ -5549,7 +5752,15 @@ func TestTeamEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, TeamEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "team")
 	req.Header.Set("X-Hub-Signature", "sha1=ff5b5d58faec10bd40fc96834148df408e7a4608")
@@ -5559,10 +5770,10 @@ func TestTeamEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(TeamPayload)
+	Equal(t, ok, true)
 }
 
 func TestTeamAddEvent(t *testing.T) {
@@ -5698,7 +5909,15 @@ func TestTeamAddEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, TeamAddEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "team_add")
 	req.Header.Set("X-Hub-Signature", "sha1=5f3953476e270b79cc6763780346110da880609a")
@@ -5708,10 +5927,10 @@ func TestTeamAddEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(TeamAddPayload)
+	Equal(t, ok, true)
 }
 
 func TestWatchEvent(t *testing.T) {
@@ -5827,7 +6046,15 @@ func TestWatchEvent(t *testing.T) {
 }
 `
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:3010/webhooks", bytes.NewBuffer([]byte(payload)))
+	var parseError error
+	var results interface{}
+	server := newServer(func(w http.ResponseWriter, r *http.Request) {
+		results, parseError = hook.Parse(r, WatchEvent)
+	})
+	defer server.Close()
+
+	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
+	Equal(t, err, nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("X-Github-Event", "watch")
 	req.Header.Set("X-Hub-Signature", "sha1=a317bcfe69ccb8bece74c20c7378e5413c4772f1")
@@ -5837,8 +6064,8 @@ func TestWatchEvent(t *testing.T) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	Equal(t, err, nil)
-
-	defer resp.Body.Close()
-
 	Equal(t, resp.StatusCode, http.StatusOK)
+	Equal(t, parseError, nil)
+	_, ok := results.(WatchPayload)
+	Equal(t, ok, true)
 }
