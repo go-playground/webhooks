@@ -1574,7 +1574,7 @@ func TestIssueCommentEvent(t *testing.T) {
     "created_at": "2015-05-05T23:40:28Z",
     "updated_at": "2015-05-05T23:40:28Z",
     "closed_at": null,
-    "body": "It looks like you accidently spelled 'commit' with two 't's."
+    "body": "It looks like you accidentally spelled 'commit' with two 't's."
   },
   "comment": {
     "url": "https://api.github.com/repos/baxterthehacker/public-repo/issues/comments/99262140",

@@ -9,14 +9,14 @@ import (
 	"net/http"
 )
 
-// parse errros
+// parse errors
 var (
-	ErrEventNotSpecifiedToParse = errors.New("No Event specified to parse")
-	ErrInvalidHTTPMethod        = errors.New("Invalid HTTP Method")
-	ErrMissingHookUUIDHeader    = errors.New("Missing X-Hook-UUID Header")
-	ErrMissingEventKeyHeader    = errors.New("Missing X-Event-Key Header")
-	ErrEventNotFound            = errors.New("Event not defined to be parsed")
-	ErrParsingPayload           = errors.New("Error parsing payload")
+	ErrEventNotSpecifiedToParse = errors.New("no Event specified to parse")
+	ErrInvalidHTTPMethod        = errors.New("invalid HTTP Method")
+	ErrMissingHookUUIDHeader    = errors.New("missing X-Hook-UUID Header")
+	ErrMissingEventKeyHeader    = errors.New("missing X-Event-Key Header")
+	ErrEventNotFound            = errors.New("event not defined to be parsed")
+	ErrParsingPayload           = errors.New("error parsing payload")
 	ErrUUIDVerificationFailed   = errors.New("UUID verification failed")
 )
 
@@ -96,13 +96,14 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 	if uuid == "" {
 		return nil, ErrMissingHookUUIDHeader
 	}
-	if len(hook.uuid) > 0 && uuid != hook.uuid {
-		return nil, ErrUUIDVerificationFailed
-	}
 
 	event := r.Header.Get("X-Event-Key")
 	if event == "" {
 		return nil, ErrMissingEventKeyHeader
+	}
+
+	if len(hook.uuid) > 0 && uuid != hook.uuid {
+		return nil, ErrUUIDVerificationFailed
 	}
 
 	bitbucketEvent := Event(event)

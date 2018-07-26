@@ -2,11 +2,11 @@ package gitlab
 
 import (
 	"bytes"
+	"log"
 	"net/http"
+	"net/http/httptest"
 	"os"
-	"strconv"
 	"testing"
-	"time"
 
 	. "gopkg.in/go-playground/assert.v1"
 	"gopkg.in/go-playground/webhooks.v5"
@@ -24,7 +24,6 @@ import (
 //
 
 const (
-	port = 3011
 	path = "/webhooks"
 )
 
@@ -38,28 +37,20 @@ var hook *Webhook
 func TestMain(m *testing.M) {
 
 	// setup
-	hook = New(&Config{Secret: "sampleToken!"})
-	hook.RegisterEvents(HandlePayload,
-		PushEvents,
-		TagEvents,
-		IssuesEvents,
-		ConfidentialIssuesEvents,
-		CommentEvents,
-		MergeRequestEvents,
-		WikiPageEvents,
-		PipelineEvents,
-		BuildEvents,
-	)
-	go webhooks.Run(hook, "127.0.0.1:"+strconv.Itoa(port), path)
-	time.Sleep(time.Millisecond * 500)
-
+	var err error
+	hook, err = New(Options.Secret("sampleToken!!"))
+	if err != nil {
+		log.Fatal(err)
+	}
 	os.Exit(m.Run())
 
 	// teardown
 }
 
-func TestProvider(t *testing.T) {
-	Equal(t, hook.Provider(), webhooks.GitLab)
+func newServer(handler http.HandlerFunc) *httptest.Server {
+	mux := http.NewServeMux()
+	mux.HandleFunc(path, handler)
+	return httptest.NewServer(mux)
 }
 
 func TestBadNoEventHeader(t *testing.T) {

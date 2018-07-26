@@ -9,6 +9,17 @@ import (
 	"net/http"
 )
 
+// parse errors
+var (
+	ErrEventNotSpecifiedToParse = errors.New("no Event specified to parse")
+	ErrInvalidHTTPMethod        = errors.New("invalid HTTP Method")
+	ErrMissingGitLabEventHeader = errors.New("missing X-Gitlab-Event Header")
+	ErrMissingGitLabTokenHeader = errors.New("missing X-Gitlab-Token Header")
+	ErrEventNotFound            = errors.New("event not defined to be parsed")
+	ErrParsingPayload           = errors.New("error parsing payload")
+	// ErrHMACVerificationFailed    = errors.New("HMAC verification failed")
+)
+
 // GitLab hook types
 const (
 	PushEvents               Event = "Push Hook"
@@ -57,17 +68,6 @@ func New(options ...Option) (*Webhook, error) {
 	}
 	return hook, nil
 }
-
-// parse errros
-var (
-	ErrEventNotSpecifiedToParse = errors.New("No Event specified to parse")
-	ErrInvalidHTTPMethod        = errors.New("Invalid HTTP Method")
-	ErrMissingGitLabEventHeader = errors.New("Missing X-Gitlab-Event Header")
-	ErrMissingGitLabTokenHeader = errors.New("Missing X-Gitlab-Token Header")
-	ErrEventNotFound            = errors.New("Event not defined to be parsed")
-	ErrParsingPayload           = errors.New("Error parsing payload")
-	// ErrHMACVerificationFailed    = errors.New("HMAC verification failed")
-)
 
 // Parse verifies and parses the events specified and returns the payload object or an error
 func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error) {

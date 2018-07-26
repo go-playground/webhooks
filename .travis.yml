@@ -16,8 +16,6 @@ before_install:
   - go get -u github.com/go-playground/overalls
   - go get -u github.com/mattn/goveralls
   - go get -u golang.org/x/tools/cmd/cover
-  - go get -u github.com/golang/lint/golint
-  - go get -u github.com/gordonklaus/ineffassign
   - mkdir -p $GOPATH/src/gopkg.in
   - ln -s $GOPATH/src/github.com/$TRAVIS_REPO_SLUG $GOPATH/src/gopkg.in/webhooks.v2
   - ln -s $GOPATH/src/github.com/$TRAVIS_REPO_SLUG $GOPATH/src/gopkg.in/webhooks.v3
@@ -25,16 +23,13 @@ before_install:
   - ln -s $GOPATH/src/github.com/$TRAVIS_REPO_SLUG $GOPATH/src/gopkg.in/webhooks.v5
 
 before_script:
-  - go vet ./...
+  - go get -t ./...
 
 script:
- - gofmt -d -s .
- - golint ./...
- - ineffassign ./
- - go test -v ./...
- - go test -race
+ - make lint
+ - make test
 
 after_success: |
   [ $TRAVIS_GO_VERSION = 1.10.3 ] &&
-  overalls -project="github.com/go-playground/webhooks" -covermode=count -ignore=.git,examples -debug &&
+  overalls -project="github.com/go-playground/webhooks" -covermode=count -ignore=.git,_examples,testdata -debug &&
   goveralls -coverprofile=overalls.coverprofile -service travis-ci -repotoken $COVERALLS_TOKEN

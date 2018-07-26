@@ -12,14 +12,14 @@ import (
 	"net/http"
 )
 
-// parse errros
+// parse errors
 var (
-	ErrEventNotSpecifiedToParse  = errors.New("No Event specified to parse")
-	ErrInvalidHTTPMethod         = errors.New("Invalid HTTP Method")
-	ErrMissingGithubEventHeader  = errors.New("Missing X-GitHub-Event Header")
-	ErrMissingHubSignatureHeader = errors.New("Missing X-Hub-Signature Header")
-	ErrEventNotFound             = errors.New("Event not defined to be parsed")
-	ErrParsingPayload            = errors.New("Error parsing payload")
+	ErrEventNotSpecifiedToParse  = errors.New("no Event specified to parse")
+	ErrInvalidHTTPMethod         = errors.New("invalid HTTP Method")
+	ErrMissingGithubEventHeader  = errors.New("missing X-GitHub-Event Header")
+	ErrMissingHubSignatureHeader = errors.New("missing X-Hub-Signature Header")
+	ErrEventNotFound             = errors.New("event not defined to be parsed")
+	ErrParsingPayload            = errors.New("error parsing payload")
 	ErrHMACVerificationFailed    = errors.New("HMAC verification failed")
 )
 

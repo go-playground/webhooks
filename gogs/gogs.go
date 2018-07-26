@@ -15,6 +15,17 @@ import (
 	client "github.com/gogits/go-gogs-client"
 )
 
+// parse errors
+var (
+	ErrEventNotSpecifiedToParse   = errors.New("no Event specified to parse")
+	ErrInvalidHTTPMethod          = errors.New("invalid HTTP Method")
+	ErrMissingGogsEventHeader     = errors.New("missing X-Gogs-Event Header")
+	ErrMissingGogsSignatureHeader = errors.New("missing X-Gogs-Signature Header")
+	ErrEventNotFound              = errors.New("event not defined to be parsed")
+	ErrParsingPayload             = errors.New("error parsing payload")
+	ErrHMACVerificationFailed     = errors.New("HMAC verification failed")
+)
+
 // Option is a configuration option for the webhook
 type Option func(*Webhook) error
 
@@ -62,17 +73,6 @@ func New(options ...Option) (*Webhook, error) {
 	}
 	return hook, nil
 }
-
-// parse errros
-var (
-	ErrEventNotSpecifiedToParse   = errors.New("No Event specified to parse")
-	ErrInvalidHTTPMethod          = errors.New("Invalid HTTP Method")
-	ErrMissingGogsEventHeader     = errors.New("Missing X-Gogs-Event Header")
-	ErrMissingGogsSignatureHeader = errors.New("Missing X-Gogs-Signature Header")
-	ErrEventNotFound              = errors.New("Event not defined to be parsed")
-	ErrParsingPayload             = errors.New("Error parsing payload")
-	ErrHMACVerificationFailed     = errors.New("HMAC verification failed")
-)
 
 // Parse verifies and parses the events specified and returns the payload object or an error
 func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error) {
