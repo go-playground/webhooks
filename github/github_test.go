@@ -47,13 +47,13 @@ func newServer(handler http.HandlerFunc) *httptest.Server {
 }
 
 func TestBadNoEventHeader(t *testing.T) {
+	payload := "{}"
+
 	var parseError error
 	server := newServer(func(w http.ResponseWriter, r *http.Request) {
 		_, parseError = hook.Parse(r, CreateEvent)
 	})
 	defer server.Close()
-
-	payload := "{}"
 
 	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
 	Equal(t, err, nil)
@@ -68,12 +68,13 @@ func TestBadNoEventHeader(t *testing.T) {
 }
 
 func TestUnsubscribedEvent(t *testing.T) {
+	payload := "{}"
+
 	var parseError error
 	server := newServer(func(w http.ResponseWriter, r *http.Request) {
 		_, parseError = hook.Parse(r, CreateEvent)
 	})
 	defer server.Close()
-	payload := "{}"
 
 	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
 	Equal(t, err, nil)
@@ -89,12 +90,12 @@ func TestUnsubscribedEvent(t *testing.T) {
 }
 
 func TestBadBody(t *testing.T) {
+	payload := ""
 	var parseError error
 	server := newServer(func(w http.ResponseWriter, r *http.Request) {
 		_, parseError = hook.Parse(r, CommitCommentEvent)
 	})
 	defer server.Close()
-	payload := ""
 
 	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
 	Equal(t, err, nil)
@@ -112,12 +113,13 @@ func TestBadBody(t *testing.T) {
 }
 
 func TestBadSignatureLength(t *testing.T) {
+	payload := "{}"
+
 	var parseError error
 	server := newServer(func(w http.ResponseWriter, r *http.Request) {
 		_, parseError = hook.Parse(r, CommitCommentEvent)
 	})
 	defer server.Close()
-	payload := "{}"
 
 	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
 	Equal(t, err, nil)
@@ -135,12 +137,13 @@ func TestBadSignatureLength(t *testing.T) {
 }
 
 func TestBadSignatureMatch(t *testing.T) {
+	payload := "{}"
+
 	var parseError error
 	server := newServer(func(w http.ResponseWriter, r *http.Request) {
 		_, parseError = hook.Parse(r, CommitCommentEvent)
 	})
 	defer server.Close()
-	payload := "{}"
 
 	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
 	Equal(t, err, nil)
@@ -1574,7 +1577,7 @@ func TestIssueCommentEvent(t *testing.T) {
     "created_at": "2015-05-05T23:40:28Z",
     "updated_at": "2015-05-05T23:40:28Z",
     "closed_at": null,
-    "body": "It looks like you accidentally spelled 'commit' with two 't's."
+    "body": "It looks like you accidently spelled 'commit' with two 't's."
   },
   "comment": {
     "url": "https://api.github.com/repos/baxterthehacker/public-repo/issues/comments/99262140",

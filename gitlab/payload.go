@@ -427,14 +427,14 @@ type LabelChanges struct {
 
 // Label contains all of the GitLab label information
 type Label struct {
-	Id          int64      `json:"id"`
+	ID          int64      `json:"id"`
 	Title       string     `json:"title"`
 	Color       string     `json:"color"`
-	ProjectId   int64      `json:"project_id"`
+	ProjectID   int64      `json:"project_id"`
 	CreatedAt   customTime `json:"created_at"`
 	UpdatedAt   customTime `json:"updated_at"`
 	Template    bool       `json:"template"`
 	Description string     `json:"description"`
 	Type        string     `json:"type"`
-	GroupId     int64      `json:"group_id"`
+	GroupID     int64      `json:"group_id"`
 }

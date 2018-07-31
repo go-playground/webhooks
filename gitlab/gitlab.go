@@ -11,12 +11,12 @@ import (
 
 // parse errors
 var (
-	ErrEventNotSpecifiedToParse = errors.New("no Event specified to parse")
-	ErrInvalidHTTPMethod        = errors.New("invalid HTTP Method")
-	ErrMissingGitLabEventHeader = errors.New("missing X-Gitlab-Event Header")
-	ErrMissingGitLabTokenHeader = errors.New("missing X-Gitlab-Token Header")
-	ErrEventNotFound            = errors.New("event not defined to be parsed")
-	ErrParsingPayload           = errors.New("error parsing payload")
+	ErrEventNotSpecifiedToParse      = errors.New("no Event specified to parse")
+	ErrInvalidHTTPMethod             = errors.New("invalid HTTP Method")
+	ErrMissingGitLabEventHeader      = errors.New("missing X-Gitlab-Event Header")
+	ErrGitLabTokenVerificationFailed = errors.New("X-Gitlab-Token validation failed")
+	ErrEventNotFound                 = errors.New("event not defined to be parsed")
+	ErrParsingPayload                = errors.New("error parsing payload")
 	// ErrHMACVerificationFailed    = errors.New("HMAC verification failed")
 )
 
@@ -111,7 +111,7 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 	if len(hook.secret) > 0 {
 		signature := r.Header.Get("X-Gitlab-Token")
 		if signature != hook.secret {
-			return nil, ErrMissingGitLabTokenHeader
+			return nil, ErrGitLabTokenVerificationFailed
 		}
 	}
 
