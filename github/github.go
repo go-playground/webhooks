@@ -152,7 +152,7 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 			return nil, ErrMissingHubSignatureHeader
 		}
 		mac := hmac.New(sha1.New, []byte(hook.secret))
-		mac.Write(payload)
+		_, _ = mac.Write(payload)
 		expectedMAC := hex.EncodeToString(mac.Sum(nil))
 
 		if !hmac.Equal([]byte(signature[5:]), []byte(expectedMAC)) {
