@@ -2,50 +2,61 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 
-	"gopkg.in/go-playground/webhooks.v5"
+	"net/http"
+
 	"gopkg.in/go-playground/webhooks.v5/github"
 )
 
 const (
-	path = "/webhooks"
-	port = 3016
+	path1 = "/webhooks1"
+	path2 = "/webhooks2"
 )
 
 func main() {
-	hook := github.New(&github.Config{Secret: "MyGitHubSuperSecretSecrect...?"})
-	hook.RegisterEvents(HandleRelease, github.ReleaseEvent)
-	hook.RegisterEvents(HandlePullRequest, github.PullRequestEvent)
+	hook1, _ := github.New(github.Options.Secret("MyGitHubSuperSecretSecrect...?"))
+	hook2, _ := github.New(github.Options.Secret("MyGitHubSuperSecretSecrect2...?"))
 
-	err := webhooks.Run(hook, ":"+strconv.Itoa(port), path)
-	if err != nil {
-		fmt.Println(err)
-	}
-}
+	http.HandleFunc(path1, func(w http.ResponseWriter, r *http.Request) {
+		payload, err := hook1.Parse(r, github.ReleaseEvent, github.PullRequestEvent)
+		if err != nil {
+			if err == github.ErrEventNotFound {
+				// ok event wasn;t one of the ones asked to be parsed
+			}
+		}
+		switch payload.(type) {
 
-// HandleRelease handles GitHub release events
-func HandleRelease(payload interface{}, header webhooks.Header) {
-	fmt.Println("Handling Release")
+		case github.ReleasePayload:
+			release := payload.(github.ReleasePayload)
+			// Do whatever you want from here...
+			fmt.Printf("%+v", release)
 
-	pl := payload.(github.ReleasePayload)
+		case github.PullRequestPayload:
+			pullRequest := payload.(github.PullRequestPayload)
+			// Do whatever you want from here...
+			fmt.Printf("%+v", pullRequest)
+		}
+	})
 
-	// only want to compile on full releases
-	if pl.Release.Draft || pl.Release.Prerelease || pl.Release.TargetCommitish != "master" {
-		return
-	}
+	http.HandleFunc(path2, func(w http.ResponseWriter, r *http.Request) {
+		payload, err := hook2.Parse(r, github.ReleaseEvent, github.PullRequestEvent)
+		if err != nil {
+			if err == github.ErrEventNotFound {
+				// ok event wasn;t one of the ones asked to be parsed
+			}
+		}
+		switch payload.(type) {
 
-	// Do whatever you want from here...
-	fmt.Printf("%+v", pl)
-}
+		case github.ReleasePayload:
+			release := payload.(github.ReleasePayload)
+			// Do whatever you want from here...
+			fmt.Printf("%+v", release)
 
-// HandlePullRequest handles GitHub pull_request events
-func HandlePullRequest(payload interface{}, header webhooks.Header) {
-
-	fmt.Println("Handling Pull Request")
-
-	pl := payload.(github.PullRequestPayload)
-
-	// Do whatever you want from here...
-	fmt.Printf("%+v", pl)
+		case github.PullRequestPayload:
+			pullRequest := payload.(github.PullRequestPayload)
+			// Do whatever you want from here...
+			fmt.Printf("%+v", pullRequest)
+		}
+	})
+	http.ListenAndServe(":3000", nil)
 }
