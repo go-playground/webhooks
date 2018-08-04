@@ -13,7 +13,6 @@ import (
 	"reflect"
 
 	"github.com/stretchr/testify/require"
-	. "gopkg.in/go-playground/assert.v1"
 )
 
 // NOTES:
@@ -335,7 +334,7 @@ func TestWebhooks(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			payload, err := os.Open(tc.filename)
-			Equal(t, err, nil)
+			assert.NoError(err)
 			defer func() {
 				_ = payload.Close()
 			}()
