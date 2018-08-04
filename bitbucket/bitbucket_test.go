@@ -8,6 +8,11 @@ import (
 	"os"
 	"testing"
 
+	"io"
+
+	"reflect"
+
+	"github.com/stretchr/testify/require"
 	. "gopkg.in/go-playground/assert.v1"
 )
 
@@ -47,646 +52,310 @@ func newServer(handler http.HandlerFunc) *httptest.Server {
 	return httptest.NewServer(mux)
 }
 
-func TestUUIDMissingEvent(t *testing.T) {
-	payload := "{}"
-	var parseError error
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		_, parseError = hook.Parse(r, RepoPushEvent)
-	})
-	defer server.Close()
+func TestBadRequests(t *testing.T) {
+	assert := require.New(t)
+	tests := []struct {
+		name    string
+		event   Event
+		payload io.Reader
+		headers http.Header
+	}{
+		{
+			name:    "UUIDMissingEvent",
+			event:   RepoPushEvent,
+			payload: bytes.NewBuffer([]byte("{}")),
+			headers: http.Header{
+				"X-Event-Key": []string{"noneexistant_event"},
+			},
+		},
+		{
+			name:    "UUIDDoesNotMatchEvent",
+			event:   RepoPushEvent,
+			payload: bytes.NewBuffer([]byte("{}")),
+			headers: http.Header{
+				"X-Hook-UUID": []string{"THIS_DOES_NOT_MATCH"},
+				"X-Event-Key": []string{"repo:push"},
+			},
+		},
+		{
+			name:    "BadNoEventHeader",
+			event:   RepoPushEvent,
+			payload: bytes.NewBuffer([]byte("{}")),
+			headers: http.Header{
+				"X-Hook-UUID": []string{"MY_UUID"},
+			},
+		},
+		{
+			name:    "BadBody",
+			event:   RepoPushEvent,
+			payload: bytes.NewBuffer([]byte("")),
+			headers: http.Header{
+				"X-Hook-UUID": []string{"MY_UUID"},
+				"X-Event-Key": []string{"repo:push"},
+			},
+		},
+		{
+			name:    "UnsubscribedEvent",
+			event:   RepoPushEvent,
+			payload: bytes.NewBuffer([]byte("")),
+			headers: http.Header{
+				"X-Hook-UUID": []string{"MY_UUID"},
+				"X-Event-Key": []string{"noneexistant_event"},
+			},
+		},
+	}
 
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
-	Equal(t, err, nil)
+	for _, tt := range tests {
+		tc := tt
+		client := &http.Client{}
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			var parseError error
+			server := newServer(func(w http.ResponseWriter, r *http.Request) {
+				_, parseError = hook.Parse(r, tc.event)
+			})
+			defer server.Close()
+			req, err := http.NewRequest(http.MethodPost, server.URL+path, tc.payload)
+			assert.NoError(err)
+			req.Header = tc.headers
+			req.Header.Set("Content-Type", "application/json")
 
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Event-Key", "noneexistant_event")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, ErrMissingHookUUIDHeader)
+			resp, err := client.Do(req)
+			assert.NoError(err)
+			assert.Equal(http.StatusOK, resp.StatusCode)
+			assert.Error(parseError)
+		})
+	}
 }
 
-func TestUUIDDoesNotMatchEvent(t *testing.T) {
-	payload := "{}"
-
-	var parseError error
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		_, parseError = hook.Parse(r, RepoPushEvent)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
-	Equal(t, err, nil)
-
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Hook-UUID", "THIS_DOES_NOT_MATCH")
-	req.Header.Set("X-Event-Key", "repo:push")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, ErrUUIDVerificationFailed)
-}
-
-func TestBadNoEventHeader(t *testing.T) {
-	payload := "{}"
-
-	var parseError error
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		_, parseError = hook.Parse(r, RepoPushEvent)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
-	Equal(t, err, nil)
-
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Hook-UUID", "MY_UUID")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, ErrMissingEventKeyHeader)
-}
-
-func TestBadBody(t *testing.T) {
-	payload := ""
-
-	var parseError error
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		_, parseError = hook.Parse(r, RepoPushEvent)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
-	Equal(t, err, nil)
-
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Hook-UUID", "MY_UUID")
-	req.Header.Set("X-Event-Key", "repo:push")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, ErrParsingPayload)
-}
-
-func TestUnsubscribedEvent(t *testing.T) {
-	payload := "{}"
-
-	var parseError error
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		_, parseError = hook.Parse(r, RepoPushEvent)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
-	Equal(t, err, nil)
-
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Hook-UUID", "MY_UUID")
-	req.Header.Set("X-Event-Key", "noneexistant_event")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, ErrEventNotFound)
-}
-
-func TestRepoPush(t *testing.T) {
-
-	payload, err := os.Open("../testdata/bitbucket/repo-push.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, RepoPushEvent)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Hook-UUID", "MY_UUID")
-	req.Header.Set("X-Event-Key", "repo:push")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(RepoPushPayload)
-	Equal(t, ok, true)
-}
-
-func TestRepoFork(t *testing.T) {
-
-	payload, err := os.Open("../testdata/bitbucket/repo-fork.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, RepoForkEvent)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Hook-UUID", "MY_UUID")
-	req.Header.Set("X-Event-Key", "repo:fork")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(RepoForkPayload)
-	Equal(t, ok, true)
-}
-
-func TestRepoUpdated(t *testing.T) {
-
-	payload, err := os.Open("../testdata/bitbucket/repo-updated.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, RepoUpdatedEvent)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Hook-UUID", "MY_UUID")
-	req.Header.Set("X-Event-Key", "repo:updated")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(RepoUpdatedPayload)
-	Equal(t, ok, true)
-}
-
-func TestRepoCommitCommentCreated(t *testing.T) {
-
-	payload, err := os.Open("../testdata/bitbucket/commit-comment-created.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, RepoCommitCommentCreatedEvent)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Hook-UUID", "MY_UUID")
-	req.Header.Set("X-Event-Key", "repo:commit_comment_created")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(RepoCommitCommentCreatedPayload)
-	Equal(t, ok, true)
-}
-
-func TestRepoCommitStatusCreated(t *testing.T) {
-
-	payload, err := os.Open("../testdata/bitbucket/repo-commit-status-created.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, RepoCommitStatusCreatedEvent)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Hook-UUID", "MY_UUID")
-	req.Header.Set("X-Event-Key", "repo:commit_status_created")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(RepoCommitStatusCreatedPayload)
-	Equal(t, ok, true)
-}
-
-func TestRepoCommitStatusUpdated(t *testing.T) {
-
-	payload, err := os.Open("../testdata/bitbucket/repo-commit-status-updated.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, RepoCommitStatusUpdatedEvent)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Hook-UUID", "MY_UUID")
-	req.Header.Set("X-Event-Key", "repo:commit_status_updated")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(RepoCommitStatusUpdatedPayload)
-	Equal(t, ok, true)
-}
-
-func TestIssueCreated(t *testing.T) {
-
-	payload, err := os.Open("../testdata/bitbucket/issue-created.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, IssueCreatedEvent)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Hook-UUID", "MY_UUID")
-	req.Header.Set("X-Event-Key", "issue:created")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(IssueCreatedPayload)
-	Equal(t, ok, true)
-}
-
-func TestIssueUpdated(t *testing.T) {
-
-	payload, err := os.Open("../testdata/bitbucket/issue-updated.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, IssueUpdatedEvent)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Hook-UUID", "MY_UUID")
-	req.Header.Set("X-Event-Key", "issue:updated")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(IssueUpdatedPayload)
-	Equal(t, ok, true)
-}
-
-func TestIssueCommentCreated(t *testing.T) {
-
-	payload, err := os.Open("../testdata/bitbucket/issue-comment-created.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, IssueCommentCreatedEvent)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Hook-UUID", "MY_UUID")
-	req.Header.Set("X-Event-Key", "issue:comment_created")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(IssueCommentCreatedPayload)
-	Equal(t, ok, true)
-}
-
-func TestPullRequestCreated(t *testing.T) {
-
-	payload, err := os.Open("../testdata/bitbucket/pull-request-created.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, PullRequestCreatedEvent)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Hook-UUID", "MY_UUID")
-	req.Header.Set("X-Event-Key", "pullrequest:created")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(PullRequestCreatedPayload)
-	Equal(t, ok, true)
-}
-
-func TestPullRequestUpdated(t *testing.T) {
-
-	payload, err := os.Open("../testdata/bitbucket/pull-request-updated.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, PullRequestUpdatedEvent)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Hook-UUID", "MY_UUID")
-	req.Header.Set("X-Event-Key", "pullrequest:updated")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(PullRequestUpdatedPayload)
-	Equal(t, ok, true)
-}
-
-func TestPullRequestApproved(t *testing.T) {
-
-	payload, err := os.Open("../testdata/bitbucket/pull-request-approved.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, PullRequestApprovedEvent)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Hook-UUID", "MY_UUID")
-	req.Header.Set("X-Event-Key", "pullrequest:approved")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(PullRequestApprovedPayload)
-	Equal(t, ok, true)
-}
-
-func TestPullRequestApprovalRemoved(t *testing.T) {
-
-	payload, err := os.Open("../testdata/bitbucket/pull-request-approval-removed.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, PullRequestUnapprovedEvent)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Hook-UUID", "MY_UUID")
-	req.Header.Set("X-Event-Key", "pullrequest:unapproved")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(PullRequestUnapprovedPayload)
-	Equal(t, ok, true)
-}
-
-func TestPullRequestMerged(t *testing.T) {
-
-	payload, err := os.Open("../testdata/bitbucket/pull-request-merged.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, PullRequestMergedEvent)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Hook-UUID", "MY_UUID")
-	req.Header.Set("X-Event-Key", "pullrequest:fulfilled")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(PullRequestMergedPayload)
-	Equal(t, ok, true)
-}
-
-func TestPullRequestDeclined(t *testing.T) {
-
-	payload, err := os.Open("../testdata/bitbucket/pull-request-declined.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, PullRequestDeclinedEvent)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Hook-UUID", "MY_UUID")
-	req.Header.Set("X-Event-Key", "pullrequest:rejected")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(PullRequestDeclinedPayload)
-	Equal(t, ok, true)
-}
-
-func TestPullRequestCommentCreated(t *testing.T) {
-
-	payload, err := os.Open("../testdata/bitbucket/pull-request-comment-created.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, PullRequestCommentCreatedEvent)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Hook-UUID", "MY_UUID")
-	req.Header.Set("X-Event-Key", "pullrequest:comment_created")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(PullRequestCommentCreatedPayload)
-	Equal(t, ok, true)
-}
-
-func TestPullRequestCommentUpdated(t *testing.T) {
-
-	payload, err := os.Open("../testdata/bitbucket/pull-request-comment-updated.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, PullRequestCommentUpdatedEvent)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Hook-UUID", "MY_UUID")
-	req.Header.Set("X-Event-Key", "pullrequest:comment_updated")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(PullRequestCommentUpdatedPayload)
-	Equal(t, ok, true)
-}
-
-func TestPullRequestCommentDeleted(t *testing.T) {
-
-	payload, err := os.Open("../testdata/bitbucket/pull-request-comment-deleted.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, PullRequestCommentDeletedEvent)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Hook-UUID", "MY_UUID")
-	req.Header.Set("X-Event-Key", "pullrequest:comment_deleted")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(PullRequestCommentDeletedPayload)
-	Equal(t, ok, true)
+func TestWebhooks(t *testing.T) {
+	assert := require.New(t)
+	tests := []struct {
+		name     string
+		event    Event
+		typ      interface{}
+		filename string
+		headers  http.Header
+	}{
+		{
+			name:     "RepoPush",
+			event:    RepoPushEvent,
+			typ:      RepoPushPayload{},
+			filename: "../testdata/bitbucket/repo-push.json",
+			headers: http.Header{
+				"X-Hook-UUID": []string{"MY_UUID"},
+				"X-Event-Key": []string{"repo:push"},
+			},
+		},
+		{
+			name:     "RepoFork",
+			event:    RepoForkEvent,
+			typ:      RepoForkPayload{},
+			filename: "../testdata/bitbucket/repo-fork.json",
+			headers: http.Header{
+				"X-Hook-UUID": []string{"MY_UUID"},
+				"X-Event-Key": []string{"repo:fork"},
+			},
+		},
+		{
+			name:     "RepoUpdated",
+			event:    RepoUpdatedEvent,
+			typ:      RepoUpdatedPayload{},
+			filename: "../testdata/bitbucket/repo-updated.json",
+			headers: http.Header{
+				"X-Hook-UUID": []string{"MY_UUID"},
+				"X-Event-Key": []string{"repo:updated"},
+			},
+		},
+		{
+			name:     "RepoCommitCommentCreated",
+			event:    RepoCommitCommentCreatedEvent,
+			typ:      RepoCommitCommentCreatedPayload{},
+			filename: "../testdata/bitbucket/commit-comment-created.json",
+			headers: http.Header{
+				"X-Hook-UUID": []string{"MY_UUID"},
+				"X-Event-Key": []string{"repo:commit_comment_created"},
+			},
+		},
+		{
+			name:     "RepoCommitStatusCreated",
+			event:    RepoCommitStatusCreatedEvent,
+			typ:      RepoCommitStatusCreatedPayload{},
+			filename: "../testdata/bitbucket/repo-commit-status-created.json",
+			headers: http.Header{
+				"X-Hook-UUID": []string{"MY_UUID"},
+				"X-Event-Key": []string{"repo:commit_status_created"},
+			},
+		},
+		{
+			name:     "RepoCommitStatusUpdated",
+			event:    RepoCommitStatusUpdatedEvent,
+			typ:      RepoCommitStatusUpdatedPayload{},
+			filename: "../testdata/bitbucket/repo-commit-status-updated.json",
+			headers: http.Header{
+				"X-Hook-UUID": []string{"MY_UUID"},
+				"X-Event-Key": []string{"repo:commit_status_updated"},
+			},
+		},
+		{
+			name:     "IssueCreated",
+			event:    IssueCreatedEvent,
+			typ:      IssueCreatedPayload{},
+			filename: "../testdata/bitbucket/issue-created.json",
+			headers: http.Header{
+				"X-Hook-UUID": []string{"MY_UUID"},
+				"X-Event-Key": []string{"issue:created"},
+			},
+		},
+		{
+			name:     "IssueUpdated",
+			event:    IssueUpdatedEvent,
+			typ:      IssueUpdatedPayload{},
+			filename: "../testdata/bitbucket/issue-updated.json",
+			headers: http.Header{
+				"X-Hook-UUID": []string{"MY_UUID"},
+				"X-Event-Key": []string{"issue:updated"},
+			},
+		},
+		{
+			name:     "IssueUpdated",
+			event:    IssueUpdatedEvent,
+			typ:      IssueUpdatedPayload{},
+			filename: "../testdata/bitbucket/issue-updated.json",
+			headers: http.Header{
+				"X-Hook-UUID": []string{"MY_UUID"},
+				"X-Event-Key": []string{"issue:updated"},
+			},
+		},
+		{
+			name:     "IssueCommentCreated",
+			event:    IssueCommentCreatedEvent,
+			typ:      IssueCommentCreatedPayload{},
+			filename: "../testdata/bitbucket/issue-comment-created.json",
+			headers: http.Header{
+				"X-Hook-UUID": []string{"MY_UUID"},
+				"X-Event-Key": []string{"issue:comment_created"},
+			},
+		},
+		{
+			name:     "PullRequestCreated",
+			event:    PullRequestCreatedEvent,
+			typ:      PullRequestCreatedPayload{},
+			filename: "../testdata/bitbucket/pull-request-created.json",
+			headers: http.Header{
+				"X-Hook-UUID": []string{"MY_UUID"},
+				"X-Event-Key": []string{"pullrequest:created"},
+			},
+		},
+		{
+			name:     "PullRequestUpdated",
+			event:    PullRequestUpdatedEvent,
+			typ:      PullRequestUpdatedPayload{},
+			filename: "../testdata/bitbucket/pull-request-updated.json",
+			headers: http.Header{
+				"X-Hook-UUID": []string{"MY_UUID"},
+				"X-Event-Key": []string{"pullrequest:updated"},
+			},
+		},
+		{
+			name:     "PullRequestApproved",
+			event:    PullRequestApprovedEvent,
+			typ:      PullRequestApprovedPayload{},
+			filename: "../testdata/bitbucket/pull-request-approved.json",
+			headers: http.Header{
+				"X-Hook-UUID": []string{"MY_UUID"},
+				"X-Event-Key": []string{"pullrequest:approved"},
+			},
+		},
+		{
+			name:     "PullRequestApprovalRemoved",
+			event:    PullRequestUnapprovedEvent,
+			typ:      PullRequestUnapprovedPayload{},
+			filename: "../testdata/bitbucket/pull-request-approval-removed.json",
+			headers: http.Header{
+				"X-Hook-UUID": []string{"MY_UUID"},
+				"X-Event-Key": []string{"pullrequest:unapproved"},
+			},
+		},
+		{
+			name:     "PullRequestMerged",
+			event:    PullRequestMergedEvent,
+			typ:      PullRequestMergedPayload{},
+			filename: "../testdata/bitbucket/pull-request-merged.json",
+			headers: http.Header{
+				"X-Hook-UUID": []string{"MY_UUID"},
+				"X-Event-Key": []string{"pullrequest:fulfilled"},
+			},
+		},
+		{
+			name:     "PullRequestDeclined",
+			event:    PullRequestDeclinedEvent,
+			typ:      PullRequestDeclinedPayload{},
+			filename: "../testdata/bitbucket/pull-request-declined.json",
+			headers: http.Header{
+				"X-Hook-UUID": []string{"MY_UUID"},
+				"X-Event-Key": []string{"pullrequest:rejected"},
+			},
+		},
+		{
+			name:     "PullRequestCommentCreated",
+			event:    PullRequestCommentCreatedEvent,
+			typ:      PullRequestCommentCreatedPayload{},
+			filename: "../testdata/bitbucket/pull-request-comment-created.json",
+			headers: http.Header{
+				"X-Hook-UUID": []string{"MY_UUID"},
+				"X-Event-Key": []string{"pullrequest:comment_created"},
+			},
+		},
+		{
+			name:     "PullRequestCommentUpdated",
+			event:    PullRequestCommentUpdatedEvent,
+			typ:      PullRequestCommentUpdatedPayload{},
+			filename: "../testdata/bitbucket/pull-request-comment-updated.json",
+			headers: http.Header{
+				"X-Hook-UUID": []string{"MY_UUID"},
+				"X-Event-Key": []string{"pullrequest:comment_updated"},
+			},
+		},
+		{
+			name:     "PullRequestCommentDeleted",
+			event:    PullRequestCommentDeletedEvent,
+			typ:      PullRequestCommentDeletedPayload{},
+			filename: "../testdata/bitbucket/pull-request-comment-deleted.json",
+			headers: http.Header{
+				"X-Hook-UUID": []string{"MY_UUID"},
+				"X-Event-Key": []string{"pullrequest:comment_deleted"},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tc := tt
+		client := &http.Client{}
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			payload, err := os.Open(tc.filename)
+			Equal(t, err, nil)
+			defer func() {
+				_ = payload.Close()
+			}()
+
+			var parseError error
+			var results interface{}
+			server := newServer(func(w http.ResponseWriter, r *http.Request) {
+				results, parseError = hook.Parse(r, tc.event)
+			})
+			defer server.Close()
+			req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
+			assert.NoError(err)
+			req.Header = tc.headers
+			req.Header.Set("Content-Type", "application/json")
+
+			resp, err := client.Do(req)
+			assert.NoError(err)
+			assert.Equal(http.StatusOK, resp.StatusCode)
+			assert.NoError(parseError)
+			assert.Equal(reflect.TypeOf(tc.typ), reflect.TypeOf(results))
+		})
+	}
 }
