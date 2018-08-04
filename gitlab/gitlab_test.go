@@ -8,6 +8,11 @@ import (
 	"os"
 	"testing"
 
+	"io"
+
+	"reflect"
+
+	"github.com/stretchr/testify/require"
 	. "gopkg.in/go-playground/assert.v1"
 )
 
@@ -47,443 +52,218 @@ func newServer(handler http.HandlerFunc) *httptest.Server {
 	return httptest.NewServer(mux)
 }
 
-func TestBadNoEventHeader(t *testing.T) {
-	payload := "{}"
+func TestBadRequests(t *testing.T) {
+	assert := require.New(t)
+	tests := []struct {
+		name    string
+		event   Event
+		payload io.Reader
+		headers http.Header
+	}{
+		{
+			name:    "BadNoEventHeader",
+			event:   PushEvents,
+			payload: bytes.NewBuffer([]byte("{}")),
+			headers: http.Header{},
+		},
+		{
+			name:    "UnsubscribedEvent",
+			event:   PushEvents,
+			payload: bytes.NewBuffer([]byte("{}")),
+			headers: http.Header{
+				"X-Gitlab-Event": []string{"noneexistant_event"},
+			},
+		},
+		{
+			name:    "BadBody",
+			event:   PushEvents,
+			payload: bytes.NewBuffer([]byte("")),
+			headers: http.Header{
+				"X-Gitlab-Event": []string{"Push Hook"},
+				"X-Gitlab-Token": []string{"sampleToken!"},
+			},
+		},
+		{
+			name:    "TokenMismatch",
+			event:   PushEvents,
+			payload: bytes.NewBuffer([]byte("{}")),
+			headers: http.Header{
+				"X-Gitlab-Event": []string{"Push Hook"},
+				"X-Gitlab-Token": []string{"badsampleToken!!"},
+			},
+		},
+	}
 
-	var parseError error
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		_, parseError = hook.Parse(r, PushEvents)
-	})
-	defer server.Close()
+	for _, tt := range tests {
+		tc := tt
+		client := &http.Client{}
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			var parseError error
+			server := newServer(func(w http.ResponseWriter, r *http.Request) {
+				_, parseError = hook.Parse(r, tc.event)
+			})
+			defer server.Close()
+			req, err := http.NewRequest(http.MethodPost, server.URL+path, tc.payload)
+			assert.NoError(err)
+			req.Header = tc.headers
+			req.Header.Set("Content-Type", "application/json")
 
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, ErrMissingGitLabEventHeader)
+			resp, err := client.Do(req)
+			assert.NoError(err)
+			assert.Equal(http.StatusOK, resp.StatusCode)
+			assert.Error(parseError)
+		})
+	}
 }
 
-func TestUnsubscribedEvent(t *testing.T) {
-	payload := "{}"
-
-	var parseError error
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		_, parseError = hook.Parse(r, PushEvents)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Gitlab-Event", "noneexistant_event")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, ErrEventNotFound)
-}
-
-func TestBadBody(t *testing.T) {
-	payload := ""
-
-	var parseError error
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		_, parseError = hook.Parse(r, PushEvents)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Gitlab-Event", "Push Hook")
-	req.Header.Set("X-Gitlab-Token", "sampleToken!")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, ErrParsingPayload)
-}
-
-func TestTokenMismatch(t *testing.T) {
-	payload := "{}"
-
-	var parseError error
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		_, parseError = hook.Parse(r, PushEvents)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, bytes.NewBuffer([]byte(payload)))
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Gitlab-Event", "Push Hook")
-	req.Header.Set("X-Gitlab-Token", "badsampleToken!!")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, ErrGitLabTokenVerificationFailed)
-}
-
-func TestPushEvent(t *testing.T) {
-
-	payload, err := os.Open("../testdata/gitlab/push-event.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, PushEvents)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Gitlab-Event", "Push Hook")
-	req.Header.Set("X-Gitlab-Token", "sampleToken!")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(PushEventPayload)
-	Equal(t, ok, true)
-}
-
-func TestTagEvent(t *testing.T) {
-
-	payload, err := os.Open("../testdata/gitlab/tag-event.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, TagEvents)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Gitlab-Event", "Tag Push Hook")
-	req.Header.Set("X-Gitlab-Token", "sampleToken!")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(TagEventPayload)
-	Equal(t, ok, true)
-}
-
-func TestIssueEvent(t *testing.T) {
-
-	payload, err := os.Open("../testdata/gitlab/issue-event.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, IssuesEvents)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Gitlab-Event", "Issue Hook")
-	req.Header.Set("X-Gitlab-Token", "sampleToken!")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(IssueEventPayload)
-	Equal(t, ok, true)
-}
-
-func TestConfidentialIssueEvent(t *testing.T) {
-
-	payload, err := os.Open("../testdata/gitlab/confidential-issue-event.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, ConfidentialIssuesEvents)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Gitlab-Event", "Confidential Issue Hook")
-	req.Header.Set("X-Gitlab-Token", "sampleToken!")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(ConfidentialIssueEventPayload)
-	Equal(t, ok, true)
-}
-
-func TestCommentCommitEvent(t *testing.T) {
-
-	payload, err := os.Open("../testdata/gitlab/comment-commit-event.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, CommentEvents)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Gitlab-Event", "Note Hook")
-	req.Header.Set("X-Gitlab-Token", "sampleToken!")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(CommentEventPayload)
-	Equal(t, ok, true)
-}
-
-func TestCommentMergeRequestEvent(t *testing.T) {
-
-	payload, err := os.Open("../testdata/gitlab/comment-merge-request-event.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, CommentEvents)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Gitlab-Event", "Note Hook")
-	req.Header.Set("X-Gitlab-Token", "sampleToken!")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(CommentEventPayload)
-	Equal(t, ok, true)
-}
-
-func TestCommentIssueEvent(t *testing.T) {
-
-	payload, err := os.Open("../testdata/gitlab/comment-issue-event.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, CommentEvents)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Gitlab-Event", "Note Hook")
-	req.Header.Set("X-Gitlab-Token", "sampleToken!")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(CommentEventPayload)
-	Equal(t, ok, true)
-}
-
-func TestCommentSnippetEvent(t *testing.T) {
-
-	payload, err := os.Open("../testdata/gitlab/comment-snippet-event.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, CommentEvents)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Gitlab-Event", "Note Hook")
-	req.Header.Set("X-Gitlab-Token", "sampleToken!")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(CommentEventPayload)
-	Equal(t, ok, true)
-}
-
-func TestMergeRequestEvent(t *testing.T) {
-
-	payload, err := os.Open("../testdata/gitlab/merge-request-event.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, MergeRequestEvents)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Gitlab-Event", "Merge Request Hook")
-	req.Header.Set("X-Gitlab-Token", "sampleToken!")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(MergeRequestEventPayload)
-	Equal(t, ok, true)
-}
-
-func TestWikipageEvent(t *testing.T) {
-
-	payload, err := os.Open("../testdata/gitlab/wikipage-event.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, WikiPageEvents)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Gitlab-Event", "Wiki Page Hook")
-	req.Header.Set("X-Gitlab-Token", "sampleToken!")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(WikiPageEventPayload)
-	Equal(t, ok, true)
-}
-
-func TestPipelineEvent(t *testing.T) {
-
-	payload, err := os.Open("../testdata/gitlab/pipeline-event.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, PipelineEvents)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Gitlab-Event", "Pipeline Hook")
-	req.Header.Set("X-Gitlab-Token", "sampleToken!")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(PipelineEventPayload)
-	Equal(t, ok, true)
-}
-
-func TestBuildEvent(t *testing.T) {
-
-	payload, err := os.Open("../testdata/gitlab/build-event.json")
-	Equal(t, err, nil)
-
-	var parseError error
-	var results interface{}
-	server := newServer(func(w http.ResponseWriter, r *http.Request) {
-		results, parseError = hook.Parse(r, BuildEvents)
-	})
-	defer server.Close()
-
-	req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-	Equal(t, err, nil)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("X-Gitlab-Event", "Build Hook")
-	req.Header.Set("X-Gitlab-Token", "sampleToken!")
-
-	Equal(t, err, nil)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	Equal(t, err, nil)
-	Equal(t, resp.StatusCode, http.StatusOK)
-	Equal(t, parseError, nil)
-	_, ok := results.(BuildEventPayload)
-	Equal(t, ok, true)
+func TestWebhooks(t *testing.T) {
+	assert := require.New(t)
+	tests := []struct {
+		name     string
+		event    Event
+		typ      interface{}
+		filename string
+		headers  http.Header
+	}{
+		{
+			name:     "PushEvent",
+			event:    PushEvents,
+			typ:      PushEventPayload{},
+			filename: "../testdata/gitlab/push-event.json",
+			headers: http.Header{
+				"X-Gitlab-Event": []string{"Push Hook"},
+			},
+		},
+		{
+			name:     "TagEvent",
+			event:    TagEvents,
+			typ:      TagEventPayload{},
+			filename: "../testdata/gitlab/tag-event.json",
+			headers: http.Header{
+				"X-Gitlab-Event": []string{"Tag Push Hook"},
+			},
+		},
+		{
+			name:     "IssueEvent",
+			event:    IssuesEvents,
+			typ:      IssueEventPayload{},
+			filename: "../testdata/gitlab/issue-event.json",
+			headers: http.Header{
+				"X-Gitlab-Event": []string{"Issue Hook"},
+			},
+		},
+		{
+			name:     "ConfidentialIssueEvent",
+			event:    ConfidentialIssuesEvents,
+			typ:      ConfidentialIssueEventPayload{},
+			filename: "../testdata/gitlab/confidential-issue-event.json",
+			headers: http.Header{
+				"X-Gitlab-Event": []string{"Confidential Issue Hook"},
+			},
+		},
+		{
+			name:     "CommentCommitEvent",
+			event:    CommentEvents,
+			typ:      CommentEventPayload{},
+			filename: "../testdata/gitlab/comment-commit-event.json",
+			headers: http.Header{
+				"X-Gitlab-Event": []string{"Note Hook"},
+			},
+		},
+		{
+			name:     "CommentMergeRequestEvent",
+			event:    CommentEvents,
+			typ:      CommentEventPayload{},
+			filename: "../testdata/gitlab/comment-merge-request-event.json",
+			headers: http.Header{
+				"X-Gitlab-Event": []string{"Note Hook"},
+			},
+		},
+		{
+			name:     "CommentIssueEvent",
+			event:    CommentEvents,
+			typ:      CommentEventPayload{},
+			filename: "../testdata/gitlab/comment-issue-event.json",
+			headers: http.Header{
+				"X-Gitlab-Event": []string{"Note Hook"},
+			},
+		},
+		{
+			name:     "CommentSnippetEvent",
+			event:    CommentEvents,
+			typ:      CommentEventPayload{},
+			filename: "../testdata/gitlab/comment-snippet-event.json",
+			headers: http.Header{
+				"X-Gitlab-Event": []string{"Note Hook"},
+			},
+		},
+		{
+			name:     "MergeRequestEvent",
+			event:    MergeRequestEvents,
+			typ:      MergeRequestEventPayload{},
+			filename: "../testdata/gitlab/merge-request-event.json",
+			headers: http.Header{
+				"X-Gitlab-Event": []string{"Merge Request Hook"},
+			},
+		},
+		{
+			name:     "WikipageEvent",
+			event:    WikiPageEvents,
+			typ:      WikiPageEventPayload{},
+			filename: "../testdata/gitlab/wikipage-event.json",
+			headers: http.Header{
+				"X-Gitlab-Event": []string{"Wiki Page Hook"},
+			},
+		},
+		{
+			name:     "PipelineEvent",
+			event:    PipelineEvents,
+			typ:      PipelineEventPayload{},
+			filename: "../testdata/gitlab/pipeline-event.json",
+			headers: http.Header{
+				"X-Gitlab-Event": []string{"Pipeline Hook"},
+			},
+		},
+		{
+			name:     "BuildEvent",
+			event:    BuildEvents,
+			typ:      BuildEventPayload{},
+			filename: "../testdata/gitlab/build-event.json",
+			headers: http.Header{
+				"X-Gitlab-Event": []string{"Build Hook"},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tc := tt
+		client := &http.Client{}
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			payload, err := os.Open(tc.filename)
+			Equal(t, err, nil)
+			defer func() {
+				_ = payload.Close()
+			}()
+
+			var parseError error
+			var results interface{}
+			server := newServer(func(w http.ResponseWriter, r *http.Request) {
+				results, parseError = hook.Parse(r, tc.event)
+			})
+			defer server.Close()
+			req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
+			assert.NoError(err)
+			req.Header = tc.headers
+			req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("X-Gitlab-Token", "sampleToken!")
+
+			resp, err := client.Do(req)
+			assert.NoError(err)
+			assert.Equal(http.StatusOK, resp.StatusCode)
+			assert.NoError(parseError)
+			assert.Equal(reflect.TypeOf(tc.typ), reflect.TypeOf(results))
+		})
+	}
 }
