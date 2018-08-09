@@ -93,7 +93,7 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 	}
 
 	uuid := r.Header.Get("X-Hook-UUID")
-	if uuid == "" {
+	if hook.uuid != "" && uuid == "" {
 		return nil, ErrMissingHookUUIDHeader
 	}
 
