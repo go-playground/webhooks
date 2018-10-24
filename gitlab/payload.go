@@ -177,8 +177,16 @@ type Build struct {
 	When          string        `json:"when"`
 	Manual        bool          `json:"manual"`
 	User          User          `json:"user"`
-	Runner        string        `json:"runner"`
+	Runner        Runner        `json:"runner"`
 	ArtifactsFile ArtifactsFile `json:"artifactsfile"`
+}
+
+// Runner represents a runner agent
+type Runner struct {
+	ID          int64  `json:"id"`
+	Description string `json:"description"`
+	Active      bool   `json:"active"`
+	IsShared    bool   `json:"is_shared"`
 }
 
 // ArtifactsFile contains all of the GitLab artifact information
