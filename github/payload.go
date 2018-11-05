@@ -1412,6 +1412,7 @@ type IssuesPayload struct {
 		Type              string `json:"type"`
 		SiteAdmin         bool   `json:"site_admin"`
 	} `json:"sender"`
+	Assignee *Assignee `json:"assignee"`
 }
 
 // LabelPayload contains the information for GitHub's label hook event
@@ -3171,6 +3172,7 @@ type PullRequestPayload struct {
 		Type              string `json:"type"`
 		SiteAdmin         bool   `json:"site_admin"`
 	} `json:"sender"`
+	Assignee     *Assignee `json:"assignee"`
 	Installation struct {
 		ID int64 `json:"id"`
 	} `json:"installation"`
