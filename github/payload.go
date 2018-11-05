@@ -1109,15 +1109,16 @@ type IssueCommentPayload struct {
 			Name  string `json:"name"`
 			Color string `json:"color"`
 		} `json:"labels"`
-		State     string     `json:"state"`
-		Locked    bool       `json:"locked"`
-		Assignee  *Assignee  `json:"assignee"`
-		Milestone *Milestone `json:"milestone"`
-		Comments  int64      `json:"comments"`
-		CreatedAt time.Time  `json:"created_at"`
-		UpdatedAt time.Time  `json:"updated_at"`
-		ClosedAt  *time.Time `json:"closed_at"`
-		Body      string     `json:"body"`
+		State     string      `json:"state"`
+		Locked    bool        `json:"locked"`
+		Assignee  *Assignee   `json:"assignee"`
+		Assignees []*Assignee `json:"assignees"`
+		Milestone *Milestone  `json:"milestone"`
+		Comments  int64       `json:"comments"`
+		CreatedAt time.Time   `json:"created_at"`
+		UpdatedAt time.Time   `json:"updated_at"`
+		ClosedAt  *time.Time  `json:"closed_at"`
+		Body      string      `json:"body"`
 	} `json:"issue"`
 	Comment struct {
 		URL      string `json:"url"`
@@ -1294,15 +1295,16 @@ type IssuesPayload struct {
 			Color   string `json:"color"`
 			Default bool   `json:"default"`
 		} `json:"labels"`
-		State     string     `json:"state"`
-		Locked    bool       `json:"locked"`
-		Assignee  *Assignee  `json:"assignee"`
-		Milestone *Milestone `json:"milestone"`
-		Comments  int64      `json:"comments"`
-		CreatedAt time.Time  `json:"created_at"`
-		UpdatedAt time.Time  `json:"updated_at"`
-		ClosedAt  *time.Time `json:"closed_at"`
-		Body      string     `json:"body"`
+		State     string      `json:"state"`
+		Locked    bool        `json:"locked"`
+		Assignee  *Assignee   `json:"assignee"`
+		Assignees []*Assignee `json:"assignees"`
+		Milestone *Milestone  `json:"milestone"`
+		Comments  int64       `json:"comments"`
+		CreatedAt time.Time   `json:"created_at"`
+		UpdatedAt time.Time   `json:"updated_at"`
+		ClosedAt  *time.Time  `json:"closed_at"`
+		Body      string      `json:"body"`
 	} `json:"issue"`
 	Repository struct {
 		ID       int64  `json:"id"`
