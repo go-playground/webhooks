@@ -29,6 +29,6 @@ script:
  - make test
 
 after_success: |
-  [ $TRAVIS_GO_VERSION = 1.10.3 ] &&
+  [ $TRAVIS_GO_VERSION = 1.11.2 ] &&
   overalls -project="github.com/go-playground/webhooks" -covermode=count -ignore=.git,_examples,testdata -debug &&
   goveralls -coverprofile=overalls.coverprofile -service travis-ci -repotoken $COVERALLS_TOKEN
