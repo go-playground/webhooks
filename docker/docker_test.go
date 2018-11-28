@@ -61,9 +61,6 @@ func TestWebhooks(t *testing.T) {
 			event:    BuildEvent,
 			typ:      BuildPayload{},
 			filename: "../testdata/docker/docker_hub_build_notice.json",
-			headers: http.Header{
-				"X-Github-Event": []string{"commit_comment"},
-			},
 		},
 	}
 
@@ -86,7 +83,6 @@ func TestWebhooks(t *testing.T) {
 			defer server.Close()
 			req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
 			assert.NoError(err)
-			req.Header = tc.headers
 			req.Header.Set("Content-Type", "application/json")
 
 			resp, err := client.Do(req)

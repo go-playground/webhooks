@@ -11,8 +11,6 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
-
-	log "github.com/Sirupsen/logrus"
 )
 
 // parse errors
@@ -21,10 +19,10 @@ var (
 	ErrParsingPayload    = errors.New("error parsing payload")
 )
 
-// Event defines a GitHub hook event type
+// Event defines a Docker hook event type
 type Event string
 
-// GitHub hook types
+// Docker hook types (only one for now)
 const (
 	BuildEvent Event = "build"
 )
@@ -58,40 +56,14 @@ type BuildPayload struct {
 	} `json:"repository"`
 }
 
-// there are no options for docker webhooks
-// however I'm leaving this here for now in anticipation of future support for Docker Trusted Registry
-
-// // Option is a configuration option for the webhook
-// type Option func(*Webhook) error
-
-// // Options is a namespace var for configuration options
-// var Options = WebhookOptions{}
-
-// // WebhookOptions is a namespace for configuration option methods
-// type WebhookOptions struct{}
-
-// // Secret registers the GitHub secret
-// func (WebhookOptions) Secret(secret string) Option {
-// 	return func(hook *Webhook) error {
-// 		hook.secret = secret
-// 		return nil
-// 	}
-// }
-
 // Webhook instance contains all methods needed to process events
 type Webhook struct {
 	secret string
 }
 
-// New creates and returns a WebHook instance denoted by the Provider type
+// New creates and returns a WebHook instance
 func New() (*Webhook, error) {
-	// func New(options ...Option) (*Webhook, error) {
 	hook := new(Webhook)
-	// for _, opt := range options {
-	// 	if err := opt(hook); err != nil {
-	// 		return nil, errors.New("Error applying Option")
-	// 	}
-	// }
 	return hook, nil
 }
 
@@ -106,24 +78,14 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return nil, ErrInvalidHTTPMethod
 	}
 
-	// event := r.Header.Get("X-GitHub-Event")
-	// if event == "" {
-	// 	return nil, ErrMissingGithubEventHeader
-	// }
-	// gitHubEvent := Event(event)
-
 	payload, err := ioutil.ReadAll(r.Body)
 	if err != nil || len(payload) == 0 {
-		log.Error(ErrParsingPayload)
-		log.Error(err)
 		return nil, ErrParsingPayload
 	}
 
 	var pl BuildPayload
 	err = json.Unmarshal([]byte(payload), &pl)
 	if err != nil {
-		log.Error(ErrParsingPayload)
-		log.Error(err)
 		return nil, ErrParsingPayload
 	}
 	return pl, err
