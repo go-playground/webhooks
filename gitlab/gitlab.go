@@ -82,6 +82,9 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		_ = r.Body.Close()
 	}()
 
+	var err error
+	var payload []byte
+
 	if len(events) == 0 {
 		return nil, ErrEventNotSpecifiedToParse
 	}
@@ -95,15 +98,13 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 	}
 
 	gitLabEvent := Event(event)
-	payload := []byte{}
 
 	if gitLabEvent == SystemHooks {
 
-		sysPayload, err := ioutil.ReadAll(r.Body)
-		if err != nil || len(sysPayload) == 0 {
+		payload, err = ioutil.ReadAll(r.Body)
+		if err != nil || len(payload) == 0 {
 			return nil, ErrParsingSystemPayload
 		}
-		payload = sysPayload
 
 		var sysPl SystemHookPayload
 		err = json.Unmarshal([]byte(payload), &sysPl)
@@ -135,7 +136,7 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 
 	// check if payload is empty - that means it was no system hook call
 	if len(payload) == 0 {
-		payload, err := ioutil.ReadAll(r.Body)
+		payload, err = ioutil.ReadAll(r.Body)
 		if err != nil || len(payload) == 0 {
 			return nil, ErrParsingPayload
 		}
@@ -152,47 +153,47 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 	switch gitLabEvent {
 	case PushEvents:
 		var pl PushEventPayload
-		err := json.Unmarshal([]byte(payload), &pl)
+		err = json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 
 	case TagEvents:
 		var pl TagEventPayload
-		err := json.Unmarshal([]byte(payload), &pl)
+		err = json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 
 	case ConfidentialIssuesEvents:
 		var pl ConfidentialIssueEventPayload
-		err := json.Unmarshal([]byte(payload), &pl)
+		err = json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 
 	case IssuesEvents:
 		var pl IssueEventPayload
-		err := json.Unmarshal([]byte(payload), &pl)
+		err = json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 
 	case CommentEvents:
 		var pl CommentEventPayload
-		err := json.Unmarshal([]byte(payload), &pl)
+		err = json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 
 	case MergeRequestEvents:
 		var pl MergeRequestEventPayload
-		err := json.Unmarshal([]byte(payload), &pl)
+		err = json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 
 	case WikiPageEvents:
 		var pl WikiPageEventPayload
-		err := json.Unmarshal([]byte(payload), &pl)
+		err = json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 
 	case PipelineEvents:
 		var pl PipelineEventPayload
-		err := json.Unmarshal([]byte(payload), &pl)
+		err = json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 
 	case BuildEvents:
 		var pl BuildEventPayload
-		err := json.Unmarshal([]byte(payload), &pl)
+		err = json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 	default:
 		return nil, fmt.Errorf("unknown event %s", gitLabEvent)
