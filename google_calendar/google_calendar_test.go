@@ -48,17 +48,20 @@ func newServer(handler http.HandlerFunc) *httptest.Server {
 	return httptest.NewServer(mux)
 }
 
-var basicHeader = map[string][]string{
-	"X-Goog-Channel-ID":         {"channel-ID-value"},
-	"X-Goog-Channel-Token":      {"channel-token-value"},
-	"X-Goog-Channel-Expiration": {"Tue, 19 Nov 2013 01:13:52 GMT"},
-	"X-Goog-Resource-ID":        {"identifier-for-the-watched-resource"},
-	"X-Goog-Resource-URI":       {"version-specific-URI-of-the-watched-resource"},
-	"X-Goog-Resource-State":     {"sync"},
-	"X-Goog-Message-Number":     {"1"},
+func getHeaders(e Event) map[string][]string {
+	return map[string][]string{
+		"X-Goog-Channel-ID":         {"channel-ID-value"},
+		"X-Goog-Channel-Token":      {"channel-token-value"},
+		"X-Goog-Channel-Expiration": {"Tue, 19 Nov 2013 01:13:52 GMT"},
+		"X-Goog-Resource-ID":        {"identifier-for-the-watched-resource"},
+		"X-Goog-Resource-URI":       {"version-specific-URI-of-the-watched-resource"},
+		"X-Goog-Message-Number":     {"1"},
+		"X-Goog-Resource-State":     {string(e)},
+	}
 }
 
 func TestWebhooks(t *testing.T) {
+
 	assert := require.New(t)
 	tests := []struct {
 		name    string
@@ -70,19 +73,19 @@ func TestWebhooks(t *testing.T) {
 			name:    "SyncEvent",
 			event:   SyncEvent,
 			typ:     &GoogleCalendarPayload{},
-			headers: basicHeader,
+			headers: getHeaders(SyncEvent),
 		},
 		{
 			name:    "ExistsEvent",
 			event:   ExistsEvent,
 			typ:     &GoogleCalendarPayload{},
-			headers: basicHeader,
+			headers: getHeaders(ExistsEvent),
 		},
 		{
 			name:    "NotExistsEvent",
 			event:   NotExistsEvent,
 			typ:     &GoogleCalendarPayload{},
-			headers: basicHeader,
+			headers: getHeaders(NotExistsEvent),
 		},
 	}
 
@@ -95,7 +98,6 @@ func TestWebhooks(t *testing.T) {
 			var parseError error
 			var results interface{}
 			server := newServer(func(w http.ResponseWriter, r *http.Request) {
-				tt.headers["X-Goog-Resource-State"] = []string{string(tt.event)}
 				r.Header = tt.headers
 				results, parseError = hook.Parse(r, tc.event)
 				if parseError != nil {
@@ -117,6 +119,45 @@ func TestWebhooks(t *testing.T) {
 			assert.Equal(http.StatusOK, resp.StatusCode)
 			assert.NoError(parseError)
 			assert.Equal(reflect.TypeOf(tc.typ), reflect.TypeOf(results))
+		})
+	}
+	errortests := []struct {
+		name    string
+		event   Event
+		typ     interface{}
+		headers http.Header
+	}{
+		{
+			name:    "BadEvent",
+			event:   "bad_event",
+			typ:     &http.Client{},
+			headers: make(map[string][]string),
+		},
+	}
+
+	for _, tt := range errortests {
+		tc := tt
+		client := &http.Client{}
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			var parseError error
+			var results interface{}
+			server := newServer(func(w http.ResponseWriter, r *http.Request) {
+				r.Header = tt.headers
+				results, parseError = hook.Parse(r, tc.event)
+				if parseError != nil {
+					fmt.Println(parseError)
+				}
+			})
+			defer server.Close()
+			req, err := http.NewRequest(http.MethodPost, server.URL+path, nil)
+			assert.NoError(err)
+			req.Header.Set("Content-Type", "application/json")
+
+			_, err = client.Do(req)
+			assert.Equal(parseError, ErrParsingPayload)
+			assert.NotEqual(reflect.TypeOf(tc.typ), reflect.TypeOf(results))
 		})
 	}
 }
