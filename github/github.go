@@ -36,6 +36,7 @@ const (
 	ForkEvent                     Event = "fork"
 	GollumEvent                   Event = "gollum"
 	InstallationEvent             Event = "installation"
+	InstallationRepositoriesEvent Event = "installation_repositories"
 	IntegrationInstallationEvent  Event = "integration_installation"
 	IssueCommentEvent             Event = "issue_comment"
 	IssuesEvent                   Event = "issues"
@@ -191,6 +192,10 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return pl, err
 	case InstallationEvent, IntegrationInstallationEvent:
 		var pl InstallationPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
+	case InstallationRepositoriesEvent:
+		var pl InstallationRepositoriesPayload
 		err = json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 	case IssueCommentEvent:
