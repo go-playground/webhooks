@@ -1493,6 +1493,7 @@ type IssuesPayload struct {
 		SiteAdmin         bool   `json:"site_admin"`
 	} `json:"sender"`
 	Assignee *Assignee `json:"assignee"`
+	Label    *Label    `json:"label"`
 }
 
 // LabelPayload contains the information for GitHub's label hook event
@@ -5186,4 +5187,13 @@ type Asset struct {
 type Parent struct {
 	URL string `json:"url"`
 	Sha string `json:"sha"`
+}
+
+// Label contains Issue's Label information
+type Label struct {
+	ID      int64  `json:"id"`
+	URL     string `json:"url"`
+	Name    string `json:"name"`
+	Color   string `json:"color"`
+	Default bool   `json:"default"`
 }
