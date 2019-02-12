@@ -3749,6 +3749,7 @@ type PullRequestReviewCommentPayload struct {
 				Href string `json:"href"`
 			} `json:"pull_request"`
 		} `json:"_links"`
+		InReplyToId int64  `json:"in_reply_to_id"`
 	} `json:"comment"`
 	PullRequest struct {
 		URL      string `json:"url"`
