@@ -1073,6 +1073,86 @@ type InstallationPayload struct {
 	} `json:"sender"`
 }
 
+// InstallationRepositoriesPayload contains the information for GitHub's installation_repositories hook events
+type InstallationRepositoriesPayload struct {
+	Action       string `json:"action"`
+	Installation struct {
+		ID      int64 `json:"id"`
+		Account struct {
+			Login             string `json:"login"`
+			ID                int64  `json:"id"`
+			AvatarURL         string `json:"avatar_url"`
+			GravatarID        string `json:"gravatar_id"`
+			URL               string `json:"url"`
+			HTMLURL           string `json:"html_url"`
+			FollowersURL      string `json:"followers_url"`
+			FollowingURL      string `json:"following_url"`
+			GistsURL          string `json:"gists_url"`
+			StarredURL        string `json:"starred_url"`
+			SubscriptionsURL  string `json:"subscriptions_url"`
+			OrganizationsURL  string `json:"organizations_url"`
+			ReposURL          string `json:"repos_url"`
+			EventsURL         string `json:"events_url"`
+			ReceivedEventsURL string `json:"received_events_url"`
+			Type              string `json:"type"`
+			SiteAdmin         bool   `json:"site_admin"`
+		} `json:"account"`
+		RepositorySelection string `json:"repository_selection"`
+		AccessTokensURL     string `json:"access_tokens_url"`
+		RepositoriesURL     string `json:"repositories_url"`
+		HTMLURL             string `json:"html_url"`
+		AppID               int    `json:"app_id"`
+		TargetID            int    `json:"target_id"`
+		TargetType          string `json:"target_type"`
+		Permissions         struct {
+			Issues              string `json:"issues"`
+			Metadata            string `json:"metadata"`
+			PullRequests        string `json:"pull_requests"`
+			RepositoryProjects  string `json:"repository_projects"`
+			VulnerabilityAlerts string `json:"vulnerability_alerts"`
+			Statuses            string `json:"statuses"`
+			Administration      string `json:"administration"`
+			Deployments         string `json:"deployments"`
+			Contents            string `json:"contents"`
+		} `json:"permissions"`
+		Events         []string `json:"events"`
+		CreatedAt      int64    `json:"created_at"`
+		UpdatedAt      int64    `json:"updated_at"`
+		SingleFileName *string  `json:"single_file_name"`
+	} `json:"installation"`
+	RepositoriesAdded []struct {
+		ID       int64  `json:"id"`
+		Name     string `json:"name"`
+		FullName string `json:"full_name"`
+		Private  bool   `json:"private"`
+	} `json:"repositories_added"`
+	RepositoriesRemoved []struct {
+		ID       int64  `json:"id"`
+		Name     string `json:"name"`
+		FullName string `json:"full_name"`
+		Private  bool   `json:"private"`
+	} `json:"repositories_removed"`
+	Sender struct {
+		Login             string `json:"login"`
+		ID                int64  `json:"id"`
+		AvatarURL         string `json:"avatar_url"`
+		GravatarID        string `json:"gravatar_id"`
+		URL               string `json:"url"`
+		HTMLURL           string `json:"html_url"`
+		FollowersURL      string `json:"followers_url"`
+		FollowingURL      string `json:"following_url"`
+		GistsURL          string `json:"gists_url"`
+		StarredURL        string `json:"starred_url"`
+		SubscriptionsURL  string `json:"subscriptions_url"`
+		OrganizationsURL  string `json:"organizations_url"`
+		ReposURL          string `json:"repos_url"`
+		EventsURL         string `json:"events_url"`
+		ReceivedEventsURL string `json:"received_events_url"`
+		Type              string `json:"type"`
+		SiteAdmin         bool   `json:"site_admin"`
+	} `json:"sender"`
+}
+
 // IssueCommentPayload contains the information for GitHub's issue_comment hook event
 type IssueCommentPayload struct {
 	Action string `json:"action"`
@@ -1413,6 +1493,7 @@ type IssuesPayload struct {
 		SiteAdmin         bool   `json:"site_admin"`
 	} `json:"sender"`
 	Assignee *Assignee `json:"assignee"`
+	Label    *Label    `json:"label"`
 }
 
 // LabelPayload contains the information for GitHub's label hook event
@@ -3668,6 +3749,7 @@ type PullRequestReviewCommentPayload struct {
 				Href string `json:"href"`
 			} `json:"pull_request"`
 		} `json:"_links"`
+		InReplyToID int64  `json:"in_reply_to_id"`
 	} `json:"comment"`
 	PullRequest struct {
 		URL      string `json:"url"`
@@ -5106,4 +5188,13 @@ type Asset struct {
 type Parent struct {
 	URL string `json:"url"`
 	Sha string `json:"sha"`
+}
+
+// Label contains Issue's Label information
+type Label struct {
+	ID      int64  `json:"id"`
+	URL     string `json:"url"`
+	Name    string `json:"name"`
+	Color   string `json:"color"`
+	Default bool   `json:"default"`
 }
