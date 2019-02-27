@@ -32,7 +32,7 @@ const (
 	WikiPageEvents           Event = "Wiki Page Hook"
 	PipelineEvents           Event = "Pipeline Hook"
 	BuildEvents              Event = "Build Hook"
-	SystemHooks              Event = "System Hook"
+	SystemHookEvents         Event = "System Hook"
 
 	objectPush         string = "push"
 	objectTag          string = "tag_push"
@@ -82,14 +82,22 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		_ = r.Body.Close()
 	}()
 
-	var err error
-	var payload []byte
-
 	if len(events) == 0 {
 		return nil, ErrEventNotSpecifiedToParse
 	}
 	if r.Method != http.MethodPost {
 		return nil, ErrInvalidHTTPMethod
+	}
+
+	// Add SystemHookEvents to event slice to allow parsing of it
+	events = append(events, SystemHookEvents)
+
+	// If we have a Secret set, we should check the MAC
+	if len(hook.secret) > 0 {
+		signature := r.Header.Get("X-Gitlab-Token")
+		if signature != hook.secret {
+			return nil, ErrGitLabTokenVerificationFailed
+		}
 	}
 
 	event := r.Header.Get("X-Gitlab-Event")
@@ -99,28 +107,16 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 
 	gitLabEvent := Event(event)
 
-	if gitLabEvent == SystemHooks {
-
-		payload, err = ioutil.ReadAll(r.Body)
-		if err != nil || len(payload) == 0 {
-			return nil, ErrParsingSystemPayload
-		}
-
-		var sysPl SystemHookPayload
-		err = json.Unmarshal([]byte(payload), &sysPl)
-		if err != nil {
-			return nil, err
-		}
-
-		switch sysPl.ObjectKind {
-		case objectPush:
-			gitLabEvent = PushEvents
-		case objectTag:
-			gitLabEvent = TagEvents
-		case objectMergeRequest:
-			gitLabEvent = MergeRequestEvents
-		}
+	// check if payload is empty - that means it was no system hook call
+	payload, err := ioutil.ReadAll(r.Body)
+	if err != nil || len(payload) == 0 {
+		return nil, ErrParsingPayload
 	}
+
+	return eventParsing(gitLabEvent, events, payload)
+}
+
+func eventParsing(gitLabEvent Event, events []Event, payload []byte) (interface{}, error) {
 
 	var found bool
 	for _, evt := range events {
@@ -134,67 +130,68 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return nil, ErrEventNotFound
 	}
 
-	// check if payload is empty - that means it was no system hook call
-	if len(payload) == 0 {
-		payload, err = ioutil.ReadAll(r.Body)
-		if err != nil || len(payload) == 0 {
-			return nil, ErrParsingPayload
-		}
-	}
-
-	// If we have a Secret set, we should check the MAC
-	if len(hook.secret) > 0 {
-		signature := r.Header.Get("X-Gitlab-Token")
-		if signature != hook.secret {
-			return nil, ErrGitLabTokenVerificationFailed
-		}
-	}
-
 	switch gitLabEvent {
 	case PushEvents:
 		var pl PushEventPayload
-		err = json.Unmarshal([]byte(payload), &pl)
+		err := json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 
 	case TagEvents:
 		var pl TagEventPayload
-		err = json.Unmarshal([]byte(payload), &pl)
+		err := json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 
 	case ConfidentialIssuesEvents:
 		var pl ConfidentialIssueEventPayload
-		err = json.Unmarshal([]byte(payload), &pl)
+		err := json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 
 	case IssuesEvents:
 		var pl IssueEventPayload
-		err = json.Unmarshal([]byte(payload), &pl)
+		err := json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 
 	case CommentEvents:
 		var pl CommentEventPayload
-		err = json.Unmarshal([]byte(payload), &pl)
+		err := json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 
 	case MergeRequestEvents:
 		var pl MergeRequestEventPayload
-		err = json.Unmarshal([]byte(payload), &pl)
+		err := json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 
 	case WikiPageEvents:
 		var pl WikiPageEventPayload
-		err = json.Unmarshal([]byte(payload), &pl)
+		err := json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 
 	case PipelineEvents:
 		var pl PipelineEventPayload
-		err = json.Unmarshal([]byte(payload), &pl)
+		err := json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 
 	case BuildEvents:
 		var pl BuildEventPayload
-		err = json.Unmarshal([]byte(payload), &pl)
+		err := json.Unmarshal([]byte(payload), &pl)
 		return pl, err
+
+	case SystemHookEvents:
+		var pl SystemHookPayload
+		err := json.Unmarshal([]byte(payload), &pl)
+		if err != nil {
+			return nil, err
+		}
+		switch pl.ObjectKind {
+		case objectPush:
+			return eventParsing(PushEvents, events, payload)
+		case objectTag:
+			return eventParsing(TagEvents, events, payload)
+		case objectMergeRequest:
+			return eventParsing(MergeRequestEvents, events, payload)
+		default:
+			return nil, fmt.Errorf("unknown system hook event %s", gitLabEvent)
+		}
 	default:
 		return nil, fmt.Errorf("unknown event %s", gitLabEvent)
 	}
