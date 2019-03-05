@@ -89,7 +89,7 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return nil, ErrInvalidHTTPMethod
 	}
 
-	// Add SystemHookEvents to event slice to allow parsing of it
+	// Add SystemHookEvents to event slice to allow parsing
 	events = append(events, SystemHookEvents)
 
 	// If we have a Secret set, we should check the MAC
@@ -107,7 +107,6 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 
 	gitLabEvent := Event(event)
 
-	// check if payload is empty - that means it was no system hook call
 	payload, err := ioutil.ReadAll(r.Body)
 	if err != nil || len(payload) == 0 {
 		return nil, ErrParsingPayload
