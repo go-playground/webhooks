@@ -1,0 +1,184 @@
+{
+  "eventKey": "pr:deleted",
+  "date": "2019-03-01T10:17:10+0100",
+  "actor": {
+    "name": "gopher",
+    "emailAddress": "gopher@foo.bar",
+    "id": 3231,
+    "displayName": "Foo Bar",
+    "active": true,
+    "slug": "gopher",
+    "type": "NORMAL",
+    "links": {
+      "self": [
+        {
+          "href": "https://server.bitbucket.local/users/gopher"
+        }
+      ]
+    }
+  },
+  "pullRequest": {
+    "id": 2,
+    "version": 26,
+    "title": "Update README",
+    "description": "yada yada yada",
+    "state": "OPEN",
+    "open": true,
+    "closed": false,
+    "createdDate": 1550436762919,
+    "updatedDate": 1551431770064,
+    "fromRef": {
+      "id": "refs/heads/feature/wip",
+      "displayId": "feature/wip",
+      "latestCommit": "50a8ee1fae3abf75738a85f9039b4b2de4947174",
+      "repository": {
+        "slug": "webhook-test",
+        "id": 4,
+        "name": "webhook-test",
+        "scmId": "git",
+        "state": "AVAILABLE",
+        "statusMessage": "Available",
+        "forkable": true,
+        "project": {
+          "key": "~gopher",
+          "id": 2,
+          "name": "Foo Bar",
+          "type": "PERSONAL",
+          "owner": {
+            "name": "gopher",
+            "emailAddress": "gopher@foo.bar",
+            "id": 3231,
+            "displayName": "Foo Bar",
+            "active": true,
+            "slug": "gopher",
+            "type": "NORMAL",
+            "links": {
+              "self": [
+                {
+                  "href": "https://server.bitbucket.local/users/gopher"
+                }
+              ]
+            }
+          },
+          "links": {
+            "self": [
+              {
+                "href": "https://server.bitbucket.local/users/gopher"
+              }
+            ]
+          }
+        },
+        "public": false,
+        "links": {
+          "clone": [
+            {
+              "href": "ssh://git@server.bitbucket.local:7999/~gopher/webhook-test.git",
+              "name": "ssh"
+            },
+            {
+              "href": "https://server.bitbucket.local/scm/~gopher/webhook-test.git",
+              "name": "http"
+            }
+          ],
+          "self": [
+            {
+              "href": "https://server.bitbucket.local/users/gopher/repos/webhook-test/browse"
+            }
+          ]
+        }
+      }
+    },
+    "toRef": {
+      "id": "refs/heads/master",
+      "displayId": "master",
+      "latestCommit": "038e7b67735e54f6de8f1c5d533c6751df524f6c",
+      "repository": {
+        "slug": "webhook-test",
+        "id": 4,
+        "name": "webhook-test",
+        "scmId": "git",
+        "state": "AVAILABLE",
+        "statusMessage": "Available",
+        "forkable": true,
+        "project": {
+          "key": "~gopher",
+          "id": 2,
+          "name": "Foo Bar",
+          "type": "PERSONAL",
+          "owner": {
+            "name": "gopher",
+            "emailAddress": "gopher@foo.bar",
+            "id": 3231,
+            "displayName": "Foo Bar",
+            "active": true,
+            "slug": "gopher",
+            "type": "NORMAL",
+            "links": {
+              "self": [
+                {
+                  "href": "https://server.bitbucket.local/users/gopher"
+                }
+              ]
+            }
+          },
+          "links": {
+            "self": [
+              {
+                "href": "https://server.bitbucket.local/users/gopher"
+              }
+            ]
+          }
+        },
+        "public": false,
+        "links": {
+          "clone": [
+            {
+              "href": "ssh://git@server.bitbucket.local:7999/~gopher/webhook-test.git",
+              "name": "ssh"
+            },
+            {
+              "href": "https://server.bitbucket.local/scm/~gopher/webhook-test.git",
+              "name": "http"
+            }
+          ],
+          "self": [
+            {
+              "href": "https://server.bitbucket.local/users/gopher/repos/webhook-test/browse"
+            }
+          ]
+        }
+      }
+    },
+    "locked": false,
+    "author": {
+      "user": {
+        "name": "gopher",
+        "emailAddress": "gopher@foo.bar",
+        "id": 3231,
+        "displayName": "Foo Bar",
+        "active": true,
+        "slug": "gopher",
+        "type": "NORMAL",
+        "links": {
+          "self": [
+            {
+              "href": "https://server.bitbucket.local/users/gopher"
+            }
+          ]
+        }
+      },
+      "role": "AUTHOR",
+      "approved": false,
+      "status": "UNAPPROVED"
+    },
+    "reviewers": [],
+    "participants": [],
+    "links": {
+      "self": [
+        {
+          "href": "https://server.bitbucket.local/users/gopher/repos/webhook-test/pull-requests/2"
+        }
+      ]
+    }
+  }
+}

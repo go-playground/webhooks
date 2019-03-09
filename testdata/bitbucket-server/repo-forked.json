@@ -1,0 +1,132 @@
+{
+  "eventKey": "repo:forked",
+  "date": "2019-02-28T16:12:04+0100",
+  "actor": {
+    "name": "tux",
+    "emailAddress": "cain.piper@foo.bar",
+    "id": 2125,
+    "displayName": "Cain Piper",
+    "active": true,
+    "slug": "tux",
+    "type": "NORMAL",
+    "links": {
+      "self": [
+        {
+          "href": "https://server.bitbucket.local/users/tux"
+        }
+      ]
+    }
+  },
+  "repository": {
+    "slug": "webhook-test",
+    "id": 124,
+    "name": "webhook-test",
+    "scmId": "git",
+    "state": "AVAILABLE",
+    "statusMessage": "Available",
+    "forkable": true,
+    "origin": {
+      "slug": "webhook-test",
+      "id": 4,
+      "name": "webhook-test",
+      "scmId": "git",
+      "state": "AVAILABLE",
+      "statusMessage": "Available",
+      "forkable": true,
+      "project": {
+        "key": "~gopher",
+        "id": 2,
+        "name": "Foo Bar",
+        "type": "PERSONAL",
+        "owner": {
+          "name": "gopher",
+          "emailAddress": "gopher@foo.bar",
+          "id": 3231,
+          "displayName": "Foo Bar",
+          "active": true,
+          "slug": "gopher",
+          "type": "NORMAL",
+          "links": {
+            "self": [
+              {
+                "href": "https://server.bitbucket.local/users/gopher"
+              }
+            ]
+          }
+        },
+        "links": {
+          "self": [
+            {
+              "href": "https://server.bitbucket.local/users/gopher"
+            }
+          ]
+        }
+      },
+      "public": false,
+      "links": {
+        "clone": [
+          {
+            "href": "ssh://git@server.bitbucket.local:7999/~gopher/webhook-test.git",
+            "name": "ssh"
+          },
+          {
+            "href": "https://server.bitbucket.local/scm/~gopher/webhook-test.git",
+            "name": "http"
+          }
+        ],
+        "self": [
+          {
+            "href": "https://server.bitbucket.local/users/gopher/repos/webhook-test/browse"
+          }
+        ]
+      }
+    },
+    "project": {
+      "key": "~tux",
+      "id": 19,
+      "name": "Cain Piper",
+      "type": "PERSONAL",
+      "owner": {
+        "name": "tux",
+        "emailAddress": "cain.piper@foo.bar",
+        "id": 2125,
+        "displayName": "Cain Piper",
+        "active": true,
+        "slug": "tux",
+        "type": "NORMAL",
+        "links": {
+          "self": [
+            {
+              "href": "https://server.bitbucket.local/users/tux"
+            }
+          ]
+        }
+      },
+      "links": {
+        "self": [
+          {
+            "href": "https://server.bitbucket.local/users/tux"
+          }
+        ]
+      }
+    },
+    "public": false,
+    "links": {
+      "clone": [
+        {
+          "href": "ssh://git@server.bitbucket.local:7999/~tux/webhook-test.git",
+          "name": "ssh"
+        },
+        {
+          "href": "https://server.bitbucket.local/scm/~tux/webhook-test.git",
+          "name": "http"
+        }
+      ],
+      "self": [
+        {
+          "href": "https://server.bitbucket.local/users/tux/repos/webhook-test/browse"
+        }
+      ]
+    }
+  }
+}
