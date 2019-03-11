@@ -306,7 +306,7 @@ func TestSystemHooks(t *testing.T) {
 			var parseError error
 			var results interface{}
 			server := newServer(func(w http.ResponseWriter, r *http.Request) {
-				results, parseError = hook.Parse(r, tc.event)
+				results, parseError = hook.Parse(r, SystemHookEvents, tc.event)
 			})
 			defer server.Close()
 			req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)

@@ -89,9 +89,6 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return nil, ErrInvalidHTTPMethod
 	}
 
-	// Add SystemHookEvents to event slice to allow parsing
-	events = append(events, SystemHookEvents)
-
 	// If we have a Secret set, we should check the MAC
 	if len(hook.secret) > 0 {
 		signature := r.Header.Get("X-Gitlab-Token")
