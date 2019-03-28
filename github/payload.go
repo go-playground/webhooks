@@ -3253,8 +3253,9 @@ type PullRequestPayload struct {
 		Type              string `json:"type"`
 		SiteAdmin         bool   `json:"site_admin"`
 	} `json:"sender"`
-	Assignee     *Assignee `json:"assignee"`
-	Installation struct {
+	Assignee          *Assignee `json:"assignee"`
+	RequestedReviewer *Assignee `json:"requested_reviewer"`
+	Installation      struct {
 		ID int64 `json:"id"`
 	} `json:"installation"`
 }
@@ -3749,7 +3750,7 @@ type PullRequestReviewCommentPayload struct {
 				Href string `json:"href"`
 			} `json:"pull_request"`
 		} `json:"_links"`
-		InReplyToID int64  `json:"in_reply_to_id"`
+		InReplyToID int64 `json:"in_reply_to_id"`
 	} `json:"comment"`
 	PullRequest struct {
 		URL      string `json:"url"`
