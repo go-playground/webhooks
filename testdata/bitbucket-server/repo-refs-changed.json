@@ -1,0 +1,89 @@
+{
+  "eventKey": "repo:refs_changed",
+  "date": "2019-03-01T10:37:14+0100",
+  "actor": {
+    "name": "gopher",
+    "emailAddress": "foo@bar.com",
+    "id": 3231,
+    "displayName": "Foo Bar",
+    "active": true,
+    "slug": "gopher",
+    "type": "NORMAL",
+    "links": {
+      "self": [
+        {
+          "href": "https://server.bitbucket.local/users/gopher"
+        }
+      ]
+    }
+  },
+  "repository": {
+    "slug": "webhook-test",
+    "id": 4,
+    "name": "webhook-test",
+    "scmId": "git",
+    "state": "AVAILABLE",
+    "statusMessage": "Available",
+    "forkable": true,
+    "project": {
+      "key": "~gopher",
+      "id": 2,
+      "name": "Foo Bar",
+      "type": "PERSONAL",
+      "owner": {
+        "name": "gopher",
+        "emailAddress": "foo@bar.com",
+        "id": 3231,
+        "displayName": "Foo Bar",
+        "active": true,
+        "slug": "gopher",
+        "type": "NORMAL",
+        "links": {
+          "self": [
+            {
+              "href": "https://server.bitbucket.local/users/gopher"
+            }
+          ]
+        }
+      },
+      "links": {
+        "self": [
+          {
+            "href": "https://server.bitbucket.local/users/gopher"
+          }
+        ]
+      }
+    },
+    "public": false,
+    "links": {
+      "clone": [
+        {
+          "href": "ssh://git@server.bitbucket.local:7999/~gopher/webhook-test.git",
+          "name": "ssh"
+        },
+        {
+          "href": "https://server.bitbucket.local/scm/~gopher/webhook-test.git",
+          "name": "http"
+        }
+      ],
+      "self": [
+        {
+          "href": "https://server.bitbucket.local/users/gopher/repos/webhook-test/browse"
+        }
+      ]
+    }
+  },
+  "changes": [
+    {
+      "ref": {
+        "id": "refs/heads/feature/wip",
+        "displayId": "feature/wip",
+        "type": "BRANCH"
+      },
+      "refId": "refs/heads/feature/wip",
+      "fromHash": "32a0b8a740c2963c6f56bd8baf3dc05683d299e0",
+      "toHash": "0000000000000000000000000000000000000000",
+      "type": "DELETE"
+    }
+  ]
+}
