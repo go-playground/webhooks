@@ -1,6 +1,6 @@
 language: go
 go:
-    - 1.11.2
+    - 1.12.1
     - tip
 matrix:
   allow_failures:
