@@ -3726,8 +3726,9 @@ type PullRequestPayload struct {
 		Type              string `json:"type"`
 		SiteAdmin         bool   `json:"site_admin"`
 	} `json:"sender"`
-	Assignee     *Assignee `json:"assignee"`
-	Installation struct {
+	Assignee          *Assignee `json:"assignee"`
+	RequestedReviewer *Assignee `json:"requested_reviewer"`
+	Installation      struct {
 		ID int64 `json:"id"`
 	} `json:"installation"`
 }
