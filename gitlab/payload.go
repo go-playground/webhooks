@@ -148,6 +148,11 @@ type BuildEventPayload struct {
 	Repository        Repository  `json:"repository"`
 }
 
+// SystemHookPayload contains the ObjectKind to match with real hook events
+type SystemHookPayload struct {
+	ObjectKind string `json:"object_kind"`
+}
+
 // Issue contains all of the GitLab issue information
 type Issue struct {
 	ID          int64      `json:"id"`
