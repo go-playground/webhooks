@@ -134,6 +134,26 @@ func TestWebhooks(t *testing.T) {
 		headers  http.Header
 	}{
 		{
+			name:     "CheckRunEvent",
+			event:    CheckRunEvent,
+			typ:      CheckRunPayload{},
+			filename: "../testdata/github/check-run.json",
+			headers: http.Header{
+				"X-Github-Event":  []string{"check_run"},
+				"X-Hub-Signature": []string{"sha1=229f4920493b455398168cd86dc6b366064bdf3f"},
+			},
+		},
+		{
+			name:     "CheckSuiteEvent",
+			event:    CheckSuiteEvent,
+			typ:      CheckSuitePayload{},
+			filename: "../testdata/github/check-suite.json",
+			headers: http.Header{
+				"X-Github-Event":  []string{"check_suite"},
+				"X-Hub-Signature": []string{"sha1=250ad5a340f8d91e67dc5682342f3190fd2006a1"},
+			},
+		},
+		{
 			name:     "CommitCommentEvent",
 			event:    CommitCommentEvent,
 			typ:      CommitCommentPayload{},

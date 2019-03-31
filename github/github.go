@@ -28,6 +28,8 @@ type Event string
 
 // GitHub hook types
 const (
+	CheckRunEvent                 Event = "check_run"
+	CheckSuiteEvent               Event = "check_suite"
 	CommitCommentEvent            Event = "commit_comment"
 	CreateEvent                   Event = "create"
 	DeleteEvent                   Event = "delete"
@@ -162,6 +164,14 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 	}
 
 	switch gitHubEvent {
+	case CheckRunEvent:
+		var pl CheckRunPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
+	case CheckSuiteEvent:
+		var pl CheckSuitePayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	case CommitCommentEvent:
 		var pl CommitCommentPayload
 		err = json.Unmarshal([]byte(payload), &pl)
