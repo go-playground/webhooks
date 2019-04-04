@@ -3255,7 +3255,19 @@ type PullRequestPayload struct {
 	} `json:"sender"`
 	Assignee          *Assignee `json:"assignee"`
 	RequestedReviewer *Assignee `json:"requested_reviewer"`
-	Installation      struct {
+	RequestedTeam     struct {
+		Name            string `json:"name"`
+		ID              int64  `json:"id"`
+		Slug            string `json:"slug"`
+		Description     string `json:"description"`
+		Privacy         string `json:"privacy"`
+		URL             string `json:"url"`
+		HTMLURL         string `json:"html_url"`
+		MembersURL      string `json:"members_url"`
+		RepositoriesURL string `json:"repositories_url"`
+		Permission      string `json:"permission"`
+	} `json:"requested_team"`
+	Installation struct {
 		ID int64 `json:"id"`
 	} `json:"installation"`
 }
