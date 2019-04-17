@@ -4,18 +4,18 @@ import "time"
 
 // CheckRunPayload contains the information for GitHub's check_run hook event
 type CheckRunPayload struct {
-	Action  string `json:"action"`
+	Action   string `json:"action"`
 	CheckRun struct {
-		ID           int64     `json:"id"`
-		Name         string    `json:"name"`
-		HeadSHA      string    `json:"head_sha"`
-		Status       string    `json:"status"`
-		Conclusion   string    `json:"conclusion"`
-		URL          string    `json:"url"`
-		HtmlURL      string    `json:"html_url"`
-		StarterAt    time.Time `json:"started_at"`
-		CompletedAt  time.Time `json:"completed_at"`
-		Output struct {
+		ID          int64     `json:"id"`
+		Name        string    `json:"name"`
+		HeadSHA     string    `json:"head_sha"`
+		Status      string    `json:"status"`
+		Conclusion  string    `json:"conclusion"`
+		URL         string    `json:"url"`
+		HtmlURL     string    `json:"html_url"`
+		StarterAt   time.Time `json:"started_at"`
+		CompletedAt time.Time `json:"completed_at"`
+		Output      struct {
 			Title            string `json:"title"`
 			Summary          string `json:"summary"`
 			Text             string `json:"text"`
@@ -32,8 +32,8 @@ type CheckRunPayload struct {
 			Before       string               `json:"before"`
 			After        string               `json:"after"`
 			PullRequests []PullRequestPayload `json:"pull_requests"`
-			App struct {
-				ID int64 `json:"id"`
+			App          struct {
+				ID    int64 `json:"id"`
 				Owner struct {
 					Login             string `json:"login"`
 					ID                int64  `json:"id"`
@@ -53,18 +53,18 @@ type CheckRunPayload struct {
 					Type              string `json:"type"`
 					SiteAdmin         bool   `json:"site_admin"`
 				} `json:"owner"`
-				Name        string    `json:"name"`
-				Description string    `json:"description"`
-				ExternalURL string    `json:"external_url"`
-				HtmlURL     string    `json:"html_url"`
-				CreatedAt   string    `json:"created_at"`
-				UpdatedAt   string    `json:"updated_at"`
+				Name        string `json:"name"`
+				Description string `json:"description"`
+				ExternalURL string `json:"external_url"`
+				HtmlURL     string `json:"html_url"`
+				CreatedAt   string `json:"created_at"`
+				UpdatedAt   string `json:"updated_at"`
 			} `json:"app"`
-			CreatedAt            time.Time `json:"created_at"`
-			UpdatedAt            time.Time `json:"updated_at"`
+			CreatedAt time.Time `json:"created_at"`
+			UpdatedAt time.Time `json:"updated_at"`
 		} `json:"check_suite"`
 		App struct {
-			ID int64 `json:"id"`
+			ID    int64 `json:"id"`
 			Owner struct {
 				Login             string `json:"login"`
 				ID                int64  `json:"id"`
@@ -84,12 +84,12 @@ type CheckRunPayload struct {
 				Type              string `json:"type"`
 				SiteAdmin         bool   `json:"site_admin"`
 			} `json:"owner"`
-			Name        string    `json:"name"`
-			Description string    `json:"description"`
-			ExternalURL string    `json:"external_url"`
-			HtmlURL     string    `json:"html_url"`
-			CreatedAt   string    `json:"created_at"`
-			UpdatedAt   string    `json:"updated_at"`
+			Name        string `json:"name"`
+			Description string `json:"description"`
+			ExternalURL string `json:"external_url"`
+			HtmlURL     string `json:"html_url"`
+			CreatedAt   string `json:"created_at"`
+			UpdatedAt   string `json:"updated_at"`
 		} `json:"app"`
 		PullRequests []PullRequestPayload `json:"pull_requests"`
 	} `json:"check_run"`
@@ -203,7 +203,7 @@ type CheckRunPayload struct {
 
 // CheckSuitePayload contains the information for GitHub's check_suite hook event
 type CheckSuitePayload struct {
-	Action  string `json:"action"`
+	Action     string `json:"action"`
 	CheckSuite struct {
 		ID           int64                `json:"id"`
 		HeadBranch   string               `json:"head_branch"`
@@ -214,8 +214,8 @@ type CheckSuitePayload struct {
 		Before       string               `json:"before"`
 		After        string               `json:"after"`
 		PullRequests []PullRequestPayload `json:"pull_requests"`
-		App struct {
-			ID int64 `json:"id"`
+		App          struct {
+			ID    int64 `json:"id"`
 			Owner struct {
 				Login             string `json:"login"`
 				ID                int64  `json:"id"`
@@ -235,23 +235,23 @@ type CheckSuitePayload struct {
 				Type              string `json:"type"`
 				SiteAdmin         bool   `json:"site_admin"`
 			} `json:"owner"`
-			Name        string    `json:"name"`
-			Description string    `json:"description"`
-			ExternalURL string    `json:"external_url"`
-			HtmlURL     string    `json:"html_url"`
-			CreatedAt   string    `json:"created_at"`
-			UpdatedAt   string    `json:"updated_at"`
+			Name        string `json:"name"`
+			Description string `json:"description"`
+			ExternalURL string `json:"external_url"`
+			HtmlURL     string `json:"html_url"`
+			CreatedAt   string `json:"created_at"`
+			UpdatedAt   string `json:"updated_at"`
 		} `json:"app"`
 		CreatedAt            time.Time `json:"created_at"`
 		UpdatedAt            time.Time `json:"updated_at"`
 		LatestCheckRunsCount int64     `json:"latest_check_runs_count"`
 		CheckRunsURL         string    `json:"check_runs_url"`
-		HeadCommit struct {
+		HeadCommit           struct {
 			ID        string    `json:"id"`
 			TreeID    string    `json:"tree_id"`
 			Message   string    `json:"message"`
 			Timestamp time.Time `json:"timestamp"`
-			Author struct {
+			Author    struct {
 				Name  string `json:"name"`
 				Email string `json:"email"`
 			} `json:"author"`
@@ -5075,6 +5075,38 @@ type RepositoryPayload struct {
 		Type              string `json:"type"`
 		SiteAdmin         bool   `json:"site_admin"`
 	} `json:"sender"`
+}
+
+// SecurityAdvisoryPayload contains the information for GitHub's security_advisory hook event.
+type SecurityAdvisoryPayload struct {
+	Action           string `json:"action"`
+	SecurityAdvisory struct {
+		GHSAID      string `json:"ghsa_id"`
+		Summary     string `json:"summary"`
+		Description string `json:"description"`
+		Severity    string `json:"string"`
+		Identifiers []struct {
+			Value string `json:"value"`
+			Type  string `json:"type"`
+		} `json:"identifiers"`
+		References []struct {
+			URL string `json:"url"`
+		} `json:"references"`
+		PublishedAt     time.Time  `json:"published_at"`
+		UpdatedAt       time.Time  `json:"updated_at"`
+		WithdrawnAt     *time.Time `json:"withdrawn_at"`
+		Vulnerabilities []struct {
+			Package struct {
+				Ecosystem string `json:"ecosystem"`
+				Name      string `json:"name"`
+			}
+			Severity               string `json:"severity"`
+			VulnerableVersionRange string `json:"vulnerable_version_range"`
+			FirstPatchedVersion    *struct {
+				Identifier string `json:"identifier"`
+			} `json:"first_patched_version"`
+		} `json:"vulnerabilities"`
+	} `json:"security_advisory"`
 }
 
 // StatusPayload contains the information for GitHub's status hook event
