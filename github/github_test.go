@@ -454,6 +454,16 @@ func TestWebhooks(t *testing.T) {
 			},
 		},
 		{
+			name:     "SecurityAdvisoryEvent",
+			event:    SecurityAdvisoryEvent,
+			typ:      SecurityAdvisoryPayload{},
+			filename: "../testdata/github/security-advisory.json",
+			headers: http.Header{
+				"X-Github-Event": []string{"security_advisory"},
+				"X-Hub-Signature": []string{"sha1=6a71f24fa69f55469843a91dc3a5c3e29714a565"},
+			},
+		},
+		{
 			name:     "StatusEvent",
 			event:    StatusEvent,
 			typ:      StatusPayload{},

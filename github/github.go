@@ -60,6 +60,7 @@ const (
 	PushEvent                     Event = "push"
 	ReleaseEvent                  Event = "release"
 	RepositoryEvent               Event = "repository"
+	SecurityAdvisoryEvent         Event = "security_advisory"
 	StatusEvent                   Event = "status"
 	TeamEvent                     Event = "team"
 	TeamAddEvent                  Event = "team_add"
@@ -286,6 +287,10 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return pl, err
 	case RepositoryEvent:
 		var pl RepositoryPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
+	case SecurityAdvisoryEvent:
+		var pl SecurityAdvisoryPayload
 		err = json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 	case StatusEvent:
