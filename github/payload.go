@@ -7,6 +7,7 @@ type CheckRunPayload struct {
 	Action   string `json:"action"`
 	CheckRun struct {
 		ID          int64     `json:"id"`
+		NodeID      string    `json:"node_id"`
 		Name        string    `json:"name"`
 		HeadSHA     string    `json:"head_sha"`
 		Status      string    `json:"status"`
@@ -33,10 +34,12 @@ type CheckRunPayload struct {
 			After        string               `json:"after"`
 			PullRequests []PullRequestPayload `json:"pull_requests"`
 			App          struct {
-				ID    int64 `json:"id"`
-				Owner struct {
+				ID     int64  `json:"id"`
+				NodeID string `json:"node_id"`
+				Owner  struct {
 					Login             string `json:"login"`
 					ID                int64  `json:"id"`
+					NodeID            string `json:"node_id"`
 					AvatarURL         string `json:"avatar_url"`
 					GravatarID        string `json:"gravatar_id"`
 					URL               string `json:"url"`
@@ -64,10 +67,12 @@ type CheckRunPayload struct {
 			UpdatedAt time.Time `json:"updated_at"`
 		} `json:"check_suite"`
 		App struct {
-			ID    int64 `json:"id"`
-			Owner struct {
+			ID     int64  `json:"id"`
+			NodeID string `json:"node_id"`
+			Owner  struct {
 				Login             string `json:"login"`
 				ID                int64  `json:"id"`
+				NodeID            string `json:"node_id"`
 				AvatarURL         string `json:"avatar_url"`
 				GravatarID        string `json:"gravatar_id"`
 				URL               string `json:"url"`
@@ -95,11 +100,13 @@ type CheckRunPayload struct {
 	} `json:"check_run"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -183,6 +190,7 @@ type CheckRunPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -206,6 +214,7 @@ type CheckSuitePayload struct {
 	Action     string `json:"action"`
 	CheckSuite struct {
 		ID           int64                `json:"id"`
+		NodeID       string               `json:"node_id"`
 		HeadBranch   string               `json:"head_branch"`
 		HeadSHA      string               `json:"head_sha"`
 		Status       string               `json:"status"`
@@ -215,10 +224,12 @@ type CheckSuitePayload struct {
 		After        string               `json:"after"`
 		PullRequests []PullRequestPayload `json:"pull_requests"`
 		App          struct {
-			ID    int64 `json:"id"`
-			Owner struct {
+			ID     int64  `json:"id"`
+			NodeID string `json:"node_id"`
+			Owner  struct {
 				Login             string `json:"login"`
 				ID                int64  `json:"id"`
+				NodeID            string `json:"node_id"`
 				AvatarURL         string `json:"avatar_url"`
 				GravatarID        string `json:"gravatar_id"`
 				URL               string `json:"url"`
@@ -351,6 +362,7 @@ type CheckSuitePayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -376,9 +388,11 @@ type CommitCommentPayload struct {
 		URL     string `json:"url"`
 		HTMLURL string `json:"html_url"`
 		ID      int64  `json:"id"`
+		NodeID  string `json:"node_id"`
 		User    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -406,11 +420,13 @@ type CommitCommentPayload struct {
 	} `json:"comment"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -494,6 +510,7 @@ type CommitCommentPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -521,11 +538,13 @@ type CreatePayload struct {
 	PusherType   string `json:"pusher_type"`
 	Repository   struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -609,6 +628,7 @@ type CreatePayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -634,11 +654,13 @@ type DeletePayload struct {
 	PusherType string `json:"pusher_type"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -722,6 +744,7 @@ type DeletePayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -745,6 +768,7 @@ type DeploymentPayload struct {
 	Deployment struct {
 		URL         string   `json:"url"`
 		ID          int64    `json:"id"`
+		NodeID      string   `json:"node_id"`
 		Sha         string   `json:"sha"`
 		Ref         string   `json:"ref"`
 		Task        string   `json:"task"`
@@ -754,6 +778,7 @@ type DeploymentPayload struct {
 		Creator     struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -777,11 +802,13 @@ type DeploymentPayload struct {
 	} `json:"deployment"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -865,6 +892,7 @@ type DeploymentPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -888,10 +916,12 @@ type DeploymentStatusPayload struct {
 	DeploymentStatus struct {
 		URL     string `json:"url"`
 		ID      int64  `json:"id"`
+		NodeID  string `json:"node_id"`
 		State   string `json:"state"`
 		Creator struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -918,6 +948,7 @@ type DeploymentStatusPayload struct {
 	Deployment struct {
 		URL         string   `json:"url"`
 		ID          int64    `json:"id"`
+		NodeID      string   `json:"node_id"`
 		Sha         string   `json:"sha"`
 		Ref         string   `json:"ref"`
 		Task        string   `json:"task"`
@@ -927,6 +958,7 @@ type DeploymentStatusPayload struct {
 		Creator     struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -950,11 +982,13 @@ type DeploymentStatusPayload struct {
 	} `json:"deployment"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -1038,6 +1072,7 @@ type DeploymentStatusPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -1060,11 +1095,13 @@ type DeploymentStatusPayload struct {
 type ForkPayload struct {
 	Forkee struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -1148,11 +1185,13 @@ type ForkPayload struct {
 	} `json:"forkee"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -1236,6 +1275,7 @@ type ForkPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -1266,11 +1306,13 @@ type GollumPayload struct {
 	} `json:"pages"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -1354,6 +1396,7 @@ type GollumPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -1376,10 +1419,12 @@ type GollumPayload struct {
 type InstallationPayload struct {
 	Action       string `json:"action"`
 	Installation struct {
-		ID      int64 `json:"id"`
+		ID      int64  `json:"id"`
+		NodeID  string `json:"node_id"`
 		Account struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -1416,12 +1461,14 @@ type InstallationPayload struct {
 	} `json:"installation"`
 	Repositories []struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 	} `json:"repositories"`
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -1444,10 +1491,12 @@ type InstallationPayload struct {
 type InstallationRepositoriesPayload struct {
 	Action       string `json:"action"`
 	Installation struct {
-		ID      int64 `json:"id"`
+		ID      int64  `json:"id"`
+		NodeID  string `json:"node_id"`
 		Account struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -1489,12 +1538,14 @@ type InstallationRepositoriesPayload struct {
 	} `json:"installation"`
 	RepositoriesAdded []struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Private  bool   `json:"private"`
 	} `json:"repositories_added"`
 	RepositoriesRemoved []struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Private  bool   `json:"private"`
@@ -1502,6 +1553,7 @@ type InstallationRepositoriesPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -1530,11 +1582,13 @@ type IssueCommentPayload struct {
 		EventsURL   string `json:"events_url"`
 		HTMLURL     string `json:"html_url"`
 		ID          int64  `json:"id"`
+		NodeID      string `json:"node_id"`
 		Number      int64  `json:"number"`
 		Title       string `json:"title"`
 		User        struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -1552,9 +1606,13 @@ type IssueCommentPayload struct {
 			SiteAdmin         bool   `json:"site_admin"`
 		} `json:"user"`
 		Labels []struct {
-			URL   string `json:"url"`
-			Name  string `json:"name"`
-			Color string `json:"color"`
+			ID          int64  `json:"id"`
+			NodeID      string `json:"node_id"`
+			Description string `json:"description"`
+			URL         string `json:"url"`
+			Name        string `json:"name"`
+			Color       string `json:"color"`
+			Default     bool   `json:"default"`
 		} `json:"labels"`
 		State     string      `json:"state"`
 		Locked    bool        `json:"locked"`
@@ -1572,9 +1630,11 @@ type IssueCommentPayload struct {
 		HTMLURL  string `json:"html_url"`
 		IssueURL string `json:"issue_url"`
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		User     struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -1598,11 +1658,13 @@ type IssueCommentPayload struct {
 	} `json:"comment"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -1686,6 +1748,7 @@ type IssueCommentPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -1714,11 +1777,13 @@ type IssuesPayload struct {
 		EventsURL   string `json:"events_url"`
 		HTMLURL     string `json:"html_url"`
 		ID          int64  `json:"id"`
+		NodeID      string `json:"node_id"`
 		Number      int64  `json:"number"`
 		Title       string `json:"title"`
 		User        struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -1736,11 +1801,13 @@ type IssuesPayload struct {
 			SiteAdmin         bool   `json:"site_admin"`
 		} `json:"user"`
 		Labels []struct {
-			ID      int64  `json:"id"`
-			URL     string `json:"url"`
-			Name    string `json:"name"`
-			Color   string `json:"color"`
-			Default bool   `json:"default"`
+			ID          int64  `json:"id"`
+			NodeID      string `json:"node_id"`
+			Description string `json:"description"`
+			URL         string `json:"url"`
+			Name        string `json:"name"`
+			Color       string `json:"color"`
+			Default     bool   `json:"default"`
 		} `json:"labels"`
 		State     string      `json:"state"`
 		Locked    bool        `json:"locked"`
@@ -1755,11 +1822,13 @@ type IssuesPayload struct {
 	} `json:"issue"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -1843,6 +1912,7 @@ type IssuesPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -1867,17 +1937,22 @@ type IssuesPayload struct {
 type LabelPayload struct {
 	Action string `json:"action"`
 	Label  struct {
-		URL   string `json:"url"`
-		Name  string `json:"name"`
-		Color string `json:"color"`
+		ID          int64  `json:"id"`
+		NodeID      string `json:"node_id"`
+		Description string `json:"description"`
+		URL         string `json:"url"`
+		Name        string `json:"name"`
+		Color       string `json:"color"`
 	} `json:"label"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -1962,6 +2037,7 @@ type LabelPayload struct {
 	Organization struct {
 		Login            string `json:"login"`
 		ID               int64  `json:"id"`
+		NodeID           string `json:"node_id"`
 		URL              string `json:"url"`
 		ReposURL         string `json:"repos_url"`
 		EventsURL        string `json:"events_url"`
@@ -1975,6 +2051,7 @@ type LabelPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -1999,6 +2076,7 @@ type MemberPayload struct {
 	Member struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -2017,11 +2095,13 @@ type MemberPayload struct {
 	} `json:"member"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -2105,6 +2185,7 @@ type MemberPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -2130,6 +2211,7 @@ type MembershipPayload struct {
 	Member struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -2149,6 +2231,7 @@ type MembershipPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -2168,6 +2251,7 @@ type MembershipPayload struct {
 	Team struct {
 		Name            string `json:"name"`
 		ID              int64  `json:"id"`
+		NodeID          string `json:"node_id"`
 		Slug            string `json:"slug"`
 		Permission      string `json:"permission"`
 		URL             string `json:"url"`
@@ -2177,6 +2261,7 @@ type MembershipPayload struct {
 	Organization struct {
 		Login            string `json:"login"`
 		ID               int64  `json:"id"`
+		NodeID           string `json:"node_id"`
 		URL              string `json:"url"`
 		ReposURL         string `json:"repos_url"`
 		EventsURL        string `json:"events_url"`
@@ -2194,12 +2279,14 @@ type MilestonePayload struct {
 		HTMLURL     string  `json:"html_url"`
 		LabelsURL   string  `json:"labels_url"`
 		ID          int64   `json:"id"`
+		NodeID      string  `json:"node_id"`
 		Number      int64   `json:"number"`
 		Title       string  `json:"title"`
 		Description *string `json:"description"`
 		Creator     struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -2226,11 +2313,13 @@ type MilestonePayload struct {
 	} `json:"milestone"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -2315,6 +2404,7 @@ type MilestonePayload struct {
 	Organization struct {
 		Login            string `json:"login"`
 		ID               int64  `json:"id"`
+		NodeID           string `json:"node_id"`
 		URL              string `json:"url"`
 		ReposURL         string `json:"repos_url"`
 		EventsURL        string `json:"events_url"`
@@ -2328,6 +2418,7 @@ type MilestonePayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -2350,10 +2441,11 @@ type MilestonePayload struct {
 type OrganizationPayload struct {
 	Action     string `json:"action"`
 	Invitation struct {
-		ID    int64   `json:"id"`
-		Login string  `json:"login"`
-		Email *string `json:"email"`
-		Role  string  `json:"role"`
+		ID     int64   `json:"id"`
+		NodeID string  `json:"node_id"`
+		Login  string  `json:"login"`
+		Email  *string `json:"email"`
+		Role   string  `json:"role"`
 	} `json:"invitation"`
 	Membership struct {
 		URL             string `json:"url"`
@@ -2363,6 +2455,7 @@ type OrganizationPayload struct {
 		User            struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -2383,6 +2476,7 @@ type OrganizationPayload struct {
 	Organization struct {
 		Login            string `json:"login"`
 		ID               int64  `json:"id"`
+		NodeID           string `json:"node_id"`
 		URL              string `json:"url"`
 		ReposURL         string `json:"repos_url"`
 		EventsURL        string `json:"events_url"`
@@ -2396,6 +2490,7 @@ type OrganizationPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -2420,6 +2515,7 @@ type OrgBlockPayload struct {
 	BlockedUser struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -2439,6 +2535,7 @@ type OrgBlockPayload struct {
 	Organization struct {
 		Login            string `json:"login"`
 		ID               int64  `json:"id"`
+		NodeID           string `json:"node_id"`
 		URL              string `json:"url"`
 		ReposURL         string `json:"repos_url"`
 		EventsURL        string `json:"events_url"`
@@ -2452,6 +2549,7 @@ type OrgBlockPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -2472,8 +2570,9 @@ type OrgBlockPayload struct {
 
 // PageBuildPayload contains the information for GitHub's page_build hook event
 type PageBuildPayload struct {
-	ID    int64 `json:"id"`
-	Build struct {
+	ID     int64  `json:"id"`
+	NodeID string `json:"node_id"`
+	Build  struct {
 		URL    string `json:"url"`
 		Status string `json:"status"`
 		Error  struct {
@@ -2482,6 +2581,7 @@ type PageBuildPayload struct {
 		Pusher struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -2505,11 +2605,13 @@ type PageBuildPayload struct {
 	} `json:"build"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -2593,6 +2695,7 @@ type PageBuildPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -2617,6 +2720,7 @@ type PingPayload struct {
 	Hook   struct {
 		Type   string   `json:"type"`
 		ID     int64    `json:"id"`
+		NodeID string   `json:"node_id"`
 		Name   string   `json:"name"`
 		Active bool     `json:"active"`
 		Events []string `json:"events"`
@@ -2632,11 +2736,13 @@ type PingPayload struct {
 	} `json:"hook"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -2720,6 +2826,7 @@ type PingPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -2746,10 +2853,12 @@ type ProjectCardPayload struct {
 		ColumnURL string  `json:"column_url"`
 		ColumnID  int64   `json:"column_id"`
 		ID        int64   `json:"id"`
+		NodeID    string  `json:"node_id"`
 		Note      *string `json:"note"`
 		Creator   struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -2772,11 +2881,13 @@ type ProjectCardPayload struct {
 	} `json:"project_card"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -2860,6 +2971,7 @@ type ProjectCardPayload struct {
 	Organization struct {
 		Login            string `json:"login"`
 		ID               int64  `json:"id"`
+		NodeID           string `json:"node_id"`
 		URL              string `json:"url"`
 		ReposURL         string `json:"repos_url"`
 		EventsURL        string `json:"events_url"`
@@ -2870,6 +2982,7 @@ type ProjectCardPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -2896,17 +3009,20 @@ type ProjectColumnPayload struct {
 		ProjectURL string `json:"project_url"`
 		CardsURL   string `json:"cards_url"`
 		ID         int64  `json:"id"`
+		NodeID     string `json:"node_id"`
 		Name       string `json:"name"`
 		CreatedAt  int64  `json:"created_at"`
 		UpdatedAt  int64  `json:"updated_at"`
 	} `json:"project_column"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -2990,6 +3106,7 @@ type ProjectColumnPayload struct {
 	Organization struct {
 		Login            string `json:"login"`
 		ID               int64  `json:"id"`
+		NodeID           string `json:"node_id"`
 		URL              string `json:"url"`
 		ReposURL         string `json:"repos_url"`
 		EventsURL        string `json:"events_url"`
@@ -3000,6 +3117,7 @@ type ProjectColumnPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -3026,6 +3144,7 @@ type ProjectPayload struct {
 		URL        string `json:"url"`
 		ColumnsURL string `json:"columns_url"`
 		ID         int64  `json:"id"`
+		NodeID     string `json:"node_id"`
 		Name       string `json:"name"`
 		Body       string `json:"body"`
 		Number     int64  `json:"number"`
@@ -3033,6 +3152,7 @@ type ProjectPayload struct {
 		Creator    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -3054,11 +3174,13 @@ type ProjectPayload struct {
 	} `json:"project"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -3142,6 +3264,7 @@ type ProjectPayload struct {
 	Organization struct {
 		Login            string `json:"login"`
 		ID               int64  `json:"id"`
+		NodeID           string `json:"node_id"`
 		URL              string `json:"url"`
 		ReposURL         string `json:"repos_url"`
 		EventsURL        string `json:"events_url"`
@@ -3152,6 +3275,7 @@ type ProjectPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -3174,11 +3298,13 @@ type ProjectPayload struct {
 type PublicPayload struct {
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -3262,6 +3388,7 @@ type PublicPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -3287,6 +3414,7 @@ type PullRequestPayload struct {
 	PullRequest struct {
 		URL      string `json:"url"`
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		HTMLURL  string `json:"html_url"`
 		DiffURL  string `json:"diff_url"`
 		PatchURL string `json:"patch_url"`
@@ -3298,6 +3426,7 @@ type PullRequestPayload struct {
 		User     struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -3331,6 +3460,7 @@ type PullRequestPayload struct {
 		RequestedReviewers []struct {
 			Login             string `json:"login"`
 			ID                int    `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -3348,11 +3478,13 @@ type PullRequestPayload struct {
 			SiteAdmin         bool   `json:"site_admin"`
 		} `json:"requested_reviewers,omitempty"`
 		Labels []struct {
-			ID      int64  `json:"id"`
-			URL     string `json:"url"`
-			Name    string `json:"name"`
-			Color   string `json:"color"`
-			Default bool   `json:"default"`
+			ID          int64  `json:"id"`
+			NodeID      string `json:"node_id"`
+			Description string `json:"description"`
+			URL         string `json:"url"`
+			Name        string `json:"name"`
+			Color       string `json:"color"`
+			Default     bool   `json:"default"`
 		} `json:"labels"`
 		Head struct {
 			Label string `json:"label"`
@@ -3361,6 +3493,7 @@ type PullRequestPayload struct {
 			User  struct {
 				Login             string `json:"login"`
 				ID                int64  `json:"id"`
+				NodeID            string `json:"node_id"`
 				AvatarURL         string `json:"avatar_url"`
 				GravatarID        string `json:"gravatar_id"`
 				URL               string `json:"url"`
@@ -3379,11 +3512,13 @@ type PullRequestPayload struct {
 			} `json:"user"`
 			Repo struct {
 				ID       int64  `json:"id"`
+				NodeID   string `json:"node_id"`
 				Name     string `json:"name"`
 				FullName string `json:"full_name"`
 				Owner    struct {
 					Login             string `json:"login"`
 					ID                int64  `json:"id"`
+					NodeID            string `json:"node_id"`
 					AvatarURL         string `json:"avatar_url"`
 					GravatarID        string `json:"gravatar_id"`
 					URL               string `json:"url"`
@@ -3472,6 +3607,7 @@ type PullRequestPayload struct {
 			User  struct {
 				Login             string `json:"login"`
 				ID                int64  `json:"id"`
+				NodeID            string `json:"node_id"`
 				AvatarURL         string `json:"avatar_url"`
 				GravatarID        string `json:"gravatar_id"`
 				URL               string `json:"url"`
@@ -3490,11 +3626,13 @@ type PullRequestPayload struct {
 			} `json:"user"`
 			Repo struct {
 				ID       int64  `json:"id"`
+				NodeID   string `json:"node_id"`
 				Name     string `json:"name"`
 				FullName string `json:"full_name"`
 				Owner    struct {
 					Login             string `json:"login"`
 					ID                int64  `json:"id"`
+					NodeID            string `json:"node_id"`
 					AvatarURL         string `json:"avatar_url"`
 					GravatarID        string `json:"gravatar_id"`
 					URL               string `json:"url"`
@@ -3614,18 +3752,22 @@ type PullRequestPayload struct {
 		ChangedFiles   int64     `json:"changed_files"`
 	} `json:"pull_request"`
 	Label struct {
-		ID      int64  `json:"id"`
-		URL     string `json:"url"`
-		Name    string `json:"name"`
-		Color   string `json:"color"`
-		Default bool   `json:"default"`
+		ID          int64  `json:"id"`
+		NodeID      string `json:"node_id"`
+		Description string `json:"description"`
+		URL         string `json:"url"`
+		Name        string `json:"name"`
+		Color       string `json:"color"`
+		Default     bool   `json:"default"`
 	} `json:"label"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
+			NodeID            string `json:"node_id"`
 			ID                int64  `json:"id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
@@ -3710,6 +3852,7 @@ type PullRequestPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -3731,6 +3874,7 @@ type PullRequestPayload struct {
 	RequestedTeam     struct {
 		Name            string `json:"name"`
 		ID              int64  `json:"id"`
+		NodeID          string `json:"node_id"`
 		Slug            string `json:"slug"`
 		Description     string `json:"description"`
 		Privacy         string `json:"privacy"`
@@ -3749,10 +3893,12 @@ type PullRequestPayload struct {
 type PullRequestReviewPayload struct {
 	Action string `json:"action"`
 	Review struct {
-		ID   int64 `json:"id"`
-		User struct {
+		ID     int64  `json:"id"`
+		NodeID string `json:"node_id"`
+		User   struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -3786,6 +3932,7 @@ type PullRequestReviewPayload struct {
 	PullRequest struct {
 		URL      string `json:"url"`
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		HTMLURL  string `json:"html_url"`
 		DiffURL  string `json:"diff_url"`
 		PatchURL string `json:"patch_url"`
@@ -3797,6 +3944,7 @@ type PullRequestReviewPayload struct {
 		User     struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -3834,6 +3982,7 @@ type PullRequestReviewPayload struct {
 			User  struct {
 				Login             string `json:"login"`
 				ID                int64  `json:"id"`
+				NodeID            string `json:"node_id"`
 				AvatarURL         string `json:"avatar_url"`
 				GravatarID        string `json:"gravatar_id"`
 				URL               string `json:"url"`
@@ -3852,11 +4001,13 @@ type PullRequestReviewPayload struct {
 			} `json:"user"`
 			Repo struct {
 				ID       int64  `json:"id"`
+				NodeID   string `json:"node_id"`
 				Name     string `json:"name"`
 				FullName string `json:"full_name"`
 				Owner    struct {
 					Login             string `json:"login"`
 					ID                int64  `json:"id"`
+					NodeID            string `json:"node_id"`
 					AvatarURL         string `json:"avatar_url"`
 					GravatarID        string `json:"gravatar_id"`
 					URL               string `json:"url"`
@@ -3946,6 +4097,7 @@ type PullRequestReviewPayload struct {
 			User  struct {
 				Login             string `json:"login"`
 				ID                int64  `json:"id"`
+				NodeID            string `json:"node_id"`
 				AvatarURL         string `json:"avatar_url"`
 				GravatarID        string `json:"gravatar_id"`
 				URL               string `json:"url"`
@@ -3964,11 +4116,13 @@ type PullRequestReviewPayload struct {
 			} `json:"user"`
 			Repo struct {
 				ID       int64  `json:"id"`
+				NodeID   string `json:"node_id"`
 				Name     string `json:"name"`
 				FullName string `json:"full_name"`
 				Owner    struct {
 					Login             string `json:"login"`
 					ID                int64  `json:"id"`
+					NodeID            string `json:"node_id"`
 					AvatarURL         string `json:"avatar_url"`
 					GravatarID        string `json:"gravatar_id"`
 					URL               string `json:"url"`
@@ -4080,11 +4234,13 @@ type PullRequestReviewPayload struct {
 	} `json:"pull_request"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -4169,6 +4325,7 @@ type PullRequestReviewPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -4193,6 +4350,7 @@ type PullRequestReviewCommentPayload struct {
 	Comment struct {
 		URL              string `json:"url"`
 		ID               int64  `json:"id"`
+		NodeID           string `json:"node_id"`
 		DiffHunk         string `json:"diff_hunk"`
 		Path             string `json:"path"`
 		Position         int64  `json:"position"`
@@ -4202,6 +4360,7 @@ type PullRequestReviewCommentPayload struct {
 		User             struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -4240,6 +4399,7 @@ type PullRequestReviewCommentPayload struct {
 	PullRequest struct {
 		URL      string `json:"url"`
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		HTMLURL  string `json:"html_url"`
 		DiffURL  string `json:"diff_url"`
 		PatchURL string `json:"patch_url"`
@@ -4251,6 +4411,7 @@ type PullRequestReviewCommentPayload struct {
 		User     struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -4288,6 +4449,7 @@ type PullRequestReviewCommentPayload struct {
 			User  struct {
 				Login             string `json:"login"`
 				ID                int64  `json:"id"`
+				NodeID            string `json:"node_id"`
 				AvatarURL         string `json:"avatar_url"`
 				GravatarID        string `json:"gravatar_id"`
 				URL               string `json:"url"`
@@ -4306,11 +4468,13 @@ type PullRequestReviewCommentPayload struct {
 			} `json:"user"`
 			Repo struct {
 				ID       int64  `json:"id"`
+				NodeID   string `json:"node_id"`
 				Name     string `json:"name"`
 				FullName string `json:"full_name"`
 				Owner    struct {
 					Login             string `json:"login"`
 					ID                int64  `json:"id"`
+					NodeID            string `json:"node_id"`
 					AvatarURL         string `json:"avatar_url"`
 					GravatarID        string `json:"gravatar_id"`
 					URL               string `json:"url"`
@@ -4399,6 +4563,7 @@ type PullRequestReviewCommentPayload struct {
 			User  struct {
 				Login             string `json:"login"`
 				ID                int64  `json:"id"`
+				NodeID            string `json:"node_id"`
 				AvatarURL         string `json:"avatar_url"`
 				GravatarID        string `json:"gravatar_id"`
 				URL               string `json:"url"`
@@ -4417,11 +4582,13 @@ type PullRequestReviewCommentPayload struct {
 			} `json:"user"`
 			Repo struct {
 				ID       int64  `json:"id"`
+				NodeID   string `json:"node_id"`
 				Name     string `json:"name"`
 				FullName string `json:"full_name"`
 				Owner    struct {
 					Login             string `json:"login"`
 					ID                int64  `json:"id"`
+					NodeID            string `json:"node_id"`
 					AvatarURL         string `json:"avatar_url"`
 					GravatarID        string `json:"gravatar_id"`
 					URL               string `json:"url"`
@@ -4532,11 +4699,13 @@ type PullRequestReviewCommentPayload struct {
 	} `json:"pull_request"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -4620,6 +4789,7 @@ type PullRequestReviewCommentPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -4651,6 +4821,7 @@ type PushPayload struct {
 	Commits []struct {
 		Sha       string `json:"sha"`
 		ID        string `json:"id"`
+		NodeID    string `json:"node_id"`
 		TreeID    string `json:"tree_id"`
 		Distinct  bool   `json:"distinct"`
 		Message   string `json:"message"`
@@ -4672,6 +4843,7 @@ type PushPayload struct {
 	} `json:"commits"`
 	HeadCommit struct {
 		ID        string `json:"id"`
+		NodeID    string `json:"node_id"`
 		TreeID    string `json:"tree_id"`
 		Distinct  bool   `json:"distinct"`
 		Message   string `json:"message"`
@@ -4693,11 +4865,13 @@ type PushPayload struct {
 	} `json:"head_commit"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -4787,6 +4961,7 @@ type PushPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -4817,6 +4992,7 @@ type ReleasePayload struct {
 		UploadURL       string  `json:"upload_url"`
 		HTMLURL         string  `json:"html_url"`
 		ID              int64   `json:"id"`
+		NodeID          string  `json:"node_id"`
 		TagName         string  `json:"tag_name"`
 		TargetCommitish string  `json:"target_commitish"`
 		Name            *string `json:"name"`
@@ -4824,6 +5000,7 @@ type ReleasePayload struct {
 		Author          struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -4855,6 +5032,7 @@ type ReleasePayload struct {
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -4938,6 +5116,7 @@ type ReleasePayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -4961,11 +5140,13 @@ type RepositoryPayload struct {
 	Action     string `json:"action"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -5049,6 +5230,7 @@ type RepositoryPayload struct {
 	Organization struct {
 		Login            string `json:"login"`
 		ID               int64  `json:"id"`
+		NodeID           string `json:"node_id"`
 		URL              string `json:"url"`
 		ReposURL         string `json:"repos_url"`
 		EventsURL        string `json:"events_url"`
@@ -5059,6 +5241,7 @@ type RepositoryPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -5112,6 +5295,7 @@ type SecurityAdvisoryPayload struct {
 // StatusPayload contains the information for GitHub's status hook event
 type StatusPayload struct {
 	ID          int64   `json:"id"`
+	NodeID      string  `json:"node_id"`
 	Sha         string  `json:"sha"`
 	Name        string  `json:"name"`
 	TargetURL   *string `json:"target_url"`
@@ -5145,6 +5329,7 @@ type StatusPayload struct {
 		Author      struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -5164,6 +5349,7 @@ type StatusPayload struct {
 		Committer struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -5193,11 +5379,13 @@ type StatusPayload struct {
 	UpdatedAt  time.Time `json:"updated_at"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -5281,6 +5469,7 @@ type StatusPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -5305,6 +5494,7 @@ type TeamPayload struct {
 	Team   struct {
 		Name            string `json:"name"`
 		ID              int64  `json:"id"`
+		NodeID          string `json:"node_id"`
 		Slug            string `json:"slug"`
 		Description     string `json:"description"`
 		Privacy         string `json:"privacy"`
@@ -5316,6 +5506,7 @@ type TeamPayload struct {
 	Organization struct {
 		Login            string `json:"login"`
 		ID               int64  `json:"id"`
+		NodeID           string `json:"node_id"`
 		URL              string `json:"url"`
 		ReposURL         string `json:"repos_url"`
 		EventsURL        string `json:"events_url"`
@@ -5329,6 +5520,7 @@ type TeamPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -5352,6 +5544,7 @@ type TeamAddPayload struct {
 	Team struct {
 		Name            string `json:"name"`
 		ID              int64  `json:"id"`
+		NodeID          string `json:"node_id"`
 		Slug            string `json:"slug"`
 		Description     string `json:"description"`
 		Permission      string `json:"permission"`
@@ -5361,11 +5554,13 @@ type TeamAddPayload struct {
 	} `json:"team"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -5449,6 +5644,7 @@ type TeamAddPayload struct {
 	Organization struct {
 		Login            string  `json:"login"`
 		ID               int64   `json:"id"`
+		NodeID           string  `json:"node_id"`
 		URL              string  `json:"url"`
 		ReposURL         string  `json:"repos_url"`
 		EventsURL        string  `json:"events_url"`
@@ -5460,6 +5656,7 @@ type TeamAddPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -5483,11 +5680,13 @@ type WatchPayload struct {
 	Action     string `json:"action"`
 	Repository struct {
 		ID       int64  `json:"id"`
+		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
 		Owner    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
 			AvatarURL         string `json:"avatar_url"`
 			GravatarID        string `json:"gravatar_id"`
 			URL               string `json:"url"`
@@ -5571,6 +5770,7 @@ type WatchPayload struct {
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -5593,6 +5793,7 @@ type WatchPayload struct {
 type Assignee struct {
 	Login             string `json:"login"`
 	ID                int64  `json:"id"`
+	NodeID            string `json:"node_id"`
 	AvatarURL         string `json:"avatar_url"`
 	GravatarID        string `json:"gravatar_id"`
 	URL               string `json:"url"`
@@ -5616,6 +5817,7 @@ type Milestone struct {
 	HTMLURL     string `json:"html_url"`
 	LabelsURL   string `json:"labels_url"`
 	ID          int64  `json:"id"`
+	NodeID      string `json:"node_id"`
 	Number      int64  `json:"number"`
 	State       string `json:"state"`
 	Title       string `json:"title"`
@@ -5623,6 +5825,7 @@ type Milestone struct {
 	Creator     struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -5651,6 +5854,7 @@ type Milestone struct {
 type MergedBy struct {
 	Login             string `json:"login"`
 	ID                int64  `json:"id"`
+	NodeID            string `json:"node_id"`
 	AvatarURL         string `json:"avatar_url"`
 	GravatarID        string `json:"gravatar_id"`
 	URL               string `json:"url"`
@@ -5673,6 +5877,7 @@ type Asset struct {
 	URL                string    `json:"url"`
 	BrowserDownloadURL string    `json:"browser_download_url"`
 	ID                 int64     `json:"id"`
+	NodeID             string    `json:"node_id"`
 	Name               string    `json:"name"`
 	Label              string    `json:"label"`
 	State              string    `json:"state"`
@@ -5684,6 +5889,7 @@ type Asset struct {
 	Uploader           struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
+		NodeID            string `json:"node_id"`
 		AvatarURL         string `json:"avatar_url"`
 		GravatarID        string `json:"gravatar_id"`
 		URL               string `json:"url"`
@@ -5711,6 +5917,7 @@ type Parent struct {
 // Label contains Issue's Label information
 type Label struct {
 	ID      int64  `json:"id"`
+	NodeID  string `json:"node_id"`
 	URL     string `json:"url"`
 	Name    string `json:"name"`
 	Color   string `json:"color"`
