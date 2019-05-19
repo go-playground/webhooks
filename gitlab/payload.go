@@ -148,6 +148,29 @@ type BuildEventPayload struct {
 	Repository        Repository  `json:"repository"`
 }
 
+// JobEventPayload contains the information for GitLab's Job status change
+type JobEventPayload struct {
+	ObjectKind       string      `json:"object_kind"`
+	Ref              string      `json:"ref"`
+	Tag              bool        `json:"tag"`
+	BeforeSHA        string      `json:"before_sha"`
+	SHA              string      `json:"sha"`
+	JobID            int64       `json:"Job_id"`
+	JobName          string      `json:"Job_name"`
+	JobStage         string      `json:"Job_stage"`
+	JobStatus        string      `json:"Job_status"`
+	JobStartedAt     customTime  `json:"Job_started_at"`
+	JobFinishedAt    customTime  `json:"Job_finished_at"`
+	JobDuration      int64       `json:"Job_duration"`
+	Job              bool        `json:"Job"`
+	JobFailureReason string      `json:"job_failure_reason"`
+	ProjectID        int64       `json:"project_id"`
+	ProjectName      string      `json:"project_name"`
+	User             User        `json:"user"`
+	Commit           BuildCommit `json:"commit"`
+	Repository       Repository  `json:"repository"`
+}
+
 // SystemHookPayload contains the ObjectKind to match with real hook events
 type SystemHookPayload struct {
 	ObjectKind string `json:"object_kind"`
