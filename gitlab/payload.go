@@ -109,7 +109,7 @@ type PipelineEventPayload struct {
 	Project          Project          `json:"project"`
 	Commit           Commit           `json:"commit"`
 	ObjectAttributes ObjectAttributes `json:"object_attributes"`
-	Builds           []Build          `json:"builds"`
+	Jobs             []Job            `json:"jobs"`
 }
 
 // CommentEventPayload contains the information for GitLab's comment event
@@ -193,8 +193,8 @@ type Issue struct {
 	IID         int64      `json:"iid"`
 }
 
-// Build contains all of the GitLab build information
-type Build struct {
+// Job contains all of the GitLab job information
+type Job struct {
 	ID            int64         `json:"id"`
 	Stage         string        `json:"stage"`
 	Name          string        `json:"name"`
