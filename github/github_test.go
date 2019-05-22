@@ -454,12 +454,22 @@ func TestWebhooks(t *testing.T) {
 			},
 		},
 		{
+			name:     "RepositoryVulnerabilityAlertEvent",
+			event:    RepositoryVulnerabilityAlertEvent,
+			typ:      RepositoryVulnerabilityAlertPayload{},
+			filename: "../testdata/github/repository-vulnerability-alert.json",
+			headers: http.Header{
+				"X-Github-Event":  []string{"repository_vulnerability_alert"},
+				"X-Hub-Signature": []string{"sha1=c42c0649e7e06413bcd756763edbab48dff400db"},
+			},
+		},
+		{
 			name:     "SecurityAdvisoryEvent",
 			event:    SecurityAdvisoryEvent,
 			typ:      SecurityAdvisoryPayload{},
 			filename: "../testdata/github/security-advisory.json",
 			headers: http.Header{
-				"X-Github-Event": []string{"security_advisory"},
+				"X-Github-Event":  []string{"security_advisory"},
 				"X-Hub-Signature": []string{"sha1=6a71f24fa69f55469843a91dc3a5c3e29714a565"},
 			},
 		},
