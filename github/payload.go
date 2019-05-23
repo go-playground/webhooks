@@ -5260,6 +5260,40 @@ type RepositoryPayload struct {
 	} `json:"sender"`
 }
 
+// RepositoryVulnerabilityAlertEvent contains the information for GitHub's repository_vulnerability_alert hook event.
+type RepositoryVulnerabilityAlertPayload struct {
+	Action string `json:"action"`
+	Alert  struct {
+		ID                  int64  `json:"id"`
+		Summary             string `json:"summary"`
+		AffectedRange       string `json:"affected_range"`
+		AffectedPackageName string `json:"affected_package_name"`
+		ExternalReference   string `json:"external_reference"`
+		ExternalIdentifier  string `json:"external_identifier"`
+		FixedIn             string `json:"fixed_in"`
+		Dismisser           struct {
+			Login             string `json:"login"`
+			ID                int64  `json:"id"`
+			NodeID            string `json:"node_id"`
+			AvatarURL         string `json:"avatar_url"`
+			GravatarID        string `json:"gravatar_id"`
+			URL               string `json:"url"`
+			HTMLURL           string `json:"html_url"`
+			FollowersURL      string `json:"followers_url"`
+			FollowingURL      string `json:"following_url"`
+			GistsURL          string `json:"gists_url"`
+			StarredURL        string `json:"starred_url"`
+			SubscriptionsURL  string `json:"subscriptions_url"`
+			OrganizationsURL  string `json:"organizations_url"`
+			ReposURL          string `json:"repos_url"`
+			EventsURL         string `json:"events_url"`
+			ReceivedEventsURL string `json:"received_events_url"`
+			Type              string `json:"type"`
+			SiteAdmin         bool   `json:"site_admin"`
+		} `json:"dismisser"`
+	} `json:"alert"`
+}
+
 // SecurityAdvisoryPayload contains the information for GitHub's security_advisory hook event.
 type SecurityAdvisoryPayload struct {
 	Action           string `json:"action"`
