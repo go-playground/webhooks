@@ -307,51 +307,74 @@ type Repository struct {
 
 // ObjectAttributes contains all of the GitLab object attributes information
 type ObjectAttributes struct {
-	ID              int64      `json:"id"`
-	Title           string     `json:"title"`
-	AssigneeID      int64      `json:"assignee_id"`
-	AuthorID        int64      `json:"author_id"`
-	ProjectID       int64      `json:"project_id"`
-	CreatedAt       customTime `json:"created_at"`
-	UpdatedAt       customTime `json:"updated_at"`
-	Position        int64      `json:"position"`
-	BranchName      string     `json:"branch_name"`
-	Description     string     `json:"description"`
-	MilestoneID     int64      `json:"milestone_id"`
-	State           string     `json:"state"`
-	IID             int64      `json:"iid"`
-	URL             string     `json:"url"`
-	Action          string     `json:"action"`
-	TargetBranch    string     `json:"target_branch"`
-	SourceBranch    string     `json:"source_branch"`
-	SourceProjectID int64      `json:"source_project_id"`
-	TargetProjectID int64      `json:"target_project_id"`
-	StCommits       string     `json:"st_commits"`
-	MergeStatus     string     `json:"merge_status"`
-	Content         string     `json:"content"`
-	Format          string     `json:"format"`
-	Message         string     `json:"message"`
-	Slug            string     `json:"slug"`
-	Ref             string     `json:"ref"`
-	Tag             bool       `json:"tag"`
-	SHA             string     `json:"sha"`
-	BeforeSHA       string     `json:"before_sha"`
-	Status          string     `json:"status"`
-	Stages          []string   `json:"stages"`
-	Duration        int64      `json:"duration"`
-	Note            string     `json:"note"`
-	NotebookType    string     `json:"noteable_type"`
-	At              customTime `json:"attachment"`
-	LineCode        string     `json:"line_code"`
-	CommitID        string     `json:"commit_id"`
-	NoteableID      int64      `json:"noteable_id"`
-	System          bool       `json:"system"`
-	WorkInProgress  bool       `json:"work_in_progress"`
-	StDiffs         []StDiff   `json:"st_diffs"`
-	Source          Source     `json:"source"`
-	Target          Target     `json:"target"`
-	LastCommit      LastCommit `json:"last_commit"`
-	Assignee        Assignee   `json:"assignee"`
+	ID               int64      `json:"id"`
+	Title            string     `json:"title"`
+	AssigneeID       int64      `json:"assignee_id"`
+	AuthorID         int64      `json:"author_id"`
+	ProjectID        int64      `json:"project_id"`
+	CreatedAt        customTime `json:"created_at"`
+	UpdatedAt        customTime `json:"updated_at"`
+	ChangePosition   Position   `json:"change_position"`
+	OriginalPosition Position   `json:"original_position"`
+	Position         Position   `json:"position"`
+	BranchName       string     `json:"branch_name"`
+	Description      string     `json:"description"`
+	MilestoneID      int64      `json:"milestone_id"`
+	State            string     `json:"state"`
+	IID              int64      `json:"iid"`
+	URL              string     `json:"url"`
+	Action           string     `json:"action"`
+	TargetBranch     string     `json:"target_branch"`
+	SourceBranch     string     `json:"source_branch"`
+	SourceProjectID  int64      `json:"source_project_id"`
+	TargetProjectID  int64      `json:"target_project_id"`
+	StCommits        string     `json:"st_commits"`
+	MergeStatus      string     `json:"merge_status"`
+	Content          string     `json:"content"`
+	Format           string     `json:"format"`
+	Message          string     `json:"message"`
+	Slug             string     `json:"slug"`
+	Ref              string     `json:"ref"`
+	Tag              bool       `json:"tag"`
+	SHA              string     `json:"sha"`
+	BeforeSHA        string     `json:"before_sha"`
+	Status           string     `json:"status"`
+	Stages           []string   `json:"stages"`
+	Duration         int64      `json:"duration"`
+	Note             string     `json:"note"`
+	NotebookType     string     `json:"noteable_type"`
+	At               customTime `json:"attachment"`
+	LineCode         string     `json:"line_code"`
+	CommitID         string     `json:"commit_id"`
+	NoteableID       int64      `json:"noteable_id"`
+	System           bool       `json:"system"`
+	WorkInProgress   bool       `json:"work_in_progress"`
+	StDiffs          []StDiff   `json:"st_diffs"`
+	Source           Source     `json:"source"`
+	Target           Target     `json:"target"`
+	LastCommit       LastCommit `json:"last_commit"`
+	Assignee         Assignee   `json:"assignee"`
+}
+
+// Position defines a specific location, identified by paths line numbers and
+// image coordinates, within a specific diff, identified by start, head and
+// base commit ids.
+//
+// Text position will have: new_line and old_line
+// Image position will have: width, height, x, y
+type Position struct {
+	BaseSHA      string `json:"base_sha"`
+	StartSHA     string `json:"start_sha"`
+	HeadSHA      string `json:"head_sha"`
+	OldPath      string `json:"old_path"`
+	NewPath      string `json:"new_path"`
+	PositionType string `json:"position_type"`
+	OldLine      int64  `json:"old_line"`
+	NewLine      int64  `json:"new_line"`
+	Width        int64  `json:"width"`
+	Height       int64  `json:"height"`
+	X            int64  `json:"x"`
+	Y            int64  `json:"y"`
 }
 
 // MergeRequest contains all of the GitLab merge request information
