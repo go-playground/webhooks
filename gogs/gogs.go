@@ -1,16 +1,15 @@
 package gogs
 
 import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
-
-	"crypto/hmac"
-	"crypto/sha256"
-	"encoding/hex"
 
 	client "github.com/gogits/go-gogs-client"
 )
@@ -81,19 +80,40 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		_ = r.Body.Close()
 	}()
 
-	if len(events) == 0 {
-		return nil, ErrEventNotSpecifiedToParse
-	}
 	if r.Method != http.MethodPost {
 		return nil, ErrInvalidHTTPMethod
 	}
 
-	event := r.Header.Get("X-Gogs-Event")
-	if len(event) == 0 {
+	payload, err := ioutil.ReadAll(r.Body)
+	if err != nil || len(payload) == 0 {
+		return nil, ErrParsingPayload
+	}
+
+	return hook.ParsePayload(
+		payload,
+		r.Header.Get("X-Gogs-Event"),
+		r.Header.Get("X-Gogs-Signature"),
+		events...,
+	)
+}
+
+// ParsePayload verifies and parses the events from a payload and string
+// metadata (event type and signature), and returns the payload object or an
+// error.
+//
+// Similar to Parse (which uses this method under the hood), this is useful in
+// cases where payloads are not represented as HTTP requests - for example are
+// put on a queue for pull processing.
+func (hook Webhook) ParsePayload(payload []byte, eventType, signature string, events ...Event) (interface{}, error) {
+	if len(events) == 0 {
+		return nil, ErrEventNotSpecifiedToParse
+	}
+
+	if len(eventType) == 0 {
 		return nil, ErrMissingGogsEventHeader
 	}
 
-	gogsEvent := Event(event)
+	gogsEvent := Event(eventType)
 
 	var found bool
 	for _, evt := range events {
@@ -107,14 +127,8 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return nil, ErrEventNotFound
 	}
 
-	payload, err := ioutil.ReadAll(r.Body)
-	if err != nil || len(payload) == 0 {
-		return nil, ErrParsingPayload
-	}
-
 	// If we have a Secret set, we should check the MAC
 	if len(hook.secret) > 0 {
-		signature := r.Header.Get("X-Gogs-Signature")
 		if len(signature) == 0 {
 			return nil, ErrMissingGogsSignatureHeader
 		}
@@ -132,43 +146,35 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 	switch gogsEvent {
 	case CreateEvent:
 		var pl client.CreatePayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 
 	case ReleaseEvent:
 		var pl client.ReleasePayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 
 	case PushEvent:
 		var pl client.PushPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 
 	case DeleteEvent:
 		var pl client.DeletePayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 
 	case ForkEvent:
 		var pl client.ForkPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 
 	case IssuesEvent:
 		var pl client.IssuesPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 
 	case IssueCommentEvent:
 		var pl client.IssueCommentPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 
 	case PullRequestEvent:
 		var pl client.PullRequestPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 
 	default:
 		return nil, fmt.Errorf("unknown event %s", gogsEvent)

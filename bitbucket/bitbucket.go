@@ -85,20 +85,40 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		_ = r.Body.Close()
 	}()
 
-	if len(events) == 0 {
-		return nil, ErrEventNotSpecifiedToParse
-	}
 	if r.Method != http.MethodPost {
 		return nil, ErrInvalidHTTPMethod
 	}
 
-	uuid := r.Header.Get("X-Hook-UUID")
+	payload, err := ioutil.ReadAll(r.Body)
+	if err != nil || len(payload) == 0 {
+		return nil, ErrParsingPayload
+	}
+
+	return hook.ParsePayload(
+		payload,
+		r.Header.Get("X-Event-Key"),
+		r.Header.Get("X-Hook-UUID"),
+		events...,
+	)
+}
+
+// ParsePayload verifies and parses the events from a payload and string
+// metadata (event type and UUID), and returns the payload object or an
+// error.
+//
+// Similar to Parse (which uses this method under the hood), this is useful in
+// cases where payloads are not represented as HTTP requests - for example are
+// put on a queue for pull processing.
+func (hook Webhook) ParsePayload(payload []byte, eventType, uuid string, events ...Event) (interface{}, error) {
+	if len(events) == 0 {
+		return nil, ErrEventNotSpecifiedToParse
+	}
+
 	if hook.uuid != "" && uuid == "" {
 		return nil, ErrMissingHookUUIDHeader
 	}
 
-	event := r.Header.Get("X-Event-Key")
-	if event == "" {
+	if eventType == "" {
 		return nil, ErrMissingEventKeyHeader
 	}
 
@@ -106,7 +126,7 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return nil, ErrUUIDVerificationFailed
 	}
 
-	bitbucketEvent := Event(event)
+	bitbucketEvent := Event(eventType)
 
 	var found bool
 	for _, evt := range events {
@@ -120,84 +140,61 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return nil, ErrEventNotFound
 	}
 
-	payload, err := ioutil.ReadAll(r.Body)
-	if err != nil || len(payload) == 0 {
-		return nil, ErrParsingPayload
-	}
-
 	switch bitbucketEvent {
 	case RepoPushEvent:
 		var pl RepoPushPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case RepoForkEvent:
 		var pl RepoForkPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case RepoUpdatedEvent:
 		var pl RepoUpdatedPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case RepoCommitCommentCreatedEvent:
 		var pl RepoCommitCommentCreatedPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case RepoCommitStatusCreatedEvent:
 		var pl RepoCommitStatusCreatedPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case RepoCommitStatusUpdatedEvent:
 		var pl RepoCommitStatusUpdatedPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case IssueCreatedEvent:
 		var pl IssueCreatedPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case IssueUpdatedEvent:
 		var pl IssueUpdatedPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case IssueCommentCreatedEvent:
 		var pl IssueCommentCreatedPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case PullRequestCreatedEvent:
 		var pl PullRequestCreatedPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case PullRequestUpdatedEvent:
 		var pl PullRequestUpdatedPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case PullRequestApprovedEvent:
 		var pl PullRequestApprovedPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case PullRequestUnapprovedEvent:
 		var pl PullRequestUnapprovedPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case PullRequestMergedEvent:
 		var pl PullRequestMergedPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case PullRequestDeclinedEvent:
 		var pl PullRequestDeclinedPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case PullRequestCommentCreatedEvent:
 		var pl PullRequestCommentCreatedPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case PullRequestCommentUpdatedEvent:
 		var pl PullRequestCommentUpdatedPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case PullRequestCommentDeletedEvent:
 		var pl PullRequestCommentDeletedPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	default:
 		return nil, fmt.Errorf("unknown event %s", bitbucketEvent)
 	}
