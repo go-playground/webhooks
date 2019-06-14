@@ -8,18 +8,17 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	models "code.gitea.io/gitea/modules/structs"
+	"code.gitea.io/gitea/modules/structs"
 )
 
 // parse errors
 var (
-	ErrEventNotSpecifiedToParse    = errors.New("no Event specified to parse")
-	ErrInvalidHTTPMethod           = errors.New("invalid HTTP Method")
-	ErrMissingGiteaEventHeader     = errors.New("missing X-Gitea-Event Header")
-	ErrMissingGiteaSignatureHeader = errors.New("missing X-Gitea-Signature Header")
-	ErrEventNotFound               = errors.New("event not defined to be parsed")
-	ErrParsingPayload              = errors.New("error parsing payload")
-	ErrHMACVerificationFailed      = errors.New("HMAC verification failed")
+	ErrEventNotSpecifiedToParse = errors.New("no Event specified to parse")
+	ErrInvalidHTTPMethod        = errors.New("invalid HTTP Method")
+	ErrMissingGiteaEventHeader  = errors.New("missing X-Gitea-Event Header")
+	ErrEventNotFound            = errors.New("event not defined to be parsed")
+	ErrParsingPayload           = errors.New("error parsing payload")
+	ErrSecretNotMatch           = errors.New("secret not match")
 )
 
 // Option is a configuration option for the webhook
@@ -72,7 +71,7 @@ func New(options ...Option) (*Webhook, error) {
 
 func (hook Webhook) verifySecret(secret string) error {
 	if len(hook.secret) > 0 && hook.secret != secret {
-		return fmt.Errorf("secret %s not match", secret)
+		return ErrSecretNotMatch
 	}
 
 	return nil
@@ -118,7 +117,7 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 
 	switch giteaEvent {
 	case CreateEvent:
-		var pl models.CreatePayload
+		var pl structs.CreatePayload
 		err = json.Unmarshal([]byte(payload), &pl)
 
 		if err == nil {
@@ -128,7 +127,7 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return pl, err
 
 	case ReleaseEvent:
-		var pl models.ReleasePayload
+		var pl structs.ReleasePayload
 		err = json.Unmarshal([]byte(payload), &pl)
 
 		if err == nil {
@@ -138,7 +137,7 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return pl, err
 
 	case PushEvent:
-		var pl models.PushPayload
+		var pl structs.PushPayload
 		err = json.Unmarshal([]byte(payload), &pl)
 
 		if err == nil {
@@ -148,7 +147,7 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return pl, err
 
 	case DeleteEvent:
-		var pl models.DeletePayload
+		var pl structs.DeletePayload
 		err = json.Unmarshal([]byte(payload), &pl)
 
 		if err == nil {
@@ -158,7 +157,7 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return pl, err
 
 	case ForkEvent:
-		var pl models.ForkPayload
+		var pl structs.ForkPayload
 		err = json.Unmarshal([]byte(payload), &pl)
 
 		if err == nil {
@@ -168,7 +167,7 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return pl, err
 
 	case IssuesEvent:
-		var pl models.IssuePayload
+		var pl structs.IssuePayload
 		err = json.Unmarshal([]byte(payload), &pl)
 
 		if err == nil {
@@ -178,7 +177,7 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return pl, err
 
 	case IssueCommentEvent:
-		var pl models.IssueCommentPayload
+		var pl structs.IssueCommentPayload
 		err = json.Unmarshal([]byte(payload), &pl)
 
 		if err == nil {
@@ -188,7 +187,7 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return pl, err
 
 	case PullRequestEvent:
-		var pl models.PullRequestPayload
+		var pl structs.PullRequestPayload
 		err = json.Unmarshal([]byte(payload), &pl)
 
 		if err == nil {
