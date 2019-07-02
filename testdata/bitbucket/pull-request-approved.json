@@ -1,14 +1,15 @@
 {
   "actor":{
-    "username":"emmap1",
+    "nickname":"emmap1",
+    "account_id":"udfy9suggmzpswxc7n200y3c",
     "display_name":"Emma",
     "uuid":"{a54f16da-24e9-4d7f-a3a7-b1ba2cd98aa3}",
     "links":{
       "self":{
-        "href":"https://api.bitbucket.org/api/2.0/users/emmap1"
+        "href":"https://api.bitbucket.org/api/2.0/users/%7Ba54f16da-24e9-4d7f-a3a7-b1ba2cd98aa3%7D"
       },
       "html":{
-        "href":"https://api.bitbucket.org/emmap1"
+        "href":"https://api.bitbucket.org/%7Ba54f16da-24e9-4d7f-a3a7-b1ba2cd98aa3%7D"
       },
       "avatar":{
         "href":"https://bitbucket-api-assetroot.s3.amazonaws.com/c/photos/2015/Feb/26/3613917261-0-emmap1-avatar_avatar.png"
@@ -21,15 +22,16 @@
     "description":"Description of pull request",
     "state":"OPEN|MERGED|DECLINED",
     "author":{
-      "username":"emmap1",
+      "nickname":"emmap1",
+      "account_id":"udfy9suggmzpswxc7n200y3c",
       "display_name":"Emma",
       "uuid":"{a54f16da-24e9-4d7f-a3a7-b1ba2cd98aa3}",
       "links":{
         "self":{
-          "href":"https://api.bitbucket.org/api/2.0/users/emmap1"
+          "href":"https://api.bitbucket.org/api/2.0/users/%7Ba54f16da-24e9-4d7f-a3a7-b1ba2cd98aa3%7D"
         },
         "html":{
-          "href":"https://api.bitbucket.org/emmap1"
+          "href":"https://api.bitbucket.org/%7Ba54f16da-24e9-4d7f-a3a7-b1ba2cd98aa3%7D"
         },
         "avatar":{
           "href":"https://bitbucket-api-assetroot.s3.amazonaws.com/c/photos/2015/Feb/26/3613917261-0-emmap1-avatar_avatar.png"
@@ -93,15 +95,16 @@
     },
     "participants":[
       {
-        "username":"emmap1",
+        "nickname":"emmap1",
+        "account_id":"udfy9suggmzpswxc7n200y3c",
         "display_name":"Emma",
         "uuid":"{a54f16da-24e9-4d7f-a3a7-b1ba2cd98aa3}",
         "links":{
           "self":{
-            "href":"https://api.bitbucket.org/api/2.0/users/emmap1"
+            "href":"https://api.bitbucket.org/api/2.0/users/%7Ba54f16da-24e9-4d7f-a3a7-b1ba2cd98aa3%7D"
           },
           "html":{
-            "href":"https://api.bitbucket.org/emmap1"
+            "href":"https://api.bitbucket.org/%7Ba54f16da-24e9-4d7f-a3a7-b1ba2cd98aa3%7D"
           },
           "avatar":{
             "href":"https://bitbucket-api-assetroot.s3.amazonaws.com/c/photos/2015/Feb/26/3613917261-0-emmap1-avatar_avatar.png"
@@ -111,15 +114,16 @@
     ],
     "reviewers":[
       {
-        "username":"emmap1",
+        "nickname":"emmap1",
+        "account_id":"udfy9suggmzpswxc7n200y3c",
         "display_name":"Emma",
         "uuid":"{a54f16da-24e9-4d7f-a3a7-b1ba2cd98aa3}",
         "links":{
           "self":{
-            "href":"https://api.bitbucket.org/api/2.0/users/emmap1"
+            "href":"https://api.bitbucket.org/api/2.0/users/%7Ba54f16da-24e9-4d7f-a3a7-b1ba2cd98aa3%7D"
           },
           "html":{
-            "href":"https://api.bitbucket.org/emmap1"
+            "href":"https://api.bitbucket.org/%7Ba54f16da-24e9-4d7f-a3a7-b1ba2cd98aa3%7D"
           },
           "avatar":{
             "href":"https://bitbucket-api-assetroot.s3.amazonaws.com/c/photos/2015/Feb/26/3613917261-0-emmap1-avatar_avatar.png"
@@ -129,15 +133,16 @@
     ],
     "close_source_branch":true,
     "closed_by":{
-      "username":"emmap1",
+      "nickname":"emmap1",
+      "account_id":"udfy9suggmzpswxc7n200y3c",
       "display_name":"Emma",
       "uuid":"{a54f16da-24e9-4d7f-a3a7-b1ba2cd98aa3}",
       "links":{
         "self":{
-          "href":"https://api.bitbucket.org/api/2.0/users/emmap1"
+          "href":"https://api.bitbucket.org/api/2.0/users/%7Ba54f16da-24e9-4d7f-a3a7-b1ba2cd98aa3%7D"
         },
         "html":{
-          "href":"https://api.bitbucket.org/emmap1"
+          "href":"https://api.bitbucket.org/%7Ba54f16da-24e9-4d7f-a3a7-b1ba2cd98aa3%7D"
         },
         "avatar":{
           "href":"https://bitbucket-api-assetroot.s3.amazonaws.com/c/photos/2015/Feb/26/3613917261-0-emmap1-avatar_avatar.png"
@@ -177,15 +182,16 @@
   "approval":{
     "date":"2015-04-06T16:34:59.195330+00:00",
     "user":{
-      "username":"emmap1",
+      "nickname":"emmap1",
+      "account_id":"udfy9suggmzpswxc7n200y3c",
       "display_name":"Emma",
       "uuid":"{a54f16da-24e9-4d7f-a3a7-b1ba2cd98aa3}",
       "links":{
         "self":{
-          "href":"https://api.bitbucket.org/api/2.0/users/emmap1"
+          "href":"https://api.bitbucket.org/api/2.0/users/%7Ba54f16da-24e9-4d7f-a3a7-b1ba2cd98aa3%7D"
         },
         "html":{
-          "href":"https://api.bitbucket.org/emmap1"
+          "href":"https://api.bitbucket.org/%7Ba54f16da-24e9-4d7f-a3a7-b1ba2cd98aa3%7D"
         },
         "avatar":{
           "href":"https://bitbucket-api-assetroot.s3.amazonaws.com/c/photos/2015/Feb/26/3613917261-0-emmap1-avatar_avatar.png"
