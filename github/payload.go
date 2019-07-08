@@ -5336,8 +5336,8 @@ type StatusPayload struct {
 	Description *string `json:"description"`
 	State       string  `json:"state"`
 	Commit      struct {
-		NodeID string `json:"node_id"`
 		Sha    string `json:"sha"`
+		NodeID string `json:"node_id"`
 		Commit struct {
 			Author struct {
 				Name  string    `json:"name"`
