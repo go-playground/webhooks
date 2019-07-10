@@ -35,7 +35,36 @@
     "project_id": 14,
     "created_at": "2013-12-03T17:15:43Z",
     "updated_at": "2013-12-03T17:15:43Z",
-    "position": 0,
+    "change_position": {
+      "base_sha": null,
+      "start_sha": null,
+      "head_sha": null,
+      "old_path": null,
+      "new_path": null,
+      "position_type": "text",
+      "old_line": null,
+      "new_line": null
+    },
+    "original_position": {
+      "base_sha": "0a87d409a2d5ffbf586ed3e7ff36396ca59c3c14",
+      "start_sha": "5f7519856cb2a7c05427a8c1e83f941828567923",
+      "head_sha": "562e173be03b8ff2efb05345d12df18815438a4b",
+      "old_path": "core/src/main/java/com/example/server/CorbaServer.java",
+      "new_path": "core/src/main/java/com/example/server/CorbaServer.java",
+      "position_type": "text",
+      "old_line": null,
+      "new_line": 74
+    },
+    "position": {
+      "base_sha": "0a87d409a2d5ffbf586ed3e7ff36396ca59c3c14",
+      "start_sha": "5f7519856cb2a7c05427a8c1e83f941828567923",
+      "head_sha": "562e173be03b8ff2efb05345d12df18815438a4b",
+      "old_path": "core/src/main/java/com/example/server/CorbaServer.java",
+      "new_path": "core/src/main/java/com/example/server/CorbaServer.java",
+      "position_type": "text",
+      "old_line": null,
+      "new_line": 74
+    },
     "branch_name": null,
     "description": "Create new API for manipulations with repository",
     "milestone_id": null,
