@@ -4342,6 +4342,9 @@ type PullRequestReviewPayload struct {
 		Type              string `json:"type"`
 		SiteAdmin         bool   `json:"site_admin"`
 	} `json:"sender"`
+	Installation struct {
+		ID int64 `json:"id"`
+	} `json:"installation"`
 }
 
 // PullRequestReviewCommentPayload contains the information for GitHub's pull_request_review_comments hook event
@@ -4806,6 +4809,9 @@ type PullRequestReviewCommentPayload struct {
 		Type              string `json:"type"`
 		SiteAdmin         bool   `json:"site_admin"`
 	} `json:"sender"`
+	Installation struct {
+		ID int64 `json:"id"`
+	} `json:"installation"`
 }
 
 // PushPayload contains the information for GitHub's push hook event
