@@ -348,8 +348,9 @@ type PullRequestCommentDeletedPayload struct {
 // Owner is the common Bitbucket Owner Sub Entity
 type Owner struct {
 	Type        string `json:"type"`
-	Username    string `json:"username"`
+	NickName    string `json:"nickname"`
 	DisplayName string `json:"display_name"`
+	AccountId   string `json:"account_id"`
 	UUID        string `json:"uuid"`
 	Links       struct {
 		Self struct {
