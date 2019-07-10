@@ -83,11 +83,20 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return nil, ErrParsingPayload
 	}
 
+	return hook.ParsePayload(payload, events...)
+}
+
+// ParsePayload verifies and parses the Build event from a payload, and returns
+// the payload object or an error.
+//
+// Similar to Parse (which uses this method under the hood), this is useful in
+// cases where payloads are not represented as HTTP requests - for example are
+// put on a queue for pull processing.
+func (hook Webhook) ParsePayload(payload []byte, events ...Event) (interface{}, error) {
 	var pl BuildPayload
-	err = json.Unmarshal([]byte(payload), &pl)
-	if err != nil {
+	if err := json.Unmarshal(payload, &pl); err != nil {
 		return nil, ErrParsingPayload
 	}
-	return pl, err
 
+	return pl, nil
 }

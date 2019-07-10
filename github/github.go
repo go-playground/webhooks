@@ -120,18 +120,39 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		_ = r.Body.Close()
 	}()
 
-	if len(events) == 0 {
-		return nil, ErrEventNotSpecifiedToParse
-	}
 	if r.Method != http.MethodPost {
 		return nil, ErrInvalidHTTPMethod
 	}
 
-	event := r.Header.Get("X-GitHub-Event")
-	if event == "" {
+	payload, err := ioutil.ReadAll(r.Body)
+	if err != nil || len(payload) == 0 {
+		return nil, ErrParsingPayload
+	}
+
+	return hook.ParsePayload(
+		payload,
+		r.Header.Get("X-GitHub-Event"),
+		r.Header.Get("X-Hub-Signature"),
+		events...,
+	)
+}
+
+// ParsePayload verifies and parses the events from a payload and string
+// metadata (event type and signature), and returns the payload object or an
+// error.
+//
+// Similar to Parse (which uses this method under the hood), this is useful in
+// cases where payloads are not represented as HTTP requests - for example are
+// put on a queue for pull processing.
+func (hook Webhook) ParsePayload(payload []byte, eventType, signature string, events ...Event) (interface{}, error) {
+	if len(events) == 0 {
+		return nil, ErrEventNotSpecifiedToParse
+	}
+
+	if eventType == "" {
 		return nil, ErrMissingGithubEventHeader
 	}
-	gitHubEvent := Event(event)
+	gitHubEvent := Event(eventType)
 
 	var found bool
 	for _, evt := range events {
@@ -145,14 +166,8 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return nil, ErrEventNotFound
 	}
 
-	payload, err := ioutil.ReadAll(r.Body)
-	if err != nil || len(payload) == 0 {
-		return nil, ErrParsingPayload
-	}
-
 	// If we have a Secret set, we should check the MAC
 	if len(hook.secret) > 0 {
-		signature := r.Header.Get("X-Hub-Signature")
 		if len(signature) == 0 {
 			return nil, ErrMissingHubSignatureHeader
 		}
@@ -168,152 +183,115 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 	switch gitHubEvent {
 	case CheckRunEvent:
 		var pl CheckRunPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case CheckSuiteEvent:
 		var pl CheckSuitePayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case CommitCommentEvent:
 		var pl CommitCommentPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case CreateEvent:
 		var pl CreatePayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case DeleteEvent:
 		var pl DeletePayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case DeploymentEvent:
 		var pl DeploymentPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case DeploymentStatusEvent:
 		var pl DeploymentStatusPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case ForkEvent:
 		var pl ForkPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case GollumEvent:
 		var pl GollumPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case InstallationEvent, IntegrationInstallationEvent:
 		var pl InstallationPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case InstallationRepositoriesEvent:
 		var pl InstallationRepositoriesPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case IssueCommentEvent:
 		var pl IssueCommentPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case IssuesEvent:
 		var pl IssuesPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case LabelEvent:
 		var pl LabelPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case MemberEvent:
 		var pl MemberPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case MembershipEvent:
 		var pl MembershipPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case MilestoneEvent:
 		var pl MilestonePayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case OrganizationEvent:
 		var pl OrganizationPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case OrgBlockEvent:
 		var pl OrgBlockPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case PageBuildEvent:
 		var pl PageBuildPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case PingEvent:
 		var pl PingPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case ProjectCardEvent:
 		var pl ProjectCardPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case ProjectColumnEvent:
 		var pl ProjectColumnPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case ProjectEvent:
 		var pl ProjectPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case PublicEvent:
 		var pl PublicPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case PullRequestEvent:
 		var pl PullRequestPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case PullRequestReviewEvent:
 		var pl PullRequestReviewPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case PullRequestReviewCommentEvent:
 		var pl PullRequestReviewCommentPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case PushEvent:
 		var pl PushPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case ReleaseEvent:
 		var pl ReleasePayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case RepositoryEvent:
 		var pl RepositoryPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case RepositoryVulnerabilityAlertEvent:
 		var pl RepositoryVulnerabilityAlertPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case SecurityAdvisoryEvent:
 		var pl SecurityAdvisoryPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case StatusEvent:
 		var pl StatusPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case TeamEvent:
 		var pl TeamPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case TeamAddEvent:
 		var pl TeamAddPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case WatchEvent:
 		var pl WatchPayload
-		err = json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	default:
 		return nil, fmt.Errorf("unknown event %s", gitHubEvent)
 	}

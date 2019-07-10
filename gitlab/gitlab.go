@@ -83,38 +83,24 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		_ = r.Body.Close()
 	}()
 
-	if len(events) == 0 {
-		return nil, ErrEventNotSpecifiedToParse
-	}
 	if r.Method != http.MethodPost {
 		return nil, ErrInvalidHTTPMethod
 	}
-
-	// If we have a Secret set, we should check the MAC
-	if len(hook.secret) > 0 {
-		signature := r.Header.Get("X-Gitlab-Token")
-		if signature != hook.secret {
-			return nil, ErrGitLabTokenVerificationFailed
-		}
-	}
-
-	event := r.Header.Get("X-Gitlab-Event")
-	if len(event) == 0 {
-		return nil, ErrMissingGitLabEventHeader
-	}
-
-	gitLabEvent := Event(event)
 
 	payload, err := ioutil.ReadAll(r.Body)
 	if err != nil || len(payload) == 0 {
 		return nil, ErrParsingPayload
 	}
 
-	return eventParsing(gitLabEvent, events, payload)
+	return hook.ParsePayload(
+		payload,
+		r.Header.Get("X-Gitlab-Event"),
+		r.Header.Get("X-Gitlab-Token"),
+		events...,
+	)
 }
 
 func eventParsing(gitLabEvent Event, events []Event, payload []byte) (interface{}, error) {
-
 	var found bool
 	for _, evt := range events {
 		if evt == gitLabEvent {
@@ -130,57 +116,46 @@ func eventParsing(gitLabEvent Event, events []Event, payload []byte) (interface{
 	switch gitLabEvent {
 	case PushEvents:
 		var pl PushEventPayload
-		err := json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 
 	case TagEvents:
 		var pl TagEventPayload
-		err := json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 
 	case ConfidentialIssuesEvents:
 		var pl ConfidentialIssueEventPayload
-		err := json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 
 	case IssuesEvents:
 		var pl IssueEventPayload
-		err := json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 
 	case CommentEvents:
 		var pl CommentEventPayload
-		err := json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 
 	case MergeRequestEvents:
 		var pl MergeRequestEventPayload
-		err := json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 
 	case WikiPageEvents:
 		var pl WikiPageEventPayload
-		err := json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 
 	case PipelineEvents:
 		var pl PipelineEventPayload
-		err := json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 
 	case BuildEvents:
 		var pl BuildEventPayload
-		err := json.Unmarshal([]byte(payload), &pl)
-		return pl, err
+		return pl, json.Unmarshal(payload, &pl)
 	case JobEvents:
-		var p1 JobEventPayload
-		err := json.Unmarshal([]byte(payload), &p1)
-		return p1, err
+		var pl JobEventPayload
+		return pl, json.Unmarshal(payload, &pl)
 
 	case SystemHookEvents:
 		var pl SystemHookPayload
-		err := json.Unmarshal([]byte(payload), &pl)
-		if err != nil {
+		if err := json.Unmarshal(payload, &pl); err != nil {
 			return nil, err
 		}
 		switch pl.ObjectKind {
@@ -196,4 +171,31 @@ func eventParsing(gitLabEvent Event, events []Event, payload []byte) (interface{
 	default:
 		return nil, fmt.Errorf("unknown event %s", gitLabEvent)
 	}
+}
+
+// ParsePayload verifies and parses the events from a payload and string
+// metadata (event type and token), and returns the payload object or an error.
+//
+// Similar to Parse (which uses this method under the hood), this is useful in
+// cases where payloads are not represented as HTTP requests - for example are
+// put on a queue for pull processing.
+func (hook Webhook) ParsePayload(payload []byte, eventType, token string, events ...Event) (interface{}, error) {
+	if len(events) == 0 {
+		return nil, ErrEventNotSpecifiedToParse
+	}
+
+	// If we have a Secret set, we should check the MAC
+	if len(hook.secret) > 0 {
+		if token != hook.secret {
+			return nil, ErrGitLabTokenVerificationFailed
+		}
+	}
+
+	if len(eventType) == 0 {
+		return nil, ErrMissingGitLabEventHeader
+	}
+
+	gitLabEvent := Event(eventType)
+
+	return eventParsing(gitLabEvent, events, payload)
 }
