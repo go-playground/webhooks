@@ -5335,7 +5335,6 @@ type SecurityAdvisoryPayload struct {
 // StatusPayload contains the information for GitHub's status hook event
 type StatusPayload struct {
 	ID          int64   `json:"id"`
-	NodeID      string  `json:"node_id"`
 	Sha         string  `json:"sha"`
 	Name        string  `json:"name"`
 	TargetURL   *string `json:"target_url"`
@@ -5344,6 +5343,7 @@ type StatusPayload struct {
 	State       string  `json:"state"`
 	Commit      struct {
 		Sha    string `json:"sha"`
+		NodeID string `json:"node_id"`
 		Commit struct {
 			Author struct {
 				Name  string    `json:"name"`
