@@ -47,6 +47,7 @@ const (
 	MemberEvent                              Event = "member"
 	MembershipEvent                          Event = "membership"
 	MilestoneEvent                           Event = "milestone"
+  MetaEvent                                Event = "meta"
 	OrganizationEvent                        Event = "organization"
 	OrgBlockEvent                            Event = "org_block"
 	PageBuildEvent                           Event = "page_build"
@@ -229,6 +230,10 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return pl, err
 	case MembershipEvent:
 		var pl MembershipPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
+	case MetaEvent:
+		var pl MetaPayload
 		err = json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 	case MilestoneEvent:
