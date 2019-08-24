@@ -254,6 +254,16 @@ func TestWebhooks(t *testing.T) {
 			},
 		},
 		{
+			name:     "IntegrationInstallationRepositoriesEvent",
+			event:    IntegrationInstallationRepositoriesEvent,
+			typ:      InstallationRepositoriesPayload{},
+			filename: "../testdata/github/integration-installation-repositories.json",
+			headers: http.Header{
+				"X-Github-Event":  []string{"integration_installation_repositories"},
+				"X-Hub-Signature": []string{"sha1=2f00a982574188342c2894eb9d1b1e93434687fb"},
+			},
+		},
+		{
 			name:     "IssueCommentEvent",
 			event:    IssueCommentEvent,
 			typ:      IssueCommentPayload{},
