@@ -354,6 +354,7 @@ type ObjectAttributes struct {
 	Target           Target     `json:"target"`
 	LastCommit       LastCommit `json:"last_commit"`
 	Assignee         Assignee   `json:"assignee"`
+	HeadPipelineID	 int64	    `json:"head_pipeline_id"`
 }
 
 // Position defines a specific location, identified by paths line numbers and
@@ -401,6 +402,7 @@ type MergeRequest struct {
 	LastCommit      LastCommit `json:"last_commit"`
 	WorkInProgress  bool       `json:"work_in_progress"`
 	Assignee        Assignee   `json:"assignee"`
+	HeadPipelineID	int64	   `json:"head_pipeline_id"`
 }
 
 // Assignee contains all of the GitLab assignee information
