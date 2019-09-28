@@ -104,12 +104,12 @@ type WikiPageEventPayload struct {
 
 // PipelineEventPayload contains the information for GitLab's pipeline status change event
 type PipelineEventPayload struct {
-	ObjectKind       string           `json:"object_kind"`
-	User             User             `json:"user"`
-	Project          Project          `json:"project"`
-	Commit           Commit           `json:"commit"`
-	ObjectAttributes ObjectAttributes `json:"object_attributes"`
-	Jobs             []Job            `json:"jobs"`
+	ObjectKind       string                   `json:"object_kind"`
+	User             User                     `json:"user"`
+	Project          Project                  `json:"project"`
+	Commit           Commit                   `json:"commit"`
+	ObjectAttributes PipelineObjectAttributes `json:"object_attributes"`
+	Jobs             []Job                    `json:"jobs"`
 }
 
 // CommentEventPayload contains the information for GitLab's comment event
@@ -354,6 +354,21 @@ type ObjectAttributes struct {
 	Target           Target     `json:"target"`
 	LastCommit       LastCommit `json:"last_commit"`
 	Assignee         Assignee   `json:"assignee"`
+}
+
+// PipelineObjectAttributes contains pipeline specific GitLab object attributes information
+type PipelineObjectAttributes struct {
+	ID         int64      `json:"id"`
+	Ref        string     `json:"ref"`
+	Tag        bool       `json:"tag"`
+	SHA        string     `json:"sha"`
+	BeforeSHA  string     `json:"before_sha"`
+	Source     string     `json:"source"`
+	Status     string     `json:"status"`
+	Stages     []string   `json:"stages"`
+	CreatedAt  customTime `json:"created_at"`
+	FinishedAt customTime `json:"finished_at"`
+	Duration   int64      `json:"duration"`
 }
 
 // Position defines a specific location, identified by paths line numbers and
