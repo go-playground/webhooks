@@ -39,11 +39,11 @@ func TestPayloads(t *testing.T) {
 			filename: "check-suite.json",
 			typ:      &CheckSuitePayload{},
 		},
-		// {
-		// 	name:     "CommitCommentPayload",
-		// 	filename: "commit-comment.json",
-		// 	typ:      &CommitCommentPayload{},
-		// },
+		{
+			name:     "CommitCommentPayload",
+			filename: "commit-comment.json",
+			typ:      &CommitCommentPayload{},
+		},
 		// {
 		// 	name:     "CreatePayload",
 		// 	filename: "create.json",
@@ -245,7 +245,7 @@ func TestSingle(t *testing.T) {
 			},
 		}
 	}
-	tests := createTest("commit-comment.json", &CommitCommentPayload{}, &CommitCommentPayload{})
+	tests := createTest("content-reference.json", &ContentReferencePayload{}, &ContentReferencePayload{})
 	for _, tt := range tests {
 		tc := tt
 		t.Run(tt.name, func(t *testing.T) {
