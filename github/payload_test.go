@@ -54,16 +54,16 @@ func TestPayloads(t *testing.T) {
 			filename: "delete.json",
 			typ:      &DeletePayload{},
 		},
-		// {
-		// 	name:     "DeploymentStatusPayload",
-		// 	filename: "deployment-status.json",
-		// 	typ:      &DeploymentStatusPayload{},
-		// },
-		// {
-		// 	name:     "DeploymentPayload",
-		// 	filename: "deployment.json",
-		// 	typ:      &DeploymentPayload{},
-		// },
+		{
+			name:     "DeploymentStatusPayload",
+			filename: "deployment-status.json",
+			typ:      &DeploymentStatusPayload{},
+		},
+		{
+			name:     "DeploymentPayload",
+			filename: "deployment.json",
+			typ:      &DeploymentPayload{},
+		},
 		// {
 		// 	name:     "ForkPayload",
 		// 	filename: "fork.json",
@@ -245,7 +245,7 @@ func TestSingle(t *testing.T) {
 			},
 		}
 	}
-	tests := createTest("deployment.json", &DeploymentPayload{}, &DeploymentPayload{})
+	tests := createTest("fork.json", &ForkPayload{}, &ForkPayload{})
 	for _, tt := range tests {
 		tc := tt
 		t.Run(tt.name, func(t *testing.T) {
