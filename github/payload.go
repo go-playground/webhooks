@@ -3,6 +3,29 @@ package github
 import "time"
 
 // CheckRunPayload contains the information for GitHub's check_run hook event
+type CheckPullRequest struct {
+	URL    string `json:"url"`
+	ID     int64  `json:"id"`
+	Number int    `json:"number"`
+	Head   struct {
+		Ref  string `json:"ref"`
+		SHA  string `json:"sha"`
+		Repo struct {
+			ID   int64  `json:"id"`
+			URL  string `json:"url"`
+			Name string `json:"name"`
+		} `json:"repo"`
+	} `json:"head"`
+	Base struct {
+		Ref  string `json:"ref"`
+		SHA  string `json:"sha"`
+		Repo struct {
+			ID   int64  `json:"id"`
+			URL  string `json:"url"`
+			Name string `json:"name"`
+		} `json:"repo"`
+	} `json:"base"`
+}
 type CheckRunPayload struct {
 	Action   string `json:"action"`
 	CheckRun struct {
@@ -16,23 +39,26 @@ type CheckRunPayload struct {
 		HtmlURL     string    `json:"html_url"`
 		StarterAt   time.Time `json:"started_at"`
 		CompletedAt time.Time `json:"completed_at"`
+		DetailsURL  string    `json:"details_url"`
+		ExternalID  string    `json:"external_id"`
 		Output      struct {
 			Title            string `json:"title"`
 			Summary          string `json:"summary"`
 			Text             string `json:"text"`
 			AnnotationsCount int64  `json:"annotations_count"`
 			AnnotationsURL   string `json:"annotations_url"`
-		}
+		} `json:"output"`
 		CheckSuite struct {
-			ID           int64                `json:"id"`
-			HeadBranch   string               `json:"head_branch"`
-			HeadSHA      string               `json:"head_sha"`
-			Status       string               `json:"status"`
-			Conclusion   string               `json:"conclusion"`
-			URL          string               `json:"url"`
-			Before       string               `json:"before"`
-			After        string               `json:"after"`
-			PullRequests []PullRequestPayload `json:"pull_requests"`
+			ID           int64              `json:"id"`
+			NodeID       string             `json:"node_id"`
+			HeadBranch   string             `json:"head_branch"`
+			HeadSHA      string             `json:"head_sha"`
+			Status       string             `json:"status"`
+			Conclusion   string             `json:"conclusion"`
+			URL          string             `json:"url"`
+			Before       string             `json:"before"`
+			After        string             `json:"after"`
+			PullRequests []CheckPullRequest `json:"pull_requests"`
 			App          struct {
 				ID     int64  `json:"id"`
 				NodeID string `json:"node_id"`
@@ -62,6 +88,28 @@ type CheckRunPayload struct {
 				HtmlURL     string `json:"html_url"`
 				CreatedAt   string `json:"created_at"`
 				UpdatedAt   string `json:"updated_at"`
+				Permissions struct {
+					Administration            string `json:"administration"`
+					Checks                    string `json:"checks"`
+					Contents                  string `json:"contents"`
+					Deployments               string `json:"deployments"`
+					Issues                    string `json:"issues"`
+					Members                   string `json:"members"`
+					Metadata                  string `json:"metadata"`
+					OrganizatonAdministration string `json:"organization_administration"`
+					OrganizationHooks         string `json:"organization_hooks"`
+					OrganizationPlan          string `json:"organization_plan"`
+					OrganizationProjects      string `json:"organization_projects"`
+					OrganizationUserBlocking  string `json:"organization_user_blocking"`
+					Pages                     string `json:"pages"`
+					PullRequests              string `json:"pull_requests"`
+					RepositoryHooks           string `json:"repository_hooks"`
+					RepositoryProjects        string `json:"repository_projects"`
+					Statuses                  string `json:"statuses"`
+					TeamDiscussion            string `json:"team_discussions"`
+					VulnerabilityAlerts       string `json:"vulnerability_alerts"`
+				} `json:"permissions"`
+				Events []string `json:"events"` //TODO: check
 			} `json:"app"`
 			CreatedAt time.Time `json:"created_at"`
 			UpdatedAt time.Time `json:"updated_at"`
@@ -95,8 +143,30 @@ type CheckRunPayload struct {
 			HtmlURL     string `json:"html_url"`
 			CreatedAt   string `json:"created_at"`
 			UpdatedAt   string `json:"updated_at"`
+			Permissions struct {
+				Administration            string `json:"administration"`
+				Checks                    string `json:"checks"`
+				Contents                  string `json:"contents"`
+				Deployments               string `json:"deployments"`
+				Issues                    string `json:"issues"`
+				Members                   string `json:"members"`
+				Metadata                  string `json:"metadata"`
+				OrganizatonAdministration string `json:"organization_administration"`
+				OrganizationHooks         string `json:"organization_hooks"`
+				OrganizationPlan          string `json:"organization_plan"`
+				OrganizationProjects      string `json:"organization_projects"`
+				OrganizationUserBlocking  string `json:"organization_user_blocking"`
+				Pages                     string `json:"pages"`
+				PullRequests              string `json:"pull_requests"`
+				RepositoryHooks           string `json:"repository_hooks"`
+				RepositoryProjects        string `json:"repository_projects"`
+				Statuses                  string `json:"statuses"`
+				TeamDiscussion            string `json:"team_discussions"`
+				VulnerabilityAlerts       string `json:"vulnerability_alerts"`
+			} `json:"permissions"`
+			Events []string `json:"events"` //TODO: check
 		} `json:"app"`
-		PullRequests []PullRequestPayload `json:"pull_requests"`
+		PullRequests []CheckPullRequest `json:"pull_requests"`
 	} `json:"check_run"`
 	Repository struct {
 		ID       int64  `json:"id"`
@@ -170,6 +240,11 @@ type CheckRunPayload struct {
 		SSHURL           string    `json:"ssh_url"`
 		CloneURL         string    `json:"clone_url"`
 		SvnURL           string    `json:"svn_url"`
+		DeploymentsURL   string    `json:"deployments_url"`
+		Archived         bool      `json:"archived"`
+		Disabled         bool      `json:"disabled"`
+		HasProjects      bool      `json:"has_projects"`
+		License          string    `json:"license"`
 		Homepage         *string   `json:"homepage"`
 		Size             int64     `json:"size"`
 		StargazersCount  int64     `json:"stargazers_count"`
@@ -207,22 +282,26 @@ type CheckRunPayload struct {
 		Type              string `json:"type"`
 		SiteAdmin         bool   `json:"site_admin"`
 	} `json:"sender"`
+	Installation struct {
+		ID     int64  `json:"id"`
+		NodeID string `json:"node_id"`
+	} `json:"installation"`
 }
 
 // CheckSuitePayload contains the information for GitHub's check_suite hook event
 type CheckSuitePayload struct {
 	Action     string `json:"action"`
 	CheckSuite struct {
-		ID           int64                `json:"id"`
-		NodeID       string               `json:"node_id"`
-		HeadBranch   string               `json:"head_branch"`
-		HeadSHA      string               `json:"head_sha"`
-		Status       string               `json:"status"`
-		Conclusion   string               `json:"conclusion"`
-		URL          string               `json:"url"`
-		Before       string               `json:"before"`
-		After        string               `json:"after"`
-		PullRequests []PullRequestPayload `json:"pull_requests"`
+		ID           int64              `json:"id"`
+		NodeID       string             `json:"node_id"`
+		HeadBranch   string             `json:"head_branch"`
+		HeadSHA      string             `json:"head_sha"`
+		Status       string             `json:"status"`
+		Conclusion   string             `json:"conclusion"`
+		URL          string             `json:"url"`
+		Before       string             `json:"before"`
+		After        string             `json:"after"`
+		PullRequests []CheckPullRequest `json:"pull_requests"`
 		App          struct {
 			ID     int64  `json:"id"`
 			NodeID string `json:"node_id"`
@@ -5456,7 +5535,7 @@ type SecurityAdvisoryPayload struct {
 			Package struct {
 				Ecosystem string `json:"ecosystem"`
 				Name      string `json:"name"`
-			}
+			} `json:"package"`
 			Severity               string `json:"severity"`
 			VulnerableVersionRange string `json:"vulnerable_version_range"`
 			FirstPatchedVersion    *struct {
