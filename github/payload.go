@@ -96,7 +96,27 @@ type Repository struct {
 	Watchers         int64     `json:"watchers"`
 	DefaultBranch    string    `json:"default_branch"`
 }
-
+type Permissions struct {
+	Administration            string `json:"administration"`
+	Checks                    string `json:"checks"`
+	Contents                  string `json:"contents"`
+	Deployments               string `json:"deployments"`
+	Issues                    string `json:"issues"`
+	Members                   string `json:"members"`
+	Metadata                  string `json:"metadata"`
+	OrganizatonAdministration string `json:"organization_administration"`
+	OrganizationHooks         string `json:"organization_hooks"`
+	OrganizationPlan          string `json:"organization_plan"`
+	OrganizationProjects      string `json:"organization_projects"`
+	OrganizationUserBlocking  string `json:"organization_user_blocking"`
+	Pages                     string `json:"pages"`
+	PullRequests              string `json:"pull_requests"`
+	RepositoryHooks           string `json:"repository_hooks"`
+	RepositoryProjects        string `json:"repository_projects"`
+	Statuses                  string `json:"statuses"`
+	TeamDiscussion            string `json:"team_discussions"`
+	VulnerabilityAlerts       string `json:"vulnerability_alerts"`
+}
 type Installation struct {
 	ID     int64  `json:"id"`
 	NodeID string `json:"node_id"`
@@ -149,34 +169,14 @@ type CheckApp struct {
 		Type              string `json:"type"`
 		SiteAdmin         bool   `json:"site_admin"`
 	} `json:"owner"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	ExternalURL string `json:"external_url"`
-	HtmlURL     string `json:"html_url"`
-	CreatedAt   string `json:"created_at"`
-	UpdatedAt   string `json:"updated_at"`
-	Permissions struct {
-		Administration            string `json:"administration"`
-		Checks                    string `json:"checks"`
-		Contents                  string `json:"contents"`
-		Deployments               string `json:"deployments"`
-		Issues                    string `json:"issues"`
-		Members                   string `json:"members"`
-		Metadata                  string `json:"metadata"`
-		OrganizatonAdministration string `json:"organization_administration"`
-		OrganizationHooks         string `json:"organization_hooks"`
-		OrganizationPlan          string `json:"organization_plan"`
-		OrganizationProjects      string `json:"organization_projects"`
-		OrganizationUserBlocking  string `json:"organization_user_blocking"`
-		Pages                     string `json:"pages"`
-		PullRequests              string `json:"pull_requests"`
-		RepositoryHooks           string `json:"repository_hooks"`
-		RepositoryProjects        string `json:"repository_projects"`
-		Statuses                  string `json:"statuses"`
-		TeamDiscussion            string `json:"team_discussions"`
-		VulnerabilityAlerts       string `json:"vulnerability_alerts"`
-	} `json:"permissions"`
-	Events []string `json:"events"` //TODO: check
+	Name        string      `json:"name"`
+	Description string      `json:"description"`
+	ExternalURL string      `json:"external_url"`
+	HtmlURL     string      `json:"html_url"`
+	CreatedAt   string      `json:"created_at"`
+	UpdatedAt   string      `json:"updated_at"`
+	Permissions Permissions `json:"permissions"`
+	Events      []string    `json:"events"` //TODO: check
 }
 type CheckRunPayload struct {
 	Action   string `json:"action"`
@@ -738,8 +738,7 @@ type GollumPayload struct {
 type InstallationPayload struct {
 	Action       string `json:"action"`
 	Installation struct {
-		ID      int64  `json:"id"`
-		NodeID  string `json:"node_id"`
+		ID      int64 `json:"id"`
 		Account struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
@@ -767,22 +766,19 @@ type InstallationPayload struct {
 		AppID               int    `json:"app_id"`
 		TargetID            int    `json:"target_id"`
 		TargetType          string `json:"target_type"`
-		Permissions         struct {
-			Issues             string `json:"issues"`
-			Metadata           string `json:"metadata"`
-			PullRequests       string `json:"pull_requests"`
-			RepositoryProjects string `json:"repository_projects"`
-		} `json:"permissions"`
-		Events         []string `json:"events"`
-		CreatedAt      int64    `json:"created_at"`
-		UpdatedAt      int64    `json:"updated_at"`
-		SingleFileName *string  `json:"single_file_name"`
+		//TODO check, assuming installation permissions are the same as those defined in
+		//App object for CheckRun and CheckSuite
+		Permissions    Permissions `json:"permissions"`
+		Events         []string    `json:"events"`
+		CreatedAt      int64       `json:"created_at"`
+		UpdatedAt      int64       `json:"updated_at"`
+		SingleFileName *string     `json:"single_file_name"`
 	} `json:"installation"`
 	Repositories []struct {
 		ID       int64  `json:"id"`
-		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
+		Private  bool   `json:"private"`
 	} `json:"repositories"`
 	Sender struct {
 		Login             string `json:"login"`
@@ -808,10 +804,10 @@ type InstallationPayload struct {
 
 // InstallationRepositoriesPayload contains the information for GitHub's installation_repositories hook events
 type InstallationRepositoriesPayload struct {
-	Action       string `json:"action"`
-	Installation struct {
-		ID      int64  `json:"id"`
-		NodeID  string `json:"node_id"`
+	Action              string `json:"action"`
+	RepositorySelection string `json:"repository_selection"`
+	Installation        struct {
+		ID      int64 `json:"id"`
 		Account struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
@@ -832,28 +828,18 @@ type InstallationRepositoriesPayload struct {
 			Type              string `json:"type"`
 			SiteAdmin         bool   `json:"site_admin"`
 		} `json:"account"`
-		RepositorySelection string `json:"repository_selection"`
-		AccessTokensURL     string `json:"access_tokens_url"`
-		RepositoriesURL     string `json:"repositories_url"`
-		HTMLURL             string `json:"html_url"`
-		AppID               int    `json:"app_id"`
-		TargetID            int    `json:"target_id"`
-		TargetType          string `json:"target_type"`
-		Permissions         struct {
-			Issues              string `json:"issues"`
-			Metadata            string `json:"metadata"`
-			PullRequests        string `json:"pull_requests"`
-			RepositoryProjects  string `json:"repository_projects"`
-			VulnerabilityAlerts string `json:"vulnerability_alerts"`
-			Statuses            string `json:"statuses"`
-			Administration      string `json:"administration"`
-			Deployments         string `json:"deployments"`
-			Contents            string `json:"contents"`
-		} `json:"permissions"`
-		Events         []string `json:"events"`
-		CreatedAt      int64    `json:"created_at"`
-		UpdatedAt      int64    `json:"updated_at"`
-		SingleFileName *string  `json:"single_file_name"`
+		RepositorySelection string      `json:"repository_selection"`
+		AccessTokensURL     string      `json:"access_tokens_url"`
+		RepositoriesURL     string      `json:"repositories_url"`
+		HTMLURL             string      `json:"html_url"`
+		AppID               int         `json:"app_id"`
+		TargetID            int         `json:"target_id"`
+		TargetType          string      `json:"target_type"`
+		Permissions         Permissions `json:"permissions"`
+		Events              []string    `json:"events"`
+		CreatedAt           int64       `json:"created_at"`
+		UpdatedAt           int64       `json:"updated_at"`
+		SingleFileName      *string     `json:"single_file_name"`
 	} `json:"installation"`
 	RepositoriesAdded []struct {
 		ID       int64  `json:"id"`
