@@ -209,7 +209,7 @@ func TestPayloads(t *testing.T) {
 		tc := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			payload, err := ioutil.ReadFile(pth.Join("../testdata/github", tc.filename))
+			payload, err := ioutil.ReadFile(pth.Join("../tmp", tc.filename))
 			assert.NoError(err)
 			parsedPayload, err := ParsePayload(string(payload), tc.typ)
 			assert.NoError(err)
@@ -229,7 +229,7 @@ type Test struct {
 
 //Just to compare test data to new test data/easily run a single test
 //should be removed eventually.
-func TestSingle(t *testing.T) {
+func xTestSingle(t *testing.T) {
 	assert := require.New(t)
 	createTest := func(file string, typa interface{}, typb interface{}) []Test {
 		return []Test{
