@@ -44,16 +44,16 @@ func TestPayloads(t *testing.T) {
 			filename: "commit-comment.json",
 			typ:      &CommitCommentPayload{},
 		},
-		// {
-		// 	name:     "CreatePayload",
-		// 	filename: "create.json",
-		// 	typ:      &CreatePayload{},
-		// },
-		// {
-		// 	name:     "DeletePayload",
-		// 	filename: "delete.json",
-		// 	typ:      &DeletePayload{},
-		// },
+		{
+			name:     "CreatePayload",
+			filename: "create.json",
+			typ:      &CreatePayload{},
+		},
+		{
+			name:     "DeletePayload",
+			filename: "delete.json",
+			typ:      &DeletePayload{},
+		},
 		// {
 		// 	name:     "DeploymentStatusPayload",
 		// 	filename: "deployment-status.json",
@@ -245,7 +245,7 @@ func TestSingle(t *testing.T) {
 			},
 		}
 	}
-	tests := createTest("create.json", &CreatePayload{}, &CreatePayload{})
+	tests := createTest("deployment.json", &DeploymentPayload{}, &DeploymentPayload{})
 	for _, tt := range tests {
 		tc := tt
 		t.Run(tt.name, func(t *testing.T) {
