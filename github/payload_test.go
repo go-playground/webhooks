@@ -245,7 +245,7 @@ func TestSingle(t *testing.T) {
 			},
 		}
 	}
-	tests := createTest("content-reference.json", &ContentReferencePayload{}, &ContentReferencePayload{})
+	tests := createTest("create.json", &CreatePayload{}, &CreatePayload{})
 	for _, tt := range tests {
 		tc := tt
 		t.Run(tt.name, func(t *testing.T) {
