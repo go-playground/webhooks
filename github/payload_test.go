@@ -64,11 +64,11 @@ func TestPayloads(t *testing.T) {
 			filename: "deployment.json",
 			typ:      &DeploymentPayload{},
 		},
-		// {
-		// 	name:     "ForkPayload",
-		// 	filename: "fork.json",
-		// 	typ:      &ForkPayload{},
-		// },
+		{
+			name:     "ForkPayload",
+			filename: "fork.json",
+			typ:      &ForkPayload{},
+		},
 		// {
 		// 	name:     "GollumPayload",
 		// 	filename: "gollum.json",
@@ -245,7 +245,7 @@ func TestSingle(t *testing.T) {
 			},
 		}
 	}
-	tests := createTest("fork.json", &ForkPayload{}, &ForkPayload{})
+	tests := createTest("gollum.json", &GollumPayload{}, &GollumPayload{})
 	for _, tt := range tests {
 		tc := tt
 		t.Run(tt.name, func(t *testing.T) {
