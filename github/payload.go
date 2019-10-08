@@ -67,27 +67,8 @@ type CheckRunPayload struct {
 		App          App                `json:"app"`
 		PullRequests []CheckPullRequest `json:"pull_requests"`
 	} `json:"check_run"`
-	Repository Repository `json:"repository"`
-	Sender     struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
@@ -125,27 +106,8 @@ type CheckSuitePayload struct {
 			} `json:"committer"`
 		} `json:"head_commit"`
 	} `json:"check_suite"`
-	Repository Repository `json:"repository"`
-	Sender     struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
@@ -186,179 +148,65 @@ type CommitCommentPayload struct {
 		Body              string    `json:"body"`
 		AuthorAssociation string    `json:"author_association"`
 	} `json:"comment"`
-	Repository Repository `json:"repository"`
-	Sender     struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
 // CreatePayload contains the information for GitHub's create hook event
 type CreatePayload struct {
-	Ref          string     `json:"ref"`
-	RefType      string     `json:"ref_type"`
-	MasterBranch string     `json:"master_branch"`
-	Description  *string    `json:"description"` //TODO: check can it be ref?
-	PusherType   string     `json:"pusher_type"`
-	Repository   Repository `json:"repository"`
-	Sender       struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Ref          string       `json:"ref"`
+	RefType      string       `json:"ref_type"`
+	MasterBranch string       `json:"master_branch"`
+	Description  *string      `json:"description"` //TODO: check can it be ref?
+	PusherType   string       `json:"pusher_type"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
 // DeletePayload contains the information for GitHub's delete hook event
 type DeletePayload struct {
-	Ref        string     `json:"ref"`
-	RefType    string     `json:"ref_type"`
-	PusherType string     `json:"pusher_type"`
-	Repository Repository `json:"repository"`
-	Sender     struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Ref          string       `json:"ref"`
+	RefType      string       `json:"ref_type"`
+	PusherType   string       `json:"pusher_type"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
 // DeploymentPayload contains the information for GitHub's deployment hook
 type DeploymentPayload struct {
 	Deployment struct {
-		URL                 string   `json:"url"`
-		ID                  int64    `json:"id"`
-		NodeID              string   `json:"node_id"`
-		Sha                 string   `json:"sha"`
-		Ref                 string   `json:"ref"`
-		Task                string   `json:"task"`
-		Payload             struct{} `json:"payload"`
-		Environment         string   `json:"environment"`
-		OriginalEnvironment string   `json:"original_environment"`
-		Description         *string  `json:"description"`
-		Creator             struct {
-			Login             string `json:"login"`
-			ID                int64  `json:"id"`
-			NodeID            string `json:"node_id"`
-			AvatarURL         string `json:"avatar_url"`
-			GravatarID        string `json:"gravatar_id"`
-			URL               string `json:"url"`
-			HTMLURL           string `json:"html_url"`
-			FollowersURL      string `json:"followers_url"`
-			FollowingURL      string `json:"following_url"`
-			GistsURL          string `json:"gists_url"`
-			StarredURL        string `json:"starred_url"`
-			SubscriptionsURL  string `json:"subscriptions_url"`
-			OrganizationsURL  string `json:"organizations_url"`
-			ReposURL          string `json:"repos_url"`
-			EventsURL         string `json:"events_url"`
-			ReceivedEventsURL string `json:"received_events_url"`
-			Type              string `json:"type"`
-			SiteAdmin         bool   `json:"site_admin"`
-		} `json:"creator"`
-		CreatedAt     time.Time `json:"created_at"`
-		UpdatedAt     time.Time `json:"updated_at"`
-		StatusesURL   string    `json:"statuses_url"`
-		RepositoryURL string    `json:"repository_url"`
+		URL                 string    `json:"url"`
+		ID                  int64     `json:"id"`
+		NodeID              string    `json:"node_id"`
+		Sha                 string    `json:"sha"`
+		Ref                 string    `json:"ref"`
+		Task                string    `json:"task"`
+		Payload             struct{}  `json:"payload"`
+		Environment         string    `json:"environment"`
+		OriginalEnvironment string    `json:"original_environment"`
+		Description         *string   `json:"description"`
+		Creator             User      `json:"creator"`
+		CreatedAt           time.Time `json:"created_at"`
+		UpdatedAt           time.Time `json:"updated_at"`
+		StatusesURL         string    `json:"statuses_url"`
+		RepositoryURL       string    `json:"repository_url"`
 	} `json:"deployment"`
-	Repository Repository `json:"repository"`
-	Sender     struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
 // DeploymentStatusPayload contains the information for GitHub's deployment_status hook event
 type DeploymentStatusPayload struct {
 	DeploymentStatus struct {
-		URL     string `json:"url"`
-		ID      int64  `json:"id"`
-		NodeID  string `json:"node_id"`
-		State   string `json:"state"`
-		Creator struct {
-			Login             string `json:"login"`
-			ID                int64  `json:"id"`
-			NodeID            string `json:"node_id"`
-			AvatarURL         string `json:"avatar_url"`
-			GravatarID        string `json:"gravatar_id"`
-			URL               string `json:"url"`
-			HTMLURL           string `json:"html_url"`
-			FollowersURL      string `json:"followers_url"`
-			FollowingURL      string `json:"following_url"`
-			GistsURL          string `json:"gists_url"`
-			StarredURL        string `json:"starred_url"`
-			SubscriptionsURL  string `json:"subscriptions_url"`
-			OrganizationsURL  string `json:"organizations_url"`
-			ReposURL          string `json:"repos_url"`
-			EventsURL         string `json:"events_url"`
-			ReceivedEventsURL string `json:"received_events_url"`
-			Type              string `json:"type"`
-			SiteAdmin         bool   `json:"site_admin"`
-		} `json:"creator"`
+		URL           string    `json:"url"`
+		ID            int64     `json:"id"`
+		NodeID        string    `json:"node_id"`
+		State         string    `json:"state"`
+		Creator       User      `json:"creator"`
 		Description   *string   `json:"description"`
 		Environment   string    `json:"environment"`
 		TargetURL     *string   `json:"target_url"`
@@ -368,62 +216,24 @@ type DeploymentStatusPayload struct {
 		RepositoryURL string    `json:"repository_url"`
 	} `json:"deployment_status"`
 	Deployment struct {
-		URL                 string   `json:"url"`
-		ID                  int64    `json:"id"`
-		NodeID              string   `json:"node_id"`
-		Sha                 string   `json:"sha"`
-		Ref                 string   `json:"ref"`
-		Task                string   `json:"task"`
-		Payload             struct{} `json:"payload"`
-		Environment         string   `json:"environment"`
-		OriginalEnvironment string   `json:"original_environment"`
-		Description         *string  `json:"description"`
-		Creator             struct {
-			Login             string `json:"login"`
-			ID                int64  `json:"id"`
-			NodeID            string `json:"node_id"`
-			AvatarURL         string `json:"avatar_url"`
-			GravatarID        string `json:"gravatar_id"`
-			URL               string `json:"url"`
-			HTMLURL           string `json:"html_url"`
-			FollowersURL      string `json:"followers_url"`
-			FollowingURL      string `json:"following_url"`
-			GistsURL          string `json:"gists_url"`
-			StarredURL        string `json:"starred_url"`
-			SubscriptionsURL  string `json:"subscriptions_url"`
-			OrganizationsURL  string `json:"organizations_url"`
-			ReposURL          string `json:"repos_url"`
-			EventsURL         string `json:"events_url"`
-			ReceivedEventsURL string `json:"received_events_url"`
-			Type              string `json:"type"`
-			SiteAdmin         bool   `json:"site_admin"`
-		} `json:"creator"`
-		CreatedAt     time.Time `json:"created_at"`
-		UpdatedAt     time.Time `json:"updated_at"`
-		StatusesURL   string    `json:"statuses_url"`
-		RepositoryURL string    `json:"repository_url"`
+		URL                 string    `json:"url"`
+		ID                  int64     `json:"id"`
+		NodeID              string    `json:"node_id"`
+		Sha                 string    `json:"sha"`
+		Ref                 string    `json:"ref"`
+		Task                string    `json:"task"`
+		Payload             struct{}  `json:"payload"`
+		Environment         string    `json:"environment"`
+		OriginalEnvironment string    `json:"original_environment"`
+		Description         *string   `json:"description"`
+		Creator             User      `json:"creator"`
+		CreatedAt           time.Time `json:"created_at"`
+		UpdatedAt           time.Time `json:"updated_at"`
+		StatusesURL         string    `json:"statuses_url"`
+		RepositoryURL       string    `json:"repository_url"`
 	} `json:"deployment"`
-	Repository Repository `json:"repository"`
-	Sender     struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
@@ -432,28 +242,9 @@ type ForkPayload struct {
 	// TODO: Forkee has a `Public bool` that is not in the Repository object, but
 	// it is redundant with the `Private bool` property, is it worth it to duplicate
 	// thes struct to add this one property?
-	Forkee     Repository `json:"forkee"`
-	Repository Repository `json:"repository"`
-	Sender     struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Forkee       Repository   `json:"forkee"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
@@ -467,27 +258,8 @@ type GollumPayload struct {
 		Sha      string  `json:"sha"`
 		HTMLURL  string  `json:"html_url"`
 	} `json:"pages"`
-	Repository Repository `json:"repository"`
-	Sender     struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
@@ -495,27 +267,8 @@ type GollumPayload struct {
 type InstallationPayload struct {
 	Action       string `json:"action"`
 	Installation struct {
-		ID      int64 `json:"id"`
-		Account struct {
-			Login             string `json:"login"`
-			ID                int64  `json:"id"`
-			NodeID            string `json:"node_id"`
-			AvatarURL         string `json:"avatar_url"`
-			GravatarID        string `json:"gravatar_id"`
-			URL               string `json:"url"`
-			HTMLURL           string `json:"html_url"`
-			FollowersURL      string `json:"followers_url"`
-			FollowingURL      string `json:"following_url"`
-			GistsURL          string `json:"gists_url"`
-			StarredURL        string `json:"starred_url"`
-			SubscriptionsURL  string `json:"subscriptions_url"`
-			OrganizationsURL  string `json:"organizations_url"`
-			ReposURL          string `json:"repos_url"`
-			EventsURL         string `json:"events_url"`
-			ReceivedEventsURL string `json:"received_events_url"`
-			Type              string `json:"type"`
-			SiteAdmin         bool   `json:"site_admin"`
-		} `json:"account"`
+		ID                  int64  `json:"id"`
+		Account             User   `json:"account"`
 		RepositorySelection string `json:"repository_selection"`
 		AccessTokensURL     string `json:"access_tokens_url"`
 		RepositoriesURL     string `json:"repositories_url"`
@@ -537,26 +290,7 @@ type InstallationPayload struct {
 		FullName string `json:"full_name"`
 		Private  bool   `json:"private"`
 	} `json:"repositories"`
-	Sender struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Sender User `json:"sender"`
 }
 
 // InstallationRepositoriesPayload contains the information for GitHub's installation_repositories hook events
@@ -564,27 +298,8 @@ type InstallationRepositoriesPayload struct {
 	Action              string `json:"action"`
 	RepositorySelection string `json:"repository_selection"`
 	Installation        struct {
-		ID      int64 `json:"id"`
-		Account struct {
-			Login             string `json:"login"`
-			ID                int64  `json:"id"`
-			NodeID            string `json:"node_id"`
-			AvatarURL         string `json:"avatar_url"`
-			GravatarID        string `json:"gravatar_id"`
-			URL               string `json:"url"`
-			HTMLURL           string `json:"html_url"`
-			FollowersURL      string `json:"followers_url"`
-			FollowingURL      string `json:"following_url"`
-			GistsURL          string `json:"gists_url"`
-			StarredURL        string `json:"starred_url"`
-			SubscriptionsURL  string `json:"subscriptions_url"`
-			OrganizationsURL  string `json:"organizations_url"`
-			ReposURL          string `json:"repos_url"`
-			EventsURL         string `json:"events_url"`
-			ReceivedEventsURL string `json:"received_events_url"`
-			Type              string `json:"type"`
-			SiteAdmin         bool   `json:"site_admin"`
-		} `json:"account"`
+		ID                  int64          `json:"id"`
+		Account             User           `json:"account"`
 		RepositorySelection string         `json:"repository_selection"`
 		AccessTokensURL     string         `json:"access_tokens_url"`
 		RepositoriesURL     string         `json:"repositories_url"`
@@ -612,26 +327,7 @@ type InstallationRepositoriesPayload struct {
 		FullName string `json:"full_name"`
 		Private  bool   `json:"private"`
 	} `json:"repositories_removed"`
-	Sender struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Sender User `json:"sender"`
 }
 
 // IssueCommentPayload contains the information for GitHub's issue_comment hook event
@@ -639,85 +335,28 @@ type IssueCommentPayload struct {
 	Action  string `json:"action"`
 	Issue   Issue  `json:"issue"`
 	Comment struct {
-		URL      string `json:"url"`
-		HTMLURL  string `json:"html_url"`
-		IssueURL string `json:"issue_url"`
-		ID       int64  `json:"id"`
-		NodeID   string `json:"node_id"`
-		User     struct {
-			Login             string `json:"login"`
-			ID                int64  `json:"id"`
-			NodeID            string `json:"node_id"`
-			AvatarURL         string `json:"avatar_url"`
-			GravatarID        string `json:"gravatar_id"`
-			URL               string `json:"url"`
-			HTMLURL           string `json:"html_url"`
-			FollowersURL      string `json:"followers_url"`
-			FollowingURL      string `json:"following_url"`
-			GistsURL          string `json:"gists_url"`
-			StarredURL        string `json:"starred_url"`
-			SubscriptionsURL  string `json:"subscriptions_url"`
-			OrganizationsURL  string `json:"organizations_url"`
-			ReposURL          string `json:"repos_url"`
-			EventsURL         string `json:"events_url"`
-			ReceivedEventsURL string `json:"received_events_url"`
-			Type              string `json:"type"`
-			SiteAdmin         bool   `json:"site_admin"`
-		} `json:"user"`
+		URL               string    `json:"url"`
+		HTMLURL           string    `json:"html_url"`
+		IssueURL          string    `json:"issue_url"`
+		ID                int64     `json:"id"`
+		NodeID            string    `json:"node_id"`
+		User              User      `json:"user"`
 		CreatedAt         time.Time `json:"created_at"`
 		UpdatedAt         time.Time `json:"updated_at"`
 		Body              string    `json:"body"`
 		AuthorAssociation string    `json:"author_association"`
 	} `json:"comment"`
-	Repository Repository `json:"repository"`
-	Sender     struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
 // IssuesPayload contains the information for GitHub's issues hook event
 type IssuesPayload struct {
-	Action     string     `json:"action"`
-	Issue      Issue      `json:"issue"`
-	Repository Repository `json:"repository"`
-	Sender     struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Action       string       `json:"action"`
+	Issue        Issue        `json:"issue"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
 	Changes      interface{}  `json:"changes"` //TODO not sure what goes here.
 	Installation Installation `json:"installation"`
 }
@@ -735,74 +374,17 @@ type LabelPayload struct {
 		Color   string `json:"color"`
 		Default bool   `json:"default"`
 	} `json:"label"`
-	Repository Repository `json:"repository"`
-	Sender     struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
 // MemberPayload contains the information for GitHub's member hook event
 type MemberPayload struct {
-	Action string `json:"action"`
-	Member struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"member"`
-	Repository Repository `json:"repository"`
-	Sender     struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Action       string       `json:"action"`
+	Member       User         `json:"member"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
@@ -810,47 +392,9 @@ type MemberPayload struct {
 type MembershipPayload struct {
 	Action string `json:"action"`
 	Scope  string `json:"scope"`
-	Member struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"member"`
-	Sender struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
-	Team struct {
+	Member User   `json:"member"`
+	Sender User   `json:"sender"`
+	Team   struct {
 		Name            string `json:"name"`
 		ID              int64  `json:"id"`
 		NodeID          string `json:"node_id"`
@@ -898,27 +442,8 @@ type MetaPayload struct {
 		CreatedAt time.Time `json:"created_at"`
 		UpdatedAt time.Time `json:"updated_at"`
 	} `json:"hook"`
-	Repository Repository `json:"repository"`
-	Sender     struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
@@ -926,34 +451,15 @@ type MetaPayload struct {
 type MilestonePayload struct {
 	Action    string `json:"action"`
 	Milestone struct {
-		URL         string  `json:"url"`
-		HTMLURL     string  `json:"html_url"`
-		LabelsURL   string  `json:"labels_url"`
-		ID          int64   `json:"id"`
-		NodeID      string  `json:"node_id"`
-		Number      int64   `json:"number"`
-		Title       string  `json:"title"`
-		Description *string `json:"description"`
-		Creator     struct {
-			Login             string `json:"login"`
-			ID                int64  `json:"id"`
-			NodeID            string `json:"node_id"`
-			AvatarURL         string `json:"avatar_url"`
-			GravatarID        string `json:"gravatar_id"`
-			URL               string `json:"url"`
-			HTMLURL           string `json:"html_url"`
-			FollowersURL      string `json:"followers_url"`
-			FollowingURL      string `json:"following_url"`
-			GistsURL          string `json:"gists_url"`
-			StarredURL        string `json:"starred_url"`
-			SubscriptionsURL  string `json:"subscriptions_url"`
-			OrganizationsURL  string `json:"organizations_url"`
-			ReposURL          string `json:"repos_url"`
-			EventsURL         string `json:"events_url"`
-			ReceivedEventsURL string `json:"received_events_url"`
-			Type              string `json:"type"`
-			SiteAdmin         bool   `json:"site_admin"`
-		} `json:"creator"`
+		URL          string     `json:"url"`
+		HTMLURL      string     `json:"html_url"`
+		LabelsURL    string     `json:"labels_url"`
+		ID           int64      `json:"id"`
+		NodeID       string     `json:"node_id"`
+		Number       int64      `json:"number"`
+		Title        string     `json:"title"`
+		Description  *string    `json:"description"`
+		Creator      User       `json:"creator"`
 		OpenIssues   int64      `json:"open_issues"`
 		ClosedIssues int64      `json:"closed_issues"`
 		State        string     `json:"state"`
@@ -962,27 +468,8 @@ type MilestonePayload struct {
 		DueOn        *time.Time `json:"due_on"`
 		ClosedAt     *time.Time `json:"closed_at"`
 	} `json:"milestone"`
-	Repository Repository `json:"repository"`
-	Sender     struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
@@ -994,26 +481,7 @@ type OrganizationPayload struct {
 		State           string `json:"state"`
 		Role            string `json:"role"`
 		OrganizationURL string `json:"organization_url"`
-		User            struct {
-			Login             string `json:"login"`
-			ID                int64  `json:"id"`
-			NodeID            string `json:"node_id"`
-			AvatarURL         string `json:"avatar_url"`
-			GravatarID        string `json:"gravatar_id"`
-			URL               string `json:"url"`
-			HTMLURL           string `json:"html_url"`
-			FollowersURL      string `json:"followers_url"`
-			FollowingURL      string `json:"following_url"`
-			GistsURL          string `json:"gists_url"`
-			StarredURL        string `json:"starred_url"`
-			SubscriptionsURL  string `json:"subscriptions_url"`
-			OrganizationsURL  string `json:"organizations_url"`
-			ReposURL          string `json:"repos_url"`
-			EventsURL         string `json:"events_url"`
-			ReceivedEventsURL string `json:"received_events_url"`
-			Type              string `json:"type"`
-			SiteAdmin         bool   `json:"site_admin"`
-		} `json:"user"`
+		User            User   `json:"user"`
 	} `json:"membership"`
 	Organization struct {
 		Login            string `json:"login"`
@@ -1029,52 +497,14 @@ type OrganizationPayload struct {
 		AvatarURL        string `json:"avatar_url"`
 		Description      string `json:"description"`
 	} `json:"organization"`
-	Sender struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
 // OrgBlockPayload contains the information for GitHub's org_block hook event
 type OrgBlockPayload struct {
-	Action      string `json:"action"`
-	BlockedUser struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"blocked_user"`
+	Action       string `json:"action"`
+	BlockedUser  User   `json:"blocked_user"`
 	Organization struct {
 		Login            string `json:"login"`
 		ID               int64  `json:"id"`
@@ -1089,26 +519,7 @@ type OrgBlockPayload struct {
 		AvatarURL        string `json:"avatar_url"`
 		Description      string `json:"description"`
 	} `json:"organization"`
-	Sender struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
@@ -1121,52 +532,14 @@ type PageBuildPayload struct {
 		Error  struct {
 			Message *string `json:"message"`
 		} `json:"error"`
-		Pusher struct {
-			Login             string `json:"login"`
-			ID                int64  `json:"id"`
-			NodeID            string `json:"node_id"`
-			AvatarURL         string `json:"avatar_url"`
-			GravatarID        string `json:"gravatar_id"`
-			URL               string `json:"url"`
-			HTMLURL           string `json:"html_url"`
-			FollowersURL      string `json:"followers_url"`
-			FollowingURL      string `json:"following_url"`
-			GistsURL          string `json:"gists_url"`
-			StarredURL        string `json:"starred_url"`
-			SubscriptionsURL  string `json:"subscriptions_url"`
-			OrganizationsURL  string `json:"organizations_url"`
-			ReposURL          string `json:"repos_url"`
-			EventsURL         string `json:"events_url"`
-			ReceivedEventsURL string `json:"received_events_url"`
-			Type              string `json:"type"`
-			SiteAdmin         bool   `json:"site_admin"`
-		} `json:"pusher"`
+		Pusher    User      `json:"pusher"`
 		Commit    string    `json:"commit"`
 		Duration  int64     `json:"duration"`
 		CreatedAt time.Time `json:"created_at"`
 		UpdatedAt time.Time `json:"updated_at"`
 	} `json:"build"`
-	Repository Repository `json:"repository"`
-	Sender     struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
@@ -1279,84 +652,27 @@ type PingPayload struct {
 		Watchers         int64     `json:"watchers"`
 		DefaultBranch    string    `json:"default_branch"`
 	} `json:"repository"`
-	Sender struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Sender User `json:"sender"`
 }
 
 // ProjectCardPayload contains the information for GitHub's project_payload hook event
 type ProjectCardPayload struct {
 	Action      string `json:"action"`
 	ProjectCard struct {
-		URL        string  `json:"url"`
-		ColumnURL  string  `json:"column_url"`
-		ColumnID   int64   `json:"column_id"`
-		ID         int64   `json:"id"`
-		NodeID     string  `json:"node_id"`
-		Note       *string `json:"note"`
-		Archived   bool    `json:"archived"`
-		ProjectURL string  `json:"project_url"`
-		Creator    struct {
-			Login             string `json:"login"`
-			ID                int64  `json:"id"`
-			NodeID            string `json:"node_id"`
-			AvatarURL         string `json:"avatar_url"`
-			GravatarID        string `json:"gravatar_id"`
-			URL               string `json:"url"`
-			HTMLURL           string `json:"html_url"`
-			FollowersURL      string `json:"followers_url"`
-			FollowingURL      string `json:"following_url"`
-			GistsURL          string `json:"gists_url"`
-			StarredURL        string `json:"starred_url"`
-			SubscriptionsURL  string `json:"subscriptions_url"`
-			OrganizationsURL  string `json:"organizations_url"`
-			ReposURL          string `json:"repos_url"`
-			EventsURL         string `json:"events_url"`
-			ReceivedEventsURL string `json:"received_events_url"`
-			Type              string `json:"type"`
-			SiteAdmin         bool   `json:"site_admin"`
-		} `json:"creator"`
-		CreatedAt time.Time `json:"created_at"`
-		UpdatedAt time.Time `json:"updated_at"`
+		URL        string    `json:"url"`
+		ColumnURL  string    `json:"column_url"`
+		ColumnID   int64     `json:"column_id"`
+		ID         int64     `json:"id"`
+		NodeID     string    `json:"node_id"`
+		Note       *string   `json:"note"`
+		Archived   bool      `json:"archived"`
+		ProjectURL string    `json:"project_url"`
+		Creator    User      `json:"creator"`
+		CreatedAt  time.Time `json:"created_at"`
+		UpdatedAt  time.Time `json:"updated_at"`
 	} `json:"project_card"`
-	Repository Repository `json:"repository"`
-	Sender     struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
@@ -1373,27 +689,8 @@ type ProjectColumnPayload struct {
 		CreatedAt  time.Time `json:"created_at"`
 		UpdatedAt  time.Time `json:"updated_at"`
 	} `json:"project_column"`
-	Repository Repository `json:"repository"`
-	Sender     struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
@@ -1401,60 +698,22 @@ type ProjectColumnPayload struct {
 type ProjectPayload struct {
 	Action  string `json:"action"`
 	Project struct {
-		OwnerURL   string `json:"owner_url"`
-		URL        string `json:"url"`
-		ColumnsURL string `json:"columns_url"`
-		ID         int64  `json:"id"`
-		NodeID     string `json:"node_id"`
-		Name       string `json:"name"`
-		Body       string `json:"body"`
-		Number     int64  `json:"number"`
-		State      string `json:"state"`
-		HtmlURL    string `json:"html_url"`
-		Creator    struct {
-			Login             string `json:"login"`
-			ID                int64  `json:"id"`
-			NodeID            string `json:"node_id"`
-			AvatarURL         string `json:"avatar_url"`
-			GravatarID        string `json:"gravatar_id"`
-			URL               string `json:"url"`
-			HTMLURL           string `json:"html_url"`
-			FollowersURL      string `json:"followers_url"`
-			FollowingURL      string `json:"following_url"`
-			GistsURL          string `json:"gists_url"`
-			StarredURL        string `json:"starred_url"`
-			SubscriptionsURL  string `json:"subscriptions_url"`
-			OrganizationsURL  string `json:"organizations_url"`
-			ReposURL          string `json:"repos_url"`
-			EventsURL         string `json:"events_url"`
-			ReceivedEventsURL string `json:"received_events_url"`
-			Type              string `json:"type"`
-			SiteAdmin         bool   `json:"site_admin"`
-		} `json:"creator"`
-		CreatedAt time.Time `json:"created_at"`
-		UpdatedAt time.Time `json:"updated_at"`
+		OwnerURL   string    `json:"owner_url"`
+		URL        string    `json:"url"`
+		ColumnsURL string    `json:"columns_url"`
+		ID         int64     `json:"id"`
+		NodeID     string    `json:"node_id"`
+		Name       string    `json:"name"`
+		Body       string    `json:"body"`
+		Number     int64     `json:"number"`
+		State      string    `json:"state"`
+		HtmlURL    string    `json:"html_url"`
+		Creator    User      `json:"creator"`
+		CreatedAt  time.Time `json:"created_at"`
+		UpdatedAt  time.Time `json:"updated_at"`
 	} `json:"project"`
-	Repository Repository `json:"repository"`
-	Sender     struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
@@ -1549,26 +808,7 @@ type PublicPayload struct {
 		Watchers         int64     `json:"watchers"`
 		DefaultBranch    string    `json:"default_branch"`
 	} `json:"repository"`
-	Sender struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Sender User `json:"sender"`
 }
 
 // PullRequestPayload contains the information for GitHub's pull_request hook event
@@ -1576,108 +816,51 @@ type PullRequestPayload struct {
 	Action      string `json:"action"`
 	Number      int64  `json:"number"`
 	PullRequest struct {
-		URL                 string `json:"url"`
-		ID                  int64  `json:"id"`
-		NodeID              string `json:"node_id"`
-		HTMLURL             string `json:"html_url"`
-		DiffURL             string `json:"diff_url"`
-		PatchURL            string `json:"patch_url"`
-		IssueURL            string `json:"issue_url"`
-		Number              int64  `json:"number"`
-		State               string `json:"state"`
-		Locked              bool   `json:"locked"`
-		Title               string `json:"title"`
-		AuthorAssociation   string `json:"author_association"`
-		Draft               bool   `json:"draft"`
-		MaintainerCanModify bool   `json:"maintainer_can_modify"`
-		User                struct {
-			Login             string `json:"login"`
-			ID                int64  `json:"id"`
-			NodeID            string `json:"node_id"`
-			AvatarURL         string `json:"avatar_url"`
-			GravatarID        string `json:"gravatar_id"`
-			URL               string `json:"url"`
-			HTMLURL           string `json:"html_url"`
-			FollowersURL      string `json:"followers_url"`
-			FollowingURL      string `json:"following_url"`
-			GistsURL          string `json:"gists_url"`
-			StarredURL        string `json:"starred_url"`
-			SubscriptionsURL  string `json:"subscriptions_url"`
-			OrganizationsURL  string `json:"organizations_url"`
-			ReposURL          string `json:"repos_url"`
-			EventsURL         string `json:"events_url"`
-			ReceivedEventsURL string `json:"received_events_url"`
-			Type              string `json:"type"`
-			SiteAdmin         bool   `json:"site_admin"`
-		} `json:"user"`
-		Body               string      `json:"body"`
-		CreatedAt          time.Time   `json:"created_at"`
-		UpdatedAt          time.Time   `json:"updated_at"`
-		ClosedAt           *time.Time  `json:"closed_at"`
-		MergedAt           *time.Time  `json:"merged_at"`
-		MergeCommitSha     *string     `json:"merge_commit_sha"`
-		Assignee           *Assignee   `json:"assignee"`
-		Assignees          []*Assignee `json:"assignees"`
-		Milestone          *Milestone  `json:"milestone"`
-		CommitsURL         string      `json:"commits_url"`
-		ReviewCommentsURL  string      `json:"review_comments_url"`
-		ReviewCommentURL   string      `json:"review_comment_url"`
-		CommentsURL        string      `json:"comments_url"`
-		StatusesURL        string      `json:"statuses_url"`
-		RequestedReviewers []*Assignee `json:"requested_reviewers"`
-		RequestedTeams     []*Team     `json:"requested_teams"`
-		Labels             []*Label    `json:"labels"`
-		Head               struct {
-			Label string `json:"label"`
-			Ref   string `json:"ref"`
-			Sha   string `json:"sha"`
-			User  struct {
-				Login             string `json:"login"`
-				ID                int64  `json:"id"`
-				NodeID            string `json:"node_id"`
-				AvatarURL         string `json:"avatar_url"`
-				GravatarID        string `json:"gravatar_id"`
-				URL               string `json:"url"`
-				HTMLURL           string `json:"html_url"`
-				FollowersURL      string `json:"followers_url"`
-				FollowingURL      string `json:"following_url"`
-				GistsURL          string `json:"gists_url"`
-				StarredURL        string `json:"starred_url"`
-				SubscriptionsURL  string `json:"subscriptions_url"`
-				OrganizationsURL  string `json:"organizations_url"`
-				ReposURL          string `json:"repos_url"`
-				EventsURL         string `json:"events_url"`
-				ReceivedEventsURL string `json:"received_events_url"`
-				Type              string `json:"type"`
-				SiteAdmin         bool   `json:"site_admin"`
-			} `json:"user"`
-			Repo Repository `json:"repo"`
+		URL                 string     `json:"url"`
+		ID                  int64      `json:"id"`
+		NodeID              string     `json:"node_id"`
+		HTMLURL             string     `json:"html_url"`
+		DiffURL             string     `json:"diff_url"`
+		PatchURL            string     `json:"patch_url"`
+		IssueURL            string     `json:"issue_url"`
+		Number              int64      `json:"number"`
+		State               string     `json:"state"`
+		Locked              bool       `json:"locked"`
+		Title               string     `json:"title"`
+		AuthorAssociation   string     `json:"author_association"`
+		Draft               bool       `json:"draft"`
+		MaintainerCanModify bool       `json:"maintainer_can_modify"`
+		User                User       `json:"user"`
+		Body                string     `json:"body"`
+		CreatedAt           time.Time  `json:"created_at"`
+		UpdatedAt           time.Time  `json:"updated_at"`
+		ClosedAt            *time.Time `json:"closed_at"`
+		MergedAt            *time.Time `json:"merged_at"`
+		MergeCommitSha      *string    `json:"merge_commit_sha"`
+		Assignee            *User      `json:"assignee"`
+		Assignees           []*User    `json:"assignees"`
+		Milestone           *Milestone `json:"milestone"`
+		CommitsURL          string     `json:"commits_url"`
+		ReviewCommentsURL   string     `json:"review_comments_url"`
+		ReviewCommentURL    string     `json:"review_comment_url"`
+		CommentsURL         string     `json:"comments_url"`
+		StatusesURL         string     `json:"statuses_url"`
+		RequestedReviewers  []*User    `json:"requested_reviewers"`
+		RequestedTeams      []*Team    `json:"requested_teams"`
+		Labels              []*Label   `json:"labels"`
+		Head                struct {
+			Label string     `json:"label"`
+			Ref   string     `json:"ref"`
+			Sha   string     `json:"sha"`
+			User  User       `json:"user"`
+			Repo  Repository `json:"repo"`
 		} `json:"head"`
 		Base struct {
-			Label string `json:"label"`
-			Ref   string `json:"ref"`
-			Sha   string `json:"sha"`
-			User  struct {
-				Login             string `json:"login"`
-				ID                int64  `json:"id"`
-				NodeID            string `json:"node_id"`
-				AvatarURL         string `json:"avatar_url"`
-				GravatarID        string `json:"gravatar_id"`
-				URL               string `json:"url"`
-				HTMLURL           string `json:"html_url"`
-				FollowersURL      string `json:"followers_url"`
-				FollowingURL      string `json:"following_url"`
-				GistsURL          string `json:"gists_url"`
-				StarredURL        string `json:"starred_url"`
-				SubscriptionsURL  string `json:"subscriptions_url"`
-				OrganizationsURL  string `json:"organizations_url"`
-				ReposURL          string `json:"repos_url"`
-				EventsURL         string `json:"events_url"`
-				ReceivedEventsURL string `json:"received_events_url"`
-				Type              string `json:"type"`
-				SiteAdmin         bool   `json:"site_admin"`
-			} `json:"user"`
-			Repo Repository `json:"repo"`
+			Label string     `json:"label"`
+			Ref   string     `json:"ref"`
+			Sha   string     `json:"sha"`
+			User  User       `json:"user"`
+			Repo  Repository `json:"repo"`
 		} `json:"base"`
 		Links struct {
 			Self struct {
@@ -1705,94 +888,56 @@ type PullRequestPayload struct {
 				Href string `json:"href"`
 			} `json:"statuses"`
 		} `json:"_links"`
-		Merged         bool      `json:"merged"`
-		Mergeable      *bool     `json:"mergeable"`
-		Rebaseable     *bool     `json:"rebaseable"`
-		MergeableState string    `json:"mergeable_state"`
-		MergedBy       *MergedBy `json:"merged_by"`
-		Comments       int64     `json:"comments"`
-		ReviewComments int64     `json:"review_comments"`
-		Commits        int64     `json:"commits"`
-		Additions      int64     `json:"additions"`
-		Deletions      int64     `json:"deletions"`
-		ChangedFiles   int64     `json:"changed_files"`
+		Merged         bool   `json:"merged"`
+		Mergeable      *bool  `json:"mergeable"`
+		Rebaseable     *bool  `json:"rebaseable"`
+		MergeableState string `json:"mergeable_state"`
+		MergedBy       *User  `json:"merged_by"`
+		Comments       int64  `json:"comments"`
+		ReviewComments int64  `json:"review_comments"`
+		Commits        int64  `json:"commits"`
+		Additions      int64  `json:"additions"`
+		Deletions      int64  `json:"deletions"`
+		ChangedFiles   int64  `json:"changed_files"`
 	} `json:"pull_request"`
 	Repository Repository `json:"repository"`
-	Sender     struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Sender     User       `json:"sender"`
 
 	Installation Installation `json:"installation"`
 }
 
 // ReviewPullRequest is the PullRequest object contained in a pullrequest review payload
 type ReviewPullRequest struct {
-	URL               string `json:"url"`
-	ID                int64  `json:"id"`
-	NodeID            string `json:"node_id"`
-	HTMLURL           string `json:"html_url"`
-	DiffURL           string `json:"diff_url"`
-	PatchURL          string `json:"patch_url"`
-	IssueURL          string `json:"issue_url"`
-	Number            int64  `json:"number"`
-	State             string `json:"state"`
-	Locked            bool   `json:"locked"`
-	Title             string `json:"title"`
-	AuthorAssociation string `json:"author_association"`
-	User              struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"user"`
-	Body               string      `json:"body"`
-	CreatedAt          time.Time   `json:"created_at"`
-	UpdatedAt          time.Time   `json:"updated_at"`
-	ClosedAt           *time.Time  `json:"closed_at"`
-	MergedAt           *time.Time  `json:"merged_at"`
-	MergeCommitSha     string      `json:"merge_commit_sha"`
-	Assignee           *Assignee   `json:"assignee"`
-	Assignees          []Assignee  `json:"assignees"`
-	RequestedReviewers []*Assignee `json:"requested_reviewers"`
-	RequestedTeams     []Team      `json:"requested_teams"`
-	Milestone          *Milestone  `json:"milestone"`
-	Labels             []*Label    `json:"labels"`
-	CommitsURL         string      `json:"commits_url"`
-	ReviewCommentsURL  string      `json:"review_comments_url"`
-	ReviewCommentURL   string      `json:"review_comment_url"`
-	CommentsURL        string      `json:"comments_url"`
-	StatusesURL        string      `json:"statuses_url"`
+	URL                string     `json:"url"`
+	ID                 int64      `json:"id"`
+	NodeID             string     `json:"node_id"`
+	HTMLURL            string     `json:"html_url"`
+	DiffURL            string     `json:"diff_url"`
+	PatchURL           string     `json:"patch_url"`
+	IssueURL           string     `json:"issue_url"`
+	Number             int64      `json:"number"`
+	State              string     `json:"state"`
+	Locked             bool       `json:"locked"`
+	Title              string     `json:"title"`
+	AuthorAssociation  string     `json:"author_association"`
+	User               User       `json:"user"`
+	Body               string     `json:"body"`
+	CreatedAt          time.Time  `json:"created_at"`
+	UpdatedAt          time.Time  `json:"updated_at"`
+	ClosedAt           *time.Time `json:"closed_at"`
+	MergedAt           *time.Time `json:"merged_at"`
+	MergeCommitSha     string     `json:"merge_commit_sha"`
+	Assignee           *User      `json:"assignee"`
+	Assignees          []User     `json:"assignees"`
+	RequestedReviewers []*User    `json:"requested_reviewers"`
+	RequestedTeams     []Team     `json:"requested_teams"`
+	Milestone          *Milestone `json:"milestone"`
+	Labels             []*Label   `json:"labels"`
+	CommitsURL         string     `json:"commits_url"`
+	ReviewCommentsURL  string     `json:"review_comments_url"`
+	ReviewCommentURL   string     `json:"review_comment_url"`
+	CommentsURL        string     `json:"comments_url"`
+	StatusesURL        string     `json:"statuses_url"`
 	Head               struct {
 		Label string `json:"label"`
 		Ref   string `json:"ref"`
@@ -1877,36 +1022,17 @@ type ReviewPullRequest struct {
 type PullRequestReviewPayload struct {
 	Action string `json:"action"`
 	Review struct {
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		CommitID          string `json:"commit_id"`
-		AuthorAssociation string `json:"author_association"`
-		User              struct {
-			Login             string `json:"login"`
-			ID                int64  `json:"id"`
-			NodeID            string `json:"node_id"`
-			AvatarURL         string `json:"avatar_url"`
-			GravatarID        string `json:"gravatar_id"`
-			URL               string `json:"url"`
-			HTMLURL           string `json:"html_url"`
-			FollowersURL      string `json:"followers_url"`
-			FollowingURL      string `json:"following_url"`
-			GistsURL          string `json:"gists_url"`
-			StarredURL        string `json:"starred_url"`
-			SubscriptionsURL  string `json:"subscriptions_url"`
-			OrganizationsURL  string `json:"organizations_url"`
-			ReposURL          string `json:"repos_url"`
-			EventsURL         string `json:"events_url"`
-			ReceivedEventsURL string `json:"received_events_url"`
-			Type              string `json:"type"`
-			SiteAdmin         bool   `json:"site_admin"`
-		} `json:"user"`
-		Body           string    `json:"body"`
-		SubmittedAt    time.Time `json:"submitted_at"`
-		State          string    `json:"state"`
-		HTMLURL        string    `json:"html_url"`
-		PullRequestURL string    `json:"pull_request_url"`
-		Links          struct {
+		ID                int64     `json:"id"`
+		NodeID            string    `json:"node_id"`
+		CommitID          string    `json:"commit_id"`
+		AuthorAssociation string    `json:"author_association"`
+		User              User      `json:"user"`
+		Body              string    `json:"body"`
+		SubmittedAt       time.Time `json:"submitted_at"`
+		State             string    `json:"state"`
+		HTMLURL           string    `json:"html_url"`
+		PullRequestURL    string    `json:"pull_request_url"`
+		Links             struct {
 			HTML struct {
 				Href string `json:"href"`
 			} `json:"html"`
@@ -1915,64 +1041,26 @@ type PullRequestReviewPayload struct {
 			} `json:"pull_request"`
 		} `json:"_links"`
 	} `json:"review"`
-	PullRequest ReviewPullRequest `json:"pull_request"`
-	Repository  Repository        `json:"repository"`
-	Sender      struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
-	Installation Installation `json:"installation"`
+	PullRequest  ReviewPullRequest `json:"pull_request"`
+	Repository   Repository        `json:"repository"`
+	Sender       User              `json:"sender"`
+	Installation Installation      `json:"installation"`
 }
 
 // PullRequestReviewCommentPayload contains the information for GitHub's pull_request_review_comments hook event
 type PullRequestReviewCommentPayload struct {
 	Action  string `json:"action"`
 	Comment struct {
-		URL              string `json:"url"`
-		ID               int64  `json:"id"`
-		NodeID           string `json:"node_id"`
-		DiffHunk         string `json:"diff_hunk"`
-		Path             string `json:"path"`
-		Position         int64  `json:"position"`
-		OriginalPosition int64  `json:"original_position"`
-		CommitID         string `json:"commit_id"`
-		OriginalCommitID string `json:"original_commit_id"`
-		User             struct {
-			Login             string `json:"login"`
-			ID                int64  `json:"id"`
-			NodeID            string `json:"node_id"`
-			AvatarURL         string `json:"avatar_url"`
-			GravatarID        string `json:"gravatar_id"`
-			URL               string `json:"url"`
-			HTMLURL           string `json:"html_url"`
-			FollowersURL      string `json:"followers_url"`
-			FollowingURL      string `json:"following_url"`
-			GistsURL          string `json:"gists_url"`
-			StarredURL        string `json:"starred_url"`
-			SubscriptionsURL  string `json:"subscriptions_url"`
-			OrganizationsURL  string `json:"organizations_url"`
-			ReposURL          string `json:"repos_url"`
-			EventsURL         string `json:"events_url"`
-			ReceivedEventsURL string `json:"received_events_url"`
-			Type              string `json:"type"`
-			SiteAdmin         bool   `json:"site_admin"`
-		} `json:"user"`
+		URL               string    `json:"url"`
+		ID                int64     `json:"id"`
+		NodeID            string    `json:"node_id"`
+		DiffHunk          string    `json:"diff_hunk"`
+		Path              string    `json:"path"`
+		Position          int64     `json:"position"`
+		OriginalPosition  int64     `json:"original_position"`
+		CommitID          string    `json:"commit_id"`
+		OriginalCommitID  string    `json:"original_commit_id"`
+		User              User      `json:"user"`
 		Body              string    `json:"body"`
 		AuthorAssociation string    `json:"author_association"`
 		CreatedAt         time.Time `json:"created_at"`
@@ -1993,29 +1081,10 @@ type PullRequestReviewCommentPayload struct {
 		InReplyToID         int64 `json:"in_reply_to_id"` //TODO this is not in the unmodified payload example on github docs
 		PullRequestReviewID int64 `json:"pull_request_review_id"`
 	} `json:"comment"`
-	PullRequest ReviewPullRequest `json:"pull_request"`
-	Repository  Repository        `json:"repository"`
-	Sender      struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
-	Installation Installation `json:"installation"`
+	PullRequest  ReviewPullRequest `json:"pull_request"`
+	Repository   Repository        `json:"repository"`
+	Sender       User              `json:"sender"`
+	Installation Installation      `json:"installation"`
 }
 
 // PushPayload contains the information for GitHub's push hook event
@@ -2046,26 +1115,7 @@ type PushPayload struct {
 		Name  string `json:"name"`
 		Email string `json:"email"`
 	} `json:"pusher"`
-	Sender struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
@@ -2073,96 +1123,39 @@ type PushPayload struct {
 type ReleasePayload struct {
 	Action  string `json:"action"`
 	Release struct {
-		URL             string  `json:"url"`
-		AssetsURL       string  `json:"assets_url"`
-		UploadURL       string  `json:"upload_url"`
-		HTMLURL         string  `json:"html_url"`
-		ID              int64   `json:"id"`
-		NodeID          string  `json:"node_id"`
-		TagName         string  `json:"tag_name"`
-		TargetCommitish string  `json:"target_commitish"`
-		Name            *string `json:"name"`
-		Draft           bool    `json:"draft"`
-		Author          struct {
-			Login             string `json:"login"`
-			ID                int64  `json:"id"`
-			NodeID            string `json:"node_id"`
-			AvatarURL         string `json:"avatar_url"`
-			GravatarID        string `json:"gravatar_id"`
-			URL               string `json:"url"`
-			HTMLURL           string `json:"html_url"`
-			FollowersURL      string `json:"followers_url"`
-			FollowingURL      string `json:"following_url"`
-			GistsURL          string `json:"gists_url"`
-			StarredURL        string `json:"starred_url"`
-			SubscriptionsURL  string `json:"subscriptions_url"`
-			OrganizationsURL  string `json:"organizations_url"`
-			ReposURL          string `json:"repos_url"`
-			EventsURL         string `json:"events_url"`
-			ReceivedEventsURL string `json:"received_events_url"`
-			Type              string `json:"type"`
-			SiteAdmin         bool   `json:"site_admin"`
-		} `json:"author"`
-		Prerelease  bool      `json:"prerelease"`
-		CreatedAt   time.Time `json:"created_at"`
-		PublishedAt time.Time `json:"published_at"`
-		Assets      []Asset   `json:"assets"`
-		TarballURL  string    `json:"tarball_url"`
-		ZipballURL  string    `json:"zipball_url"`
-		Body        *string   `json:"body"`
+		URL             string    `json:"url"`
+		AssetsURL       string    `json:"assets_url"`
+		UploadURL       string    `json:"upload_url"`
+		HTMLURL         string    `json:"html_url"`
+		ID              int64     `json:"id"`
+		NodeID          string    `json:"node_id"`
+		TagName         string    `json:"tag_name"`
+		TargetCommitish string    `json:"target_commitish"`
+		Name            *string   `json:"name"`
+		Draft           bool      `json:"draft"`
+		Author          User      `json:"author"`
+		Prerelease      bool      `json:"prerelease"`
+		CreatedAt       time.Time `json:"created_at"`
+		PublishedAt     time.Time `json:"published_at"`
+		Assets          []Asset   `json:"assets"`
+		TarballURL      string    `json:"tarball_url"`
+		ZipballURL      string    `json:"zipball_url"`
+		Body            *string   `json:"body"`
 	} `json:"release"`
-	Repository Repository `json:"repository"`
-	Sender     struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
 // RepositoryPayload contains the information for GitHub's repository hook event
 type RepositoryPayload struct {
-	Action     string     `json:"action"`
-	Repository Repository `json:"repository"`
-	Sender     struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Action       string       `json:"action"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
-// RepositoryVulnerabilityAlertEvent contains the information for GitHub's repository_vulnerability_alert hook event.
+// RepositoryVulnerabilityAlertPayload contains the information for GitHub's repository_vulnerability_alert hook event.
 type RepositoryVulnerabilityAlertPayload struct {
 	Action string `json:"action"`
 	Alert  struct {
@@ -2175,27 +1168,8 @@ type RepositoryVulnerabilityAlertPayload struct {
 		ExternalIdentifier  string `json:"external_identifier"`
 		FixedIn             string `json:"fixed_in"`
 	} `json:"alert"`
-	Repository Repository `json:"repository"`
-	Sender     struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
@@ -2269,50 +1243,12 @@ type StatusPayload struct {
 				Verified  bool   `json:"verified"`
 			} `json:"verification"`
 		} `json:"commit"`
-		URL         string `json:"url"`
-		HTMLURL     string `json:"html_url"`
-		CommentsURL string `json:"comments_url"`
-		Author      struct {
-			Login             string `json:"login"`
-			ID                int64  `json:"id"`
-			NodeID            string `json:"node_id"`
-			AvatarURL         string `json:"avatar_url"`
-			GravatarID        string `json:"gravatar_id"`
-			URL               string `json:"url"`
-			HTMLURL           string `json:"html_url"`
-			FollowersURL      string `json:"followers_url"`
-			FollowingURL      string `json:"following_url"`
-			GistsURL          string `json:"gists_url"`
-			StarredURL        string `json:"starred_url"`
-			SubscriptionsURL  string `json:"subscriptions_url"`
-			OrganizationsURL  string `json:"organizations_url"`
-			ReposURL          string `json:"repos_url"`
-			EventsURL         string `json:"events_url"`
-			ReceivedEventsURL string `json:"received_events_url"`
-			Type              string `json:"type"`
-			SiteAdmin         bool   `json:"site_admin"`
-		} `json:"author"`
-		Committer struct {
-			Login             string `json:"login"`
-			ID                int64  `json:"id"`
-			NodeID            string `json:"node_id"`
-			AvatarURL         string `json:"avatar_url"`
-			GravatarID        string `json:"gravatar_id"`
-			URL               string `json:"url"`
-			HTMLURL           string `json:"html_url"`
-			FollowersURL      string `json:"followers_url"`
-			FollowingURL      string `json:"following_url"`
-			GistsURL          string `json:"gists_url"`
-			StarredURL        string `json:"starred_url"`
-			SubscriptionsURL  string `json:"subscriptions_url"`
-			OrganizationsURL  string `json:"organizations_url"`
-			ReposURL          string `json:"repos_url"`
-			EventsURL         string `json:"events_url"`
-			ReceivedEventsURL string `json:"received_events_url"`
-			Type              string `json:"type"`
-			SiteAdmin         bool   `json:"site_admin"`
-		} `json:"committer"`
-		Parents []Parent `json:"parents"`
+		URL         string   `json:"url"`
+		HTMLURL     string   `json:"html_url"`
+		CommentsURL string   `json:"comments_url"`
+		Author      User     `json:"author"`
+		Committer   User     `json:"committer"`
+		Parents     []Parent `json:"parents"`
 	} `json:"commit"`
 	Branches []struct {
 		Name      string `json:"name"`
@@ -2322,29 +1258,10 @@ type StatusPayload struct {
 			URL string `json:"url"`
 		} `json:"commit"`
 	} `json:"branches"`
-	CreatedAt  time.Time  `json:"created_at"`
-	UpdatedAt  time.Time  `json:"updated_at"`
-	Repository Repository `json:"repository"`
-	Sender     struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	CreatedAt    time.Time    `json:"created_at"`
+	UpdatedAt    time.Time    `json:"updated_at"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
@@ -2367,30 +1284,11 @@ type TeamPayload struct {
 		Description      string `json:"description"`
 	} `json:"organization"`
 	Repository struct {
-		ID       int64  `json:"id"`
-		NodeID   string `json:"node_id"`
-		Name     string `json:"name"`
-		FullName string `json:"full_name"`
-		Owner    struct {
-			Login             string `json:"login"`
-			ID                int64  `json:"id"`
-			NodeID            string `json:"node_id"`
-			AvatarURL         string `json:"avatar_url"`
-			GravatarID        string `json:"gravatar_id"`
-			URL               string `json:"url"`
-			HTMLURL           string `json:"html_url"`
-			FollowersURL      string `json:"followers_url"`
-			FollowingURL      string `json:"following_url"`
-			GistsURL          string `json:"gists_url"`
-			StarredURL        string `json:"starred_url"`
-			SubscriptionsURL  string `json:"subscriptions_url"`
-			OrganizationsURL  string `json:"organizations_url"`
-			ReposURL          string `json:"repos_url"`
-			EventsURL         string `json:"events_url"`
-			ReceivedEventsURL string `json:"received_events_url"`
-			Type              string `json:"type"`
-			SiteAdmin         bool   `json:"site_admin"`
-		} `json:"owner"`
+		ID               int64     `json:"id"`
+		NodeID           string    `json:"node_id"`
+		Name             string    `json:"name"`
+		FullName         string    `json:"full_name"`
+		Owner            User      `json:"owner"`
 		Private          bool      `json:"private"`
 		Archived         bool      `json:"archived"`
 		Disabled         bool      `json:"disabled"`
@@ -2465,26 +1363,7 @@ type TeamPayload struct {
 			Push  bool `json:"push"`
 		} `json:"permissions"`
 	} `json:"repository"`
-	Sender struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
@@ -2506,53 +1385,15 @@ type TeamAddPayload struct {
 		AvatarURL        string  `json:"avatar_url"`
 		Description      *string `json:"description"`
 	} `json:"organization"`
-	Sender struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
 // WatchPayload contains the information for GitHub's watch hook event
 type WatchPayload struct {
-	Action     string     `json:"action"`
-	Repository Repository `json:"repository"`
-	Sender     struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"sender"`
+	Action       string       `json:"action"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
 	Installation Installation `json:"installation"`
 }
 
@@ -2571,8 +1412,8 @@ type Team struct {
 	Permission      string `json:"permission"`
 }
 
-// Assignee contains GitHub's assignee information
-type Assignee struct {
+// User contains GitHub's user information
+type User struct {
 	Login             string `json:"login"`
 	ID                int64  `json:"id"`
 	NodeID            string `json:"node_id"`
@@ -2632,28 +1473,6 @@ type Milestone struct {
 	DueOn        time.Time `json:"due_on"`
 }
 
-// MergedBy contains GitHub's merged-by information
-type MergedBy struct {
-	Login             string `json:"login"`
-	ID                int64  `json:"id"`
-	NodeID            string `json:"node_id"`
-	AvatarURL         string `json:"avatar_url"`
-	GravatarID        string `json:"gravatar_id"`
-	URL               string `json:"url"`
-	HTMLURL           string `json:"html_url"`
-	FollowersURL      string `json:"followers_url"`
-	FollowingURL      string `json:"following_url"`
-	GistsURL          string `json:"gists_url"`
-	StarredURL        string `json:"starred_url"`
-	SubscriptionsURL  string `json:"subscriptions_url"`
-	OrganizationsURL  string `json:"organizations_url"`
-	ReposURL          string `json:"repos_url"`
-	EventsURL         string `json:"events_url"`
-	ReceivedEventsURL string `json:"received_events_url"`
-	Type              string `json:"type"`
-	SiteAdmin         bool   `json:"site_admin"`
-}
-
 // Asset contains GitHub's asset information
 type Asset struct {
 	URL                string    `json:"url"`
@@ -2708,30 +1527,11 @@ type Label struct {
 
 // Repository contains Github's repository information
 type Repository struct {
-	ID       int64  `json:"id"`
-	NodeID   string `json:"node_id"`
-	Name     string `json:"name"`
-	FullName string `json:"full_name"`
-	Owner    struct {
-		Login             string `json:"login"`
-		ID                int64  `json:"id"`
-		NodeID            string `json:"node_id"`
-		AvatarURL         string `json:"avatar_url"`
-		GravatarID        string `json:"gravatar_id"`
-		URL               string `json:"url"`
-		HTMLURL           string `json:"html_url"`
-		FollowersURL      string `json:"followers_url"`
-		FollowingURL      string `json:"following_url"`
-		GistsURL          string `json:"gists_url"`
-		StarredURL        string `json:"starred_url"`
-		SubscriptionsURL  string `json:"subscriptions_url"`
-		OrganizationsURL  string `json:"organizations_url"`
-		ReposURL          string `json:"repos_url"`
-		EventsURL         string `json:"events_url"`
-		ReceivedEventsURL string `json:"received_events_url"`
-		Type              string `json:"type"`
-		SiteAdmin         bool   `json:"site_admin"`
-	} `json:"owner"`
+	ID               int64     `json:"id"`
+	NodeID           string    `json:"node_id"`
+	Name             string    `json:"name"`
+	FullName         string    `json:"full_name"`
+	Owner            User      `json:"owner"`
 	Private          bool      `json:"private"`
 	Archived         bool      `json:"archived"`
 	Disabled         bool      `json:"disabled"`
@@ -2897,18 +1697,18 @@ type Issue struct {
 		Type              string `json:"type"`
 		SiteAdmin         bool   `json:"site_admin"`
 	} `json:"user"`
-	Labels            []Label     `json:"labels"`
-	AuthorAssociation string      `json:"author_association"`
-	State             string      `json:"state"`
-	Locked            bool        `json:"locked"`
-	Assignee          *Assignee   `json:"assignee"`
-	Assignees         []*Assignee `json:"assignees"`
-	Milestone         *Milestone  `json:"milestone"`
-	Comments          int64       `json:"comments"`
-	CreatedAt         time.Time   `json:"created_at"`
-	UpdatedAt         time.Time   `json:"updated_at"`
-	ClosedAt          *time.Time  `json:"closed_at"`
-	Body              string      `json:"body"`
+	Labels            []Label    `json:"labels"`
+	AuthorAssociation string     `json:"author_association"`
+	State             string     `json:"state"`
+	Locked            bool       `json:"locked"`
+	Assignee          *User      `json:"assignee"`
+	Assignees         []*User    `json:"assignees"`
+	Milestone         *Milestone `json:"milestone"`
+	Comments          int64      `json:"comments"`
+	CreatedAt         time.Time  `json:"created_at"`
+	UpdatedAt         time.Time  `json:"updated_at"`
+	ClosedAt          *time.Time `json:"closed_at"`
+	Body              string     `json:"body"`
 }
 
 // Commit contains information about a commit in a push payload
