@@ -169,16 +169,16 @@ func TestPayloads(t *testing.T) {
 			filename: "pull-request.json",
 			typ:      &PullRequestPayload{},
 		},
-		// {
-		// 	name:     "PushPayload",
-		// 	filename: "push.json",
-		// 	typ:      &PushPayload{},
-		// },
-		// {
-		// 	name:     "ReleasePayload",
-		// 	filename: "release.json",
-		// 	typ:      &ReleasePayload{},
-		// },
+		{
+			name:     "PushPayload",
+			filename: "push.json",
+			typ:      &PushPayload{},
+		},
+		{
+			name:     "ReleasePayload",
+			filename: "release.json",
+			typ:      &ReleasePayload{},
+		},
 		// {
 		// 	name:     "RepositoryVulnerabilityAlertPayload",
 		// 	filename: "repository-vulnerability-alert.json",
