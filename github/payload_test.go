@@ -99,11 +99,11 @@ func TestPayloads(t *testing.T) {
 			filename: "label.json",
 			typ:      &LabelPayload{},
 		},
-		// {
-		// 	name:     "MemberPayload",
-		// 	filename: "member.json",
-		// 	typ:      &MemberPayload{},
-		// },
+		{
+			name:     "MemberPayload",
+			filename: "member.json",
+			typ:      &MemberPayload{},
+		},
 		// {
 		// 	name:     "MembershipPayload",
 		// 	filename: "membership.json",
