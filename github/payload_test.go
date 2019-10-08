@@ -139,26 +139,26 @@ func TestPayloads(t *testing.T) {
 		// 	filename: "ping.json",
 		// 	typ:      &PingPayload{},
 		// },
-		// {
-		// 	name:     "ProjectCardPayload",
-		// 	filename: "project-card.json",
-		// 	typ:      &ProjectCardPayload{},
-		// },
-		// {
-		// 	name:     "ProjectColumnPayload",
-		// 	filename: "project-column.json",
-		// 	typ:      &ProjectColumnPayload{},
-		// },
-		// {
-		// 	name:     "ProjectPayload",
-		// 	filename: "project.json",
-		// 	typ:      &ProjectPayload{},
-		// },
-		// {
-		// 	name:     "PullRequestReviewCommentPayload",
-		// 	filename: "pull-request-review-comment.json",
-		// 	typ:      &PullRequestReviewCommentPayload{},
-		// },
+		{
+			name:     "ProjectCardPayload",
+			filename: "project-card.json",
+			typ:      &ProjectCardPayload{},
+		},
+		{
+			name:     "ProjectColumnPayload",
+			filename: "project-column.json",
+			typ:      &ProjectColumnPayload{},
+		},
+		{
+			name:     "ProjectPayload",
+			filename: "project.json",
+			typ:      &ProjectPayload{},
+		},
+		{
+			name:     "PullRequestReviewCommentPayload",
+			filename: "pull-request-review-comment.json",
+			typ:      &PullRequestReviewCommentPayload{},
+		},
 		// {
 		// 	name:     "PullRequestReviewPayload",
 		// 	filename: "pull-request-review.json",
