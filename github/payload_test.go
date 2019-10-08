@@ -84,21 +84,21 @@ func TestPayloads(t *testing.T) {
 			filename: "installation-repositories.json",
 			typ:      &InstallationRepositoriesPayload{},
 		},
-		// {
-		// 	name:     "IssueCommentPayload",
-		// 	filename: "issue-comment.json",
-		// 	typ:      &IssueCommentPayload{},
-		// },
-		// {
-		// 	name:     "IssuesPayload",
-		// 	filename: "issues.json",
-		// 	typ:      &IssuesPayload{},
-		// },
-		// {
-		// 	name:     "LabelPayload",
-		// 	filename: "label.json",
-		// 	typ:      &LabelPayload{},
-		// },
+		{
+			name:     "IssueCommentPayload",
+			filename: "issue-comment.json",
+			typ:      &IssueCommentPayload{},
+		},
+		{
+			name:     "IssuesPayload",
+			filename: "issues.json",
+			typ:      &IssuesPayload{},
+		},
+		{
+			name:     "LabelPayload",
+			filename: "label.json",
+			typ:      &LabelPayload{},
+		},
 		// {
 		// 	name:     "MemberPayload",
 		// 	filename: "member.json",
@@ -215,47 +215,6 @@ func TestPayloads(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			payload, err := ioutil.ReadFile(pth.Join("../tmp", tc.filename))
-			assert.NoError(err)
-			parsedPayload, err := ParsePayload(string(payload), tc.typ)
-			assert.NoError(err)
-			a, _ := jd.ReadJsonString(string(payload))
-			b, _ := jd.ReadJsonString(parsedPayload)
-			diff := a.Diff(b).Render()
-			assert.Equal("", diff)
-		})
-	}
-}
-
-type Test struct {
-	name     string
-	filename string
-	typ      interface{}
-}
-
-//Just to compare test data to new test data/easily run a single test
-//should be removed eventually.
-func TestSingle(t *testing.T) {
-	assert := require.New(t)
-	createTest := func(file string, typa interface{}, typb interface{}) []Test {
-		return []Test{
-			// {
-			// 	name:     "orig",
-			// 	filename: pth.Join("../testdata/github", file),
-			// 	typ:      typa,
-			// },
-			{
-				name:     "new",
-				filename: pth.Join("../tmp/", file),
-				typ:      typb,
-			},
-		}
-	}
-	tests := createTest("issue-comment.json", &IssueCommentPayload{}, &IssueCommentPayload{})
-	for _, tt := range tests {
-		tc := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			payload, err := ioutil.ReadFile(tc.filename)
 			assert.NoError(err)
 			parsedPayload, err := ParsePayload(string(payload), tc.typ)
 			assert.NoError(err)
