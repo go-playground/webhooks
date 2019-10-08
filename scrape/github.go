@@ -1,4 +1,6 @@
 // Scrape the github webhook documentation for example payloads
+// The data might need some manual massaging because some example values
+// are set to null.
 package main
 
 import (

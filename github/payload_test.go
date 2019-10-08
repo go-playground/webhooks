@@ -219,7 +219,7 @@ func TestPayloads(t *testing.T) {
 		tc := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			payload, err := ioutil.ReadFile(pth.Join("../tmp", tc.filename))
+			payload, err := ioutil.ReadFile(pth.Join("../testdata/github", tc.filename))
 			assert.NoError(err)
 			parsedPayload, err := ParsePayload(string(payload), tc.typ)
 			assert.NoError(err)
