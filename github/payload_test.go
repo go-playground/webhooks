@@ -129,11 +129,11 @@ func TestPayloads(t *testing.T) {
 			filename: "organization.json",
 			typ:      &OrganizationPayload{},
 		},
-		// {
-		// 	name:     "PageBuildPayload",
-		// 	filename: "page-build.json",
-		// 	typ:      &PageBuildPayload{},
-		// },
+		{
+			name:     "PageBuildPayload",
+			filename: "page-build.json",
+			typ:      &PageBuildPayload{},
+		},
 		// {
 		// 	name:     "PingPayload",
 		// 	filename: "ping.json",

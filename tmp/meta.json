@@ -6,9 +6,7 @@
     "id": 101047067,
     "name": "web",
     "active": true,
-    "events": [
-      "meta"
-    ],
+    "events": ["meta"],
     "config": {
       "content_type": "json",
       "insecure_ssl": "0",
@@ -42,6 +40,7 @@
       "type": "User",
       "site_admin": false
     },
+    "disabled": false,
     "private": false,
     "html_url": "https://github.com/Codertocat/Hello-World",
     "description": null,
