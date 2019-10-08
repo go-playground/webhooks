@@ -104,16 +104,16 @@ func TestPayloads(t *testing.T) {
 			filename: "member.json",
 			typ:      &MemberPayload{},
 		},
-		// {
-		// 	name:     "MembershipPayload",
-		// 	filename: "membership.json",
-		// 	typ:      &MembershipPayload{},
-		// },
-		// {
-		// 	name:     "MilestonePayload",
-		// 	filename: "milestone.json",
-		// 	typ:      &MilestonePayload{},
-		// },
+		{
+			name:     "MembershipPayload",
+			filename: "membership.json",
+			typ:      &MembershipPayload{},
+		},
+		{
+			name:     "MilestonePayload",
+			filename: "milestone.json",
+			typ:      &MilestonePayload{},
+		},
 		// {
 		// 	name:     "OrgBlockPayload",
 		// 	filename: "org-block.json",
