@@ -114,11 +114,11 @@ func TestPayloads(t *testing.T) {
 			filename: "milestone.json",
 			typ:      &MilestonePayload{},
 		},
-		// {
-		// 	name:     "OrgBlockPayload",
-		// 	filename: "org-block.json",
-		// 	typ:      &OrgBlockPayload{},
-		// },
+		{
+			name:     "OrgBlockPayload",
+			filename: "org-block.json",
+			typ:      &OrgBlockPayload{},
+		},
 		// {
 		// 	name:     "OrganizationPayload",
 		// 	filename: "organization.json",
