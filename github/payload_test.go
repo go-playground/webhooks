@@ -199,21 +199,21 @@ func TestPayloads(t *testing.T) {
 			filename: "status.json",
 			typ:      &StatusPayload{},
 		},
-		// {
-		// 	name:     "TeamAddPayload",
-		// 	filename: "team-add.json",
-		// 	typ:      &TeamAddPayload{},
-		// },
-		// {
-		// 	name:     "TeamPayload",
-		// 	filename: "team.json",
-		// 	typ:      &TeamPayload{},
-		// },
-		// {
-		// 	name:     "WatchPayload",
-		// 	filename: "watch.json",
-		// 	typ:      &WatchPayload{},
-		// },
+		{
+			name:     "TeamAddPayload",
+			filename: "team-add.json",
+			typ:      &TeamAddPayload{},
+		},
+		{
+			name:     "TeamPayload",
+			filename: "team.json",
+			typ:      &TeamPayload{},
+		},
+		{
+			name:     "WatchPayload",
+			filename: "watch.json",
+			typ:      &WatchPayload{},
+		},
 	}
 	for _, tt := range tests {
 		tc := tt
