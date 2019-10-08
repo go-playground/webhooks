@@ -40,18 +40,24 @@
     "merged_at": null,
     "merge_commit_sha": null,
     "assignee": null,
-    "assignees": [
-
-    ],
-    "requested_reviewers": [
-
-    ],
+    "assignees": [],
+    "requested_reviewers": [],
     "requested_teams": [
-
+      {
+        "name": "go-team",
+        "id": 123456,
+        "node_id": "MDEwOlJlcG9zaXRvcnkxODY4NTMwMDI=",
+        "slug": "go-team",
+        "description": "test team",
+        "privacy": "i dont know",
+        "url": "https://api.github.com/users/Codertocat",
+        "html_url": "https://github.com/Codertocat",
+        "members_url": "http???",
+        "repositories_url": "http???",
+        "permission": "???"
+      }
     ],
-    "labels": [
-
-    ],
+    "labels": [],
     "milestone": null,
     "commits_url": "https://api.github.com/repos/Codertocat/Hello-World/pulls/2/commits",
     "review_comments_url": "https://api.github.com/repos/Codertocat/Hello-World/pulls/2/comments",
