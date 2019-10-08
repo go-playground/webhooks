@@ -154,11 +154,11 @@ func TestPayloads(t *testing.T) {
 			filename: "project.json",
 			typ:      &ProjectPayload{},
 		},
-		// {
-		// 	name:     "PullRequestReviewCommentPayload",
-		// 	filename: "pull-request-review-comment.json",
-		// 	typ:      &PullRequestReviewCommentPayload{},
-		// },
+		{
+			name:     "PullRequestReviewCommentPayload",
+			filename: "pull-request-review-comment.json",
+			typ:      &PullRequestReviewCommentPayload{},
+		},
 		{
 			name:     "PullRequestReviewPayload",
 			filename: "pull-request-review.json",

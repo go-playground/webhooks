@@ -23,7 +23,7 @@
       "type": "User",
       "site_admin": false
     },
-    "body": null,
+    "body": "this is awesome",
     "commit_id": "ec26c3e57ca3a959ca5aad62de7213c562f8c821",
     "submitted_at": "2019-05-15T15:20:38Z",
     "state": "commented",
@@ -78,18 +78,24 @@
     "merged_at": null,
     "merge_commit_sha": "c4295bd74fb0f4fda03689c3df3f2803b658fd85",
     "assignee": null,
-    "assignees": [
-
-    ],
-    "requested_reviewers": [
-
-    ],
+    "assignees": [],
+    "requested_reviewers": [],
     "requested_teams": [
-
+      {
+        "name": "go-team",
+        "id": 123456,
+        "node_id": "MDEwOlJlcG9zaXRvcnkxODY4NTMwMDI=",
+        "slug": "go-team",
+        "description": "test team",
+        "privacy": "i dont know",
+        "url": "https://api.github.com/users/Codertocat",
+        "html_url": "https://github.com/Codertocat",
+        "members_url": "http???",
+        "repositories_url": "http???",
+        "permission": "???"
+      }
     ],
-    "labels": [
-
-    ],
+    "labels": [],
     "milestone": null,
     "commits_url": "https://api.github.com/repos/Codertocat/Hello-World/pulls/2/commits",
     "review_comments_url": "https://api.github.com/repos/Codertocat/Hello-World/pulls/2/comments",
