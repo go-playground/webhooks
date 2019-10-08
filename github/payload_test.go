@@ -115,15 +115,20 @@ func TestPayloads(t *testing.T) {
 			typ:      &MilestonePayload{},
 		},
 		{
+			name:     "MetaPayload",
+			filename: "meta.json",
+			typ:      &MetaPayload{},
+		},
+		{
 			name:     "OrgBlockPayload",
 			filename: "org-block.json",
 			typ:      &OrgBlockPayload{},
 		},
-		// {
-		// 	name:     "OrganizationPayload",
-		// 	filename: "organization.json",
-		// 	typ:      &OrganizationPayload{},
-		// },
+		{
+			name:     "OrganizationPayload",
+			filename: "organization.json",
+			typ:      &OrganizationPayload{},
+		},
 		// {
 		// 	name:     "PageBuildPayload",
 		// 	filename: "page-build.json",

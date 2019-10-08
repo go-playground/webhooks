@@ -1374,13 +1374,6 @@ type MilestonePayload struct {
 // OrganizationPayload contains the information for GitHub's organization hook event
 type OrganizationPayload struct {
 	Action     string `json:"action"`
-	Invitation struct {
-		ID     int64   `json:"id"`
-		NodeID string  `json:"node_id"`
-		Login  string  `json:"login"`
-		Email  *string `json:"email"`
-		Role   string  `json:"role"`
-	} `json:"invitation"`
 	Membership struct {
 		URL             string `json:"url"`
 		State           string `json:"state"`
@@ -1441,6 +1434,7 @@ type OrganizationPayload struct {
 		Type              string `json:"type"`
 		SiteAdmin         bool   `json:"site_admin"`
 	} `json:"sender"`
+	Installation Installation `json:"installation"`
 }
 
 // OrgBlockPayload contains the information for GitHub's org_block hook event
@@ -1500,6 +1494,7 @@ type OrgBlockPayload struct {
 		Type              string `json:"type"`
 		SiteAdmin         bool   `json:"site_admin"`
 	} `json:"sender"`
+	Installation Installation `json:"installation"`
 }
 
 // PageBuildPayload contains the information for GitHub's page_build hook event
