@@ -179,26 +179,26 @@ func TestPayloads(t *testing.T) {
 			filename: "release.json",
 			typ:      &ReleasePayload{},
 		},
-		// {
-		// 	name:     "RepositoryVulnerabilityAlertPayload",
-		// 	filename: "repository-vulnerability-alert.json",
-		// 	typ:      &RepositoryVulnerabilityAlertPayload{},
-		// },
-		// {
-		// 	name:     "RepositoryPayload",
-		// 	filename: "repository.json",
-		// 	typ:      &RepositoryPayload{},
-		// },
-		// {
-		// 	name:     "SecurityAdvisoryPayload",
-		// 	filename: "security-advisory.json",
-		// 	typ:      &SecurityAdvisoryPayload{},
-		// },
-		// {
-		// 	name:     "StatusPayload",
-		// 	filename: "status.json",
-		// 	typ:      &StatusPayload{},
-		// },
+		{
+			name:     "RepositoryVulnerabilityAlertPayload",
+			filename: "repository-vulnerability-alert.json",
+			typ:      &RepositoryVulnerabilityAlertPayload{},
+		},
+		{
+			name:     "RepositoryPayload",
+			filename: "repository.json",
+			typ:      &RepositoryPayload{},
+		},
+		{
+			name:     "SecurityAdvisoryPayload",
+			filename: "security-advisory.json",
+			typ:      &SecurityAdvisoryPayload{},
+		},
+		{
+			name:     "StatusPayload",
+			filename: "status.json",
+			typ:      &StatusPayload{},
+		},
 		// {
 		// 	name:     "TeamAddPayload",
 		// 	filename: "team-add.json",
