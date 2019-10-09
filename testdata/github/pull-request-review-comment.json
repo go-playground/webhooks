@@ -3,7 +3,6 @@
   "comment": {
     "url": "https://api.github.com/repos/Codertocat/Hello-World/pulls/comments/284312630",
     "pull_request_review_id": 237895671,
-    "in_reply_to_id": 456545654,
     "id": 284312630,
     "node_id": "MDI0OlB1bGxSZXF1ZXN0UmV2aWV3Q29tbWVudDI4NDMxMjYzMA==",
     "diff_hunk": "@@ -1 +1 @@\n-# Hello-World",
@@ -89,10 +88,18 @@
     "merged_at": null,
     "merge_commit_sha": "c4295bd74fb0f4fda03689c3df3f2803b658fd85",
     "assignee": null,
-    "assignees": [],
-    "requested_reviewers": [],
-    "requested_teams": [],
-    "labels": [],
+    "assignees": [
+
+    ],
+    "requested_reviewers": [
+
+    ],
+    "requested_teams": [
+
+    ],
+    "labels": [
+
+    ],
     "milestone": null,
     "commits_url": "https://api.github.com/repos/Codertocat/Hello-World/pulls/2/commits",
     "review_comments_url": "https://api.github.com/repos/Codertocat/Hello-World/pulls/2/comments",

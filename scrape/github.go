@@ -117,7 +117,7 @@ func main() {
 	collected := collect()
 	fmt.Printf("Found %s examle payloads. \n", len(collected))
 	root, _ := os.Getwd()
-	folder := path.Join(root, "tmp")
+	folder := path.Join(root, "testdata/github")
 	if _, err := os.Stat(folder); os.IsNotExist(err) {
 		os.Mkdir(folder, 0777)
 	}

@@ -31,24 +31,24 @@ type CheckPullRequest struct {
 type CheckRunPayload struct {
 	Action   string `json:"action"`
 	CheckRun struct {
-		ID          int64     `json:"id"`
-		NodeID      string    `json:"node_id"`
-		Name        string    `json:"name"`
-		HeadSHA     string    `json:"head_sha"`
-		Status      string    `json:"status"`
-		Conclusion  string    `json:"conclusion"`
-		URL         string    `json:"url"`
-		HtmlURL     string    `json:"html_url"`
-		StarterAt   time.Time `json:"started_at"`
-		CompletedAt time.Time `json:"completed_at"`
-		DetailsURL  string    `json:"details_url"`
-		ExternalID  string    `json:"external_id"`
+		ID          int64      `json:"id"`
+		NodeID      string     `json:"node_id"`
+		Name        string     `json:"name"`
+		HeadSHA     string     `json:"head_sha"`
+		Status      string     `json:"status"`
+		Conclusion  *string    `json:"conclusion"`
+		URL         string     `json:"url"`
+		HtmlURL     string     `json:"html_url"`
+		StarterAt   time.Time  `json:"started_at"`
+		CompletedAt *time.Time `json:"completed_at"`
+		DetailsURL  string     `json:"details_url"`
+		ExternalID  string     `json:"external_id"`
 		Output      struct {
-			Title            string `json:"title"`
-			Summary          string `json:"summary"`
-			Text             string `json:"text"`
-			AnnotationsCount int64  `json:"annotations_count"`
-			AnnotationsURL   string `json:"annotations_url"`
+			Title            *string `json:"title"`
+			Summary          *string `json:"summary"`
+			Text             *string `json:"text"`
+			AnnotationsCount int64   `json:"annotations_count"`
+			AnnotationsURL   string  `json:"annotations_url"`
 		} `json:"output"`
 		CheckSuite struct {
 			ID           int64              `json:"id"`
@@ -56,7 +56,7 @@ type CheckRunPayload struct {
 			HeadBranch   string             `json:"head_branch"`
 			HeadSHA      string             `json:"head_sha"`
 			Status       string             `json:"status"`
-			Conclusion   string             `json:"conclusion"`
+			Conclusion   *string            `json:"conclusion"`
 			URL          string             `json:"url"`
 			Before       string             `json:"before"`
 			After        string             `json:"after"`
@@ -82,7 +82,7 @@ type CheckSuitePayload struct {
 		HeadBranch           string             `json:"head_branch"`
 		HeadSHA              string             `json:"head_sha"`
 		Status               string             `json:"status"`
-		Conclusion           string             `json:"conclusion"`
+		Conclusion           *string            `json:"conclusion"`
 		URL                  string             `json:"url"`
 		Before               string             `json:"before"`
 		After                string             `json:"after"`
@@ -654,7 +654,7 @@ type PullRequestReviewPayload struct {
 		CommitID          string    `json:"commit_id"`
 		AuthorAssociation string    `json:"author_association"`
 		User              User      `json:"user"`
-		Body              string    `json:"body"`
+		Body              *string   `json:"body"`
 		SubmittedAt       time.Time `json:"submitted_at"`
 		State             string    `json:"state"`
 		HTMLURL           string    `json:"html_url"`
@@ -705,7 +705,8 @@ type PullRequestReviewCommentPayload struct {
 				Href string `json:"href"`
 			} `json:"pull_request"`
 		} `json:"_links"`
-		InReplyToID         int64 `json:"in_reply_to_id"` //TODO this is not in the unmodified payload example on github docs
+		//TODO this is not in the payload example on github docs
+		// InReplyToID         int64 `json:"in_reply_to_id"`
 		PullRequestReviewID int64 `json:"pull_request_review_id"`
 	} `json:"comment"`
 	PullRequest  ReviewPullRequest `json:"pull_request"`

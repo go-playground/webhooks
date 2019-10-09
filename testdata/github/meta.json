@@ -40,7 +40,6 @@
       "type": "User",
       "site_admin": false
     },
-    "disabled": false,
     "private": false,
     "html_url": "https://github.com/Codertocat/Hello-World",
     "description": null,
@@ -102,6 +101,7 @@
     "forks_count": 0,
     "mirror_url": null,
     "archived": false,
+    "disabled": false,
     "open_issues_count": 1,
     "license": null,
     "forks": 0,

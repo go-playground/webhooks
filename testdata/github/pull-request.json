@@ -39,86 +39,19 @@
     "closed_at": null,
     "merged_at": null,
     "merge_commit_sha": null,
-    "assignee": {
-      "login": "Codertocat6",
-      "id": 21031067,
-      "node_id": "MDQ6VXNlcjIxMDMxMDY3",
-      "avatar_url": "https://avatars1.githubusercontent.com/u/21031067?v=4",
-      "gravatar_id": "",
-      "url": "https://api.github.com/users/Codertocat",
-      "html_url": "https://github.com/Codertocat",
-      "followers_url": "https://api.github.com/users/Codertocat/followers",
-      "following_url": "https://api.github.com/users/Codertocat/following{/other_user}",
-      "gists_url": "https://api.github.com/users/Codertocat/gists{/gist_id}",
-      "starred_url": "https://api.github.com/users/Codertocat/starred{/owner}{/repo}",
-      "subscriptions_url": "https://api.github.com/users/Codertocat/subscriptions",
-      "organizations_url": "https://api.github.com/users/Codertocat/orgs",
-      "repos_url": "https://api.github.com/users/Codertocat/repos",
-      "events_url": "https://api.github.com/users/Codertocat/events{/privacy}",
-      "received_events_url": "https://api.github.com/users/Codertocat/received_events",
-      "type": "User",
-      "site_admin": false
-    },
+    "assignee": null,
     "assignees": [
-      {
-        "login": "Codertocat8",
-        "id": 21031067,
-        "node_id": "MDQ6VXNlcjIxMDMxMDY3",
-        "avatar_url": "https://avatars1.githubusercontent.com/u/21031067?v=4",
-        "gravatar_id": "",
-        "url": "https://api.github.com/users/Codertocat",
-        "html_url": "https://github.com/Codertocat",
-        "followers_url": "https://api.github.com/users/Codertocat/followers",
-        "following_url": "https://api.github.com/users/Codertocat/following{/other_user}",
-        "gists_url": "https://api.github.com/users/Codertocat/gists{/gist_id}",
-        "starred_url": "https://api.github.com/users/Codertocat/starred{/owner}{/repo}",
-        "subscriptions_url": "https://api.github.com/users/Codertocat/subscriptions",
-        "organizations_url": "https://api.github.com/users/Codertocat/orgs",
-        "repos_url": "https://api.github.com/users/Codertocat/repos",
-        "events_url": "https://api.github.com/users/Codertocat/events{/privacy}",
-        "received_events_url": "https://api.github.com/users/Codertocat/received_events",
-        "type": "User",
-        "site_admin": false
-      }
+
     ],
     "requested_reviewers": [
-      {
-        "login": "Codertocat5",
-        "id": 21031067,
-        "node_id": "MDQ6VXNlcjIxMDMxMDY3",
-        "avatar_url": "https://avatars1.githubusercontent.com/u/21031067?v=4",
-        "gravatar_id": "",
-        "url": "https://api.github.com/users/Codertocat",
-        "html_url": "https://github.com/Codertocat",
-        "followers_url": "https://api.github.com/users/Codertocat/followers",
-        "following_url": "https://api.github.com/users/Codertocat/following{/other_user}",
-        "gists_url": "https://api.github.com/users/Codertocat/gists{/gist_id}",
-        "starred_url": "https://api.github.com/users/Codertocat/starred{/owner}{/repo}",
-        "subscriptions_url": "https://api.github.com/users/Codertocat/subscriptions",
-        "organizations_url": "https://api.github.com/users/Codertocat/orgs",
-        "repos_url": "https://api.github.com/users/Codertocat/repos",
-        "events_url": "https://api.github.com/users/Codertocat/events{/privacy}",
-        "received_events_url": "https://api.github.com/users/Codertocat/received_events",
-        "type": "User",
-        "site_admin": false
-      }
+
     ],
     "requested_teams": [
-      {
-        "name": "go-team",
-        "id": 123456,
-        "node_id": "MDEwOlJlcG9zaXRvcnkxODY4NTMwMDI=",
-        "slug": "go-team",
-        "description": "test team",
-        "privacy": "i dont know",
-        "url": "https://api.github.com/users/Codertocat",
-        "html_url": "https://github.com/Codertocat",
-        "members_url": "http???",
-        "repositories_url": "http???",
-        "permission": "???"
-      }
+
     ],
-    "labels": [],
+    "labels": [
+
+    ],
     "milestone": null,
     "commits_url": "https://api.github.com/repos/Codertocat/Hello-World/pulls/2/commits",
     "review_comments_url": "https://api.github.com/repos/Codertocat/Hello-World/pulls/2/comments",
