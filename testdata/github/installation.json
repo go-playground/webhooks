@@ -32,12 +32,25 @@
     "permissions": {
       "metadata": "read",
       "contents": "read",
-      "issues": "write"
+      "issues": "write",
+      "administration": "read",
+      "checks": "read",
+      "deployments": "read",
+      "members": "read",
+      "organization_administration": "read",
+      "organization_hooks": "read",
+      "organization_plan": "read",
+      "organization_projects": "read",
+      "organization_user_blocking": "read",
+      "pages": "read",
+      "pull_requests": "read",
+      "repository_hooks": "read",
+      "repository_projects": "read",
+      "statuses": "read",
+      "team_discussions": "read",
+      "vulnerability_alerts": "read"
     },
-    "events": [
-      "push",
-      "pull_request"
-    ],
+    "events": ["push", "pull_request"],
     "created_at": 1525109898,
     "updated_at": 1525109899,
     "single_file_name": "config.yml"

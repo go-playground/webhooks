@@ -140,7 +140,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/check-run.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"check_run"},
-				"X-Hub-Signature": []string{"sha1=229f4920493b455398168cd86dc6b366064bdf3f"},
+				"X-Hub-Signature": []string{"sha1=283d86ddd75a3a508102e968e901f815553fc82c"},
 			},
 		},
 		{
@@ -150,7 +150,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/check-suite.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"check_suite"},
-				"X-Hub-Signature": []string{"sha1=250ad5a340f8d91e67dc5682342f3190fd2006a1"},
+				"X-Hub-Signature": []string{"sha1=38b7799610fa366e98b6c2bd09af31ece07d7063"},
 			},
 		},
 		{
@@ -160,7 +160,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/commit-comment.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"commit_comment"},
-				"X-Hub-Signature": []string{"sha1=156404ad5f721c53151147f3d3d302329f95a3ab"},
+				"X-Hub-Signature": []string{"sha1=b11cee473f9fd27648145dfeebea04164e9412b1"},
 			},
 		},
 		{
@@ -170,7 +170,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/create.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"create"},
-				"X-Hub-Signature": []string{"sha1=77ff16ca116034bbeed77ebfce83b36572a9cbaf"},
+				"X-Hub-Signature": []string{"sha1=7f1f9400733d3db721ee88747da6d2944cadeef0"},
 			},
 		},
 		{
@@ -180,7 +180,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/delete.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"delete"},
-				"X-Hub-Signature": []string{"sha1=4ddef04fd05b504c7041e294fca3ad1804bc7be1"},
+				"X-Hub-Signature": []string{"sha1=2eae3b0e47b867e7b92cfeddf9e32b1c287a4390"},
 			},
 		},
 		{
@@ -190,7 +190,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/deployment.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"deployment"},
-				"X-Hub-Signature": []string{"sha1=bb47dc63ceb764a6b1f14fe123e299e5b814c67c"},
+				"X-Hub-Signature": []string{"sha1=4fc1d4b8b57b3c449d4641a48db4bc1524c6d085"},
 			},
 		},
 		{
@@ -200,7 +200,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/deployment-status.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"deployment_status"},
-				"X-Hub-Signature": []string{"sha1=1b2ce08e0c3487fdf22bed12c63dc734cf6dc8a4"},
+				"X-Hub-Signature": []string{"sha1=ced7fbc1885edb99b5b1ca0c3f857e6ac9816142"},
 			},
 		},
 		{
@@ -210,7 +210,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/fork.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"fork"},
-				"X-Hub-Signature": []string{"sha1=cec5f8fb7c383514c622d3eb9e121891dfcca848"},
+				"X-Hub-Signature": []string{"sha1=917d7252153839963b78c6ce984c66e2b23623b6"},
 			},
 		},
 		{
@@ -220,7 +220,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/gollum.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"gollum"},
-				"X-Hub-Signature": []string{"sha1=a375a6dc8ceac7231ee022211f8eb85e2a84a5b9"},
+				"X-Hub-Signature": []string{"sha1=b6e1d3428880139208eca930248b949d1ddfc938"},
 			},
 		},
 		{
@@ -230,7 +230,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/installation.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"installation"},
-				"X-Hub-Signature": []string{"sha1=2058cf6cc28570710afbc638e669f5c67305a2db"},
+				"X-Hub-Signature": []string{"sha1=74017b4ee1d0ed6fd2525dbd7321e996fe1443d3"},
 			},
 		},
 		{
@@ -240,29 +240,32 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/installation-repositories.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"installation_repositories"},
-				"X-Hub-Signature": []string{"sha1=c587fbd9dd169db8ae592b3bcc80b08e2e6f4f45"},
+				"X-Hub-Signature": []string{"sha1=9ef54a43a7320412c76074649adef6f2743065d5"},
 			},
 		},
-		{
-			name:     "IntegrationInstallationEvent",
-			event:    IntegrationInstallationEvent,
-			typ:      InstallationPayload{},
-			filename: "../testdata/github/integration-installation.json",
-			headers: http.Header{
-				"X-Github-Event":  []string{"integration_installation"},
-				"X-Hub-Signature": []string{"sha1=bb2769f05f1a11af3a1edf8f9fac11bae7402a1e"},
-			},
-		},
-		{
-			name:     "IntegrationInstallationRepositoriesEvent",
-			event:    IntegrationInstallationRepositoriesEvent,
-			typ:      InstallationRepositoriesPayload{},
-			filename: "../testdata/github/integration-installation-repositories.json",
-			headers: http.Header{
-				"X-Github-Event":  []string{"integration_installation_repositories"},
-				"X-Hub-Signature": []string{"sha1=2f00a982574188342c2894eb9d1b1e93434687fb"},
-			},
-		},
+		// TODO IntegrationInstallationEvent is not listed in github docs
+		// {
+		// 	name:     "IntegrationInstallationEvent",
+		// 	event:    IntegrationInstallationEvent,
+		// 	typ:      InstallationPayload{},
+		// 	filename: "../testdata/github/integration-installation.json",
+		// 	headers: http.Header{
+		// 		"X-Github-Event":  []string{"integration_installation"},
+		// 		"X-Hub-Signature": []string{"sha1=bb2769f05f1a11af3a1edf8f9fac11bae7402a1e"},
+		// 	},
+		// },
+
+		// TODO IntegrationInstallationRepositoriesEvent is not listed in github docs
+		// {
+		// 	name:     "IntegrationInstallationRepositoriesEvent",
+		// 	event:    IntegrationInstallationRepositoriesEvent,
+		// 	typ:      InstallationRepositoriesPayload{},
+		// 	filename: "../testdata/github/integration-installation-repositories.json",
+		// 	headers: http.Header{
+		// 		"X-Github-Event":  []string{"integration_installation_repositories"},
+		// 		"X-Hub-Signature": []string{"sha1=2f00a982574188342c2894eb9d1b1e93434687fb"},
+		// 	},
+		// },
 		{
 			name:     "IssueCommentEvent",
 			event:    IssueCommentEvent,
@@ -270,7 +273,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/issue-comment.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"issue_comment"},
-				"X-Hub-Signature": []string{"sha1=e724c9f811fcf5f511aac32e4251b08ab1a0fd87"},
+				"X-Hub-Signature": []string{"sha1=93121a2300c181e748857c02fdd42fcda7b0becb"},
 			},
 		},
 		{
@@ -280,7 +283,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/issues.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"issues"},
-				"X-Hub-Signature": []string{"sha1=dfc9a3428f3df86e4ecd78e34b41c55bba5d0b21"},
+				"X-Hub-Signature": []string{"sha1=e9652a499e41cb07994e30d89ef86e658e7f85b6"},
 			},
 		},
 		{
@@ -290,7 +293,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/label.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"label"},
-				"X-Hub-Signature": []string{"sha1=efc13e7ad816235222e4a6b3f96d3fd1e162dbd4"},
+				"X-Hub-Signature": []string{"sha1=35ee1ad349fe974ac19210e7c0ca932119ddb5d5"},
 			},
 		},
 		{
@@ -300,7 +303,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/member.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"member"},
-				"X-Hub-Signature": []string{"sha1=597e7d6627a6636d4c3283e36631983fbd57bdd0"},
+				"X-Hub-Signature": []string{"sha1=073e497440a70d36722e0bbf003559d2b2910b66"},
 			},
 		},
 		{
@@ -310,7 +313,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/membership.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"membership"},
-				"X-Hub-Signature": []string{"sha1=16928c947b3707b0efcf8ceb074a5d5dedc9c76e"},
+				"X-Hub-Signature": []string{"sha1=35abc79a5c458805022baf75cf6b04f4a5200d94"},
 			},
 		},
 		{
@@ -320,7 +323,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/milestone.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"milestone"},
-				"X-Hub-Signature": []string{"sha1=8b63f58ea58e6a59dcfc5ecbaea0d1741a6bf9ec"},
+				"X-Hub-Signature": []string{"sha1=a3fe81287e8d43745fc1882f4d2ef856f9bc8a16"},
 			},
 		},
 		{
@@ -330,7 +333,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/organization.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"organization"},
-				"X-Hub-Signature": []string{"sha1=7e5ad88557be0a05fb89e86c7893d987386aa0d5"},
+				"X-Hub-Signature": []string{"sha1=f05df4b6721ed45d310a99742e6fecfa606bcb0e"},
 			},
 		},
 		{
@@ -340,7 +343,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/org-block.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"org_block"},
-				"X-Hub-Signature": []string{"sha1=21fe61da3f014c011edb60b0b9dfc9aa7059a24b"},
+				"X-Hub-Signature": []string{"sha1=98df61755a92678d8e75e6fd5eb961d788d7af93"},
 			},
 		},
 		{
@@ -350,19 +353,20 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/page-build.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"page_build"},
-				"X-Hub-Signature": []string{"sha1=b3abad8f9c1b3fc0b01c4eb107447800bb5000f9"},
+				"X-Hub-Signature": []string{"sha1=1c2badf38c4657b2080d0c159d7a499b2ca11513"},
 			},
 		},
-		{
-			name:     "PingEvent",
-			event:    PingEvent,
-			typ:      PingPayload{},
-			filename: "../testdata/github/ping.json",
-			headers: http.Header{
-				"X-Github-Event":  []string{"ping"},
-				"X-Hub-Signature": []string{"sha1=f80e1cfc04245b65228b86612119ab5c894133c2"},
-			},
-		},
+		// TODO PingEvent is not listed in github docs
+		// {
+		// 	name:     "PingEvent",
+		// 	event:    PingEvent,
+		// 	typ:      PingPayload{},
+		// 	filename: "../testdata/github/ping.json",
+		// 	headers: http.Header{
+		// 		"X-Github-Event":  []string{"ping"},
+		// 		"X-Hub-Signature": []string{"sha1=f80e1cfc04245b65228b86612119ab5c894133c2"},
+		// 	},
+		// },
 		{
 			name:     "ProjectCardEvent",
 			event:    ProjectCardEvent,
@@ -370,7 +374,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/project-card.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"project_card"},
-				"X-Hub-Signature": []string{"sha1=495dec0d6449d16b71f2ddcd37d595cb9b04b1d8"},
+				"X-Hub-Signature": []string{"sha1=2a2765bf29885b3db578d98c248d76c208fced75"},
 			},
 		},
 		{
@@ -380,7 +384,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/project-column.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"project_column"},
-				"X-Hub-Signature": []string{"sha1=7d5dd49d9863e982a4f577170717ea8350a69db0"},
+				"X-Hub-Signature": []string{"sha1=31624226b9ea5d3825e6b3fcd0f99ddf091cf39c"},
 			},
 		},
 		{
@@ -390,7 +394,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/project.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"project"},
-				"X-Hub-Signature": []string{"sha1=7295ab4f205434208f1b86edf2b55adae34c6c92"},
+				"X-Hub-Signature": []string{"sha1=ebac78c119e31b1f591b9fe3a692e5d670831380"},
 			},
 		},
 		{
@@ -400,7 +404,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/public.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"public"},
-				"X-Hub-Signature": []string{"sha1=73edb2a8c69c1ac35efb797ede3dc2cde618c10c"},
+				"X-Hub-Signature": []string{"sha1=174dd61f161dad3d0709d5c314ecad00cdcef73b"},
 			},
 		},
 		{
@@ -410,7 +414,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/pull-request.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"pull_request"},
-				"X-Hub-Signature": []string{"sha1=35712c8d2bc197b7d07621dcf20d2fb44620508f"},
+				"X-Hub-Signature": []string{"sha1=c488ac6544c2f4526811899e22fb62cea4fcda03"},
 			},
 		},
 		{
@@ -420,7 +424,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/pull-request-review.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"pull_request_review"},
-				"X-Hub-Signature": []string{"sha1=55345ce92be7849f97d39b9426b95261d4bd4465"},
+				"X-Hub-Signature": []string{"sha1=ad813b10b1ca686b1ed7e34ed4820fd23151c45b"},
 			},
 		},
 		{
@@ -430,7 +434,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/pull-request-review-comment.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"pull_request_review_comment"},
-				"X-Hub-Signature": []string{"sha1=a9ece15dbcbb85fa5f00a0bf409494af2cbc5b60"},
+				"X-Hub-Signature": []string{"sha1=390a08a10a1388852dc27d060e1a38ffa198b4c6"},
 			},
 		},
 		{
@@ -440,7 +444,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/push.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"push"},
-				"X-Hub-Signature": []string{"sha1=0534736f52c2fc5896ef1bd5a043127b20d233ba"},
+				"X-Hub-Signature": []string{"sha1=08da466a59780b773016d8c82dd003bad1c4aa5c"},
 			},
 		},
 		{
@@ -450,7 +454,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/release.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"release"},
-				"X-Hub-Signature": []string{"sha1=e62bb4c51bc7dde195b9525971c2e3aecb394390"},
+				"X-Hub-Signature": []string{"sha1=74a656e593c579d59ed0442acb3323a502855402"},
 			},
 		},
 		{
@@ -460,7 +464,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/repository.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"repository"},
-				"X-Hub-Signature": []string{"sha1=df442a8af41edd2d42ccdd997938d1d111b0f94e"},
+				"X-Hub-Signature": []string{"sha1=c0b344f0434f9bf9c136ba08725873a76636e6f7"},
 			},
 		},
 		{
@@ -470,7 +474,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/repository-vulnerability-alert.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"repository_vulnerability_alert"},
-				"X-Hub-Signature": []string{"sha1=c42c0649e7e06413bcd756763edbab48dff400db"},
+				"X-Hub-Signature": []string{"sha1=158f1c382a98c44b65e63bfe408abc790eae5909"},
 			},
 		},
 		{
@@ -480,7 +484,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/security-advisory.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"security_advisory"},
-				"X-Hub-Signature": []string{"sha1=6a71f24fa69f55469843a91dc3a5c3e29714a565"},
+				"X-Hub-Signature": []string{"sha1=e05faeac4f88a114a78d95ff2f8cadd81b100381"},
 			},
 		},
 		{
@@ -490,7 +494,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/status.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"status"},
-				"X-Hub-Signature": []string{"sha1=3caa5f062a2deb7cce1482314bb9b4c99bf0ab45"},
+				"X-Hub-Signature": []string{"sha1=76bd9fb549bd1f9468d9faff8019c0a377e32d55"},
 			},
 		},
 		{
@@ -500,7 +504,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/team.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"team"},
-				"X-Hub-Signature": []string{"sha1=ff5b5d58faec10bd40fc96834148df408e7a4608"},
+				"X-Hub-Signature": []string{"sha1=42463baff0eb057ba02bb446a5a1e916f10b3fd5"},
 			},
 		},
 		{
@@ -510,7 +514,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/team-add.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"team_add"},
-				"X-Hub-Signature": []string{"sha1=5f3953476e270b79cc6763780346110da880609a"},
+				"X-Hub-Signature": []string{"sha1=d4f592285c079a618703d83fab925c1e28498716"},
 			},
 		},
 		{
@@ -520,7 +524,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/watch.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"watch"},
-				"X-Hub-Signature": []string{"sha1=a317bcfe69ccb8bece74c20c7378e5413c4772f1"},
+				"X-Hub-Signature": []string{"sha1=2693ef71ae69be979bbcd4b8b95fcbe130ab393d"},
 			},
 		},
 	}
