@@ -155,6 +155,11 @@ func TestPayloads(t *testing.T) {
 			typ:      &ProjectPayload{},
 		},
 		{
+			name:     "PublicPayload",
+			filename: "public.json",
+			typ:      &PublicPayload{},
+		},
+		{
 			name:     "PullRequestReviewCommentPayload",
 			filename: "pull-request-review-comment.json",
 			typ:      &PullRequestReviewCommentPayload{},
@@ -221,8 +226,10 @@ func TestPayloads(t *testing.T) {
 			t.Parallel()
 			payload, err := ioutil.ReadFile(pth.Join("../testdata/github", tc.filename))
 			assert.NoError(err)
+
 			parsedPayload, err := ParsePayload(string(payload), tc.typ)
 			assert.NoError(err)
+
 			a, _ := jd.ReadJsonString(string(payload))
 			b, _ := jd.ReadJsonString(parsedPayload)
 			diff := a.Diff(b).Render()

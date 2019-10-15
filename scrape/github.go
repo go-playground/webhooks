@@ -115,7 +115,7 @@ func write(folder string, example ExamplePayload) error {
 }
 func main() {
 	collected := collect()
-	fmt.Printf("Found %s examle payloads. \n", len(collected))
+	fmt.Printf("Found %d examle payloads. \n", len(collected))
 	root, _ := os.Getwd()
 	folder := path.Join(root, "testdata/github")
 	if _, err := os.Stat(folder); os.IsNotExist(err) {

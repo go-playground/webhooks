@@ -472,8 +472,9 @@ type ProjectPayload struct {
 
 // PublicPayload contains the information for GitHub's public hook event
 type PublicPayload struct {
-	Repository Repository `json:"repository"`
-	Sender     User       `json:"sender"`
+	Repository   Repository   `json:"repository"`
+	Sender       User         `json:"sender"`
+	Installation Installation `json:"installation"`
 }
 
 // PullRequestPayload contains the information for GitHub's pull_request hook event
