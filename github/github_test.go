@@ -274,6 +274,16 @@ func TestWebhooks(t *testing.T) {
 			},
 		},
 		{
+			name:     "PullRequestIssueCommentEvent",
+			event:    IssueCommentEvent,
+			typ:      IssueCommentPayload{},
+			filename: "../testdata/github/pull-request-issue-comment.json",
+			headers: http.Header{
+				"X-Github-Event":  []string{"issue_comment"},
+				"X-Hub-Signature": []string{"sha1=6c969b99ef881b5c98b2dbfc66a34465fcf0e7d4"},
+			},
+		},
+		{
 			name:     "IssuesEvent",
 			event:    IssuesEvent,
 			typ:      IssuesPayload{},

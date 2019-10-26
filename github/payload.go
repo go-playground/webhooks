@@ -1614,16 +1614,22 @@ type IssueCommentPayload struct {
 			Color       string `json:"color"`
 			Default     bool   `json:"default"`
 		} `json:"labels"`
-		State     string      `json:"state"`
-		Locked    bool        `json:"locked"`
-		Assignee  *Assignee   `json:"assignee"`
-		Assignees []*Assignee `json:"assignees"`
-		Milestone *Milestone  `json:"milestone"`
-		Comments  int64       `json:"comments"`
-		CreatedAt time.Time   `json:"created_at"`
-		UpdatedAt time.Time   `json:"updated_at"`
-		ClosedAt  *time.Time  `json:"closed_at"`
-		Body      string      `json:"body"`
+		State       string      `json:"state"`
+		Locked      bool        `json:"locked"`
+		Assignee    *Assignee   `json:"assignee"`
+		Assignees   []*Assignee `json:"assignees"`
+		Milestone   *Milestone  `json:"milestone"`
+		Comments    int64       `json:"comments"`
+		CreatedAt   time.Time   `json:"created_at"`
+		UpdatedAt   time.Time   `json:"updated_at"`
+		ClosedAt    *time.Time  `json:"closed_at"`
+		PullRequest *struct {
+			URL      string `json:"url"`
+			HTMLURL  string `json:"html_url"`
+			DiffURL  string `json:"diff_url"`
+			PatchURL string `json:"patch_url"`
+		} `json:"pull_request"`
+		Body string `json:"body"`
 	} `json:"issue"`
 	Comment struct {
 		URL      string `json:"url"`
