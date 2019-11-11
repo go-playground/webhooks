@@ -47,7 +47,7 @@ const (
 	MemberEvent                              Event = "member"
 	MembershipEvent                          Event = "membership"
 	MilestoneEvent                           Event = "milestone"
-  MetaEvent                                Event = "meta"
+	MetaEvent                                Event = "meta"
 	OrganizationEvent                        Event = "organization"
 	OrgBlockEvent                            Event = "org_block"
 	PageBuildEvent                           Event = "page_build"
