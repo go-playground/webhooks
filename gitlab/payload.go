@@ -493,6 +493,6 @@ type Changes map[string]Change
 
 // Change is an individual change of a field in a MergeRequest
 type Change struct {
-	Current  interface{}
-	Previous interface{}
+	Current  interface{} `json:"current"`
+	Previous interface{} `json:"previous"`
 }
