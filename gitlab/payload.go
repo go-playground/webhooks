@@ -488,27 +488,11 @@ type Author struct {
 	Email string `json:"email"`
 }
 
-// Changes contains all changes associated with a GitLab issue or MR
-type Changes struct {
-	LabelChanges LabelChanges `json:"labels"`
-}
+// Changes contains all the changes in a MergeRequest
+type Changes map[string]Change
 
-// LabelChanges contains changes in labels assocatiated with a GitLab issue or MR
-type LabelChanges struct {
-	Previous []Label `json:"previous"`
-	Current  []Label `json:"current"`
-}
-
-// Label contains all of the GitLab label information
-type Label struct {
-	ID          int64      `json:"id"`
-	Title       string     `json:"title"`
-	Color       string     `json:"color"`
-	ProjectID   int64      `json:"project_id"`
-	CreatedAt   customTime `json:"created_at"`
-	UpdatedAt   customTime `json:"updated_at"`
-	Template    bool       `json:"template"`
-	Description string     `json:"description"`
-	Type        string     `json:"type"`
-	GroupID     int64      `json:"group_id"`
+// Change is an individual change of a field in a MergeRequest
+type Change struct {
+	Current  interface{}
+	Previous interface{}
 }
