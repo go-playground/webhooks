@@ -3,6 +3,7 @@ package pepo
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -10,9 +11,11 @@ import (
 
 // parse errors
 var (
-	ErrInvalidHTTPMethod          = errors.New("invalid HTTP Method")
-	ErrMissingPepoSignatureHeader = errors.New("missing X-Pepo-Signature Header")
-	ErrParsingPayload             = errors.New("error parsing payload")
+	ErrInvalidHTTPMethod      = errors.New("invalid http method")
+	ErrMissingTimestampHeader = errors.New("missing timestamp header")
+	ErrMissingSignatureHeader = errors.New("missing signature header")
+	ErrMissingVersionHeader   = errors.New("missing version header")
+	ErrParsingPayload         = errors.New("error parsing payload")
 )
 
 // Option is a configuration option for the webhook
@@ -66,11 +69,21 @@ func (hook Webhook) Parse(r *http.Request) (interface{}, error) {
 
 	// If we have a secret set, we should check the signature
 	if len(hook.secret) > 0 {
-		signature := r.Header.Get("X-Pepo-Signature") // TODO use the correct header-key
-		if len(signature) == 0 {
-			return nil, ErrMissingPepoSignatureHeader
+		timestamp := r.Header.Get("pepo-timestamp")
+		if len(timestamp) == 0 {
+			return nil, ErrMissingTimestampHeader
 		}
-		// TODO add signature check if specification is clear
+		signature := r.Header.Get("pepo-signature")
+		if len(signature) == 0 {
+			return nil, ErrMissingSignatureHeader
+		}
+		version := r.Header.Get("pepo-version")
+		if len(version) == 0 {
+			return nil, ErrMissingVersionHeader
+		}
+		fmt.Println(timestamp)
+		fmt.Println(signature)
+		fmt.Println(version)
 	}
 
 	var pl EventPayload

@@ -59,17 +59,29 @@ func TestBadRequests(t *testing.T) {
 		headers http.Header
 	}{
 		{
-			name:    "BadNoSignatureHeader",
+			name:    "ErrMissingTimestampHeader",
 			payload: bytes.NewBuffer([]byte("{}")),
-			headers: http.Header{},
+			headers: http.Header{
+				"pepo-signature": []string{"sha1=229f4920493b455398168cd86dc6b366064bdf3f"},
+				"pepo-version":   []string{"1"},
+			},
 		},
-		// {
-		// 	name:    "BadSignatureMatch",
-		// 	payload: bytes.NewBuffer([]byte("{}")),
-		// 	headers: http.Header{
-		// 		"X-Pepo-Signature": []string{"sha1=111"},
-		// 	},
-		// },
+		{
+			name:    "ErrMissingSignatureHeader",
+			payload: bytes.NewBuffer([]byte("{}")),
+			headers: http.Header{
+				"pepo-timestamp": []string{"1584103295"},
+				"pepo-version":   []string{"1"},
+			},
+		},
+		{
+			name:    "ErrMissingVersionHeader",
+			payload: bytes.NewBuffer([]byte("{}")),
+			headers: http.Header{
+				"pepo-timestamp": []string{"1584103295"},
+				"pepo-signature": []string{"sha1=229f4920493b455398168cd86dc6b366064bdf3f"},
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -108,7 +120,9 @@ func TestWebhooks(t *testing.T) {
 			typ:      EventPayload{},
 			filename: "../testdata/pepo/video-update.json",
 			headers: http.Header{
-				"X-Pepo-Signature": []string{"sha1=229f4920493b455398168cd86dc6b366064bdf3f"},
+				"pepo-signature": []string{"sha1=229f4920493b455398168cd86dc6b366064bdf3f"},
+				"pepo-timestamp": []string{"1584103295"},
+				"pepo-version":   []string{"1"},
 			},
 		},
 		{
@@ -116,7 +130,9 @@ func TestWebhooks(t *testing.T) {
 			typ:      EventPayload{},
 			filename: "../testdata/pepo/video-contribution.json",
 			headers: http.Header{
-				"X-Pepo-Signature": []string{"sha1=229f4920493b455398168cd86dc6b366064bdf3f"},
+				"pepo-signature": []string{"sha1=229f4920493b455398168cd86dc6b366064bdf3f"},
+				"pepo-timestamp": []string{"1584103295"},
+				"pepo-version":   []string{"1"},
 			},
 		},
 	}
