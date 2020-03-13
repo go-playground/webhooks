@@ -1,6 +1,9 @@
 package pepo
 
 import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -11,10 +14,11 @@ import (
 
 // parse errors
 var (
-	ErrInvalidHTTPMethod      = errors.New("invalid http method")
+	ErrInvalidHTTPMethod      = errors.New("invalid HTTP method")
 	ErrMissingTimestampHeader = errors.New("missing timestamp header")
 	ErrMissingSignatureHeader = errors.New("missing signature header")
 	ErrMissingVersionHeader   = errors.New("missing version header")
+	ErrHMACVerificationFailed = errors.New("HMAC verification failed")
 	ErrParsingPayload         = errors.New("error parsing payload")
 )
 
@@ -67,6 +71,8 @@ func (hook Webhook) Parse(r *http.Request) (interface{}, error) {
 		return nil, ErrParsingPayload
 	}
 
+	var pl EventPayload
+
 	// If we have a secret set, we should check the signature
 	if len(hook.secret) > 0 {
 		timestamp := r.Header.Get("pepo-timestamp")
@@ -81,12 +87,28 @@ func (hook Webhook) Parse(r *http.Request) (interface{}, error) {
 		if len(version) == 0 {
 			return nil, ErrMissingVersionHeader
 		}
-		fmt.Println(timestamp)
-		fmt.Println(signature)
-		fmt.Println(version)
+		err = json.Unmarshal([]byte(payload), &pl)
+		if err != nil {
+			return nil, err
+		}
+		signatureData := fmt.Sprintf("%s.%s.%s", timestamp, version, string(payload))
+		expectedSignature := createHMACsha256(hook.secret, signatureData)
+		hexSignature, err := hex.DecodeString(signature)
+		if err != nil {
+			fmt.Println(err)
+		}
+		comparison := hmac.Equal(hexSignature, expectedSignature)
+		if !comparison {
+			return nil, ErrHMACVerificationFailed
+		}
 	}
-
-	var pl EventPayload
-	err = json.Unmarshal([]byte(payload), &pl)
 	return pl, err
+}
+
+func createHMACsha256(secret string, data string) []byte {
+	// Create a new HMAC by defining the hash type and the key (as byte array)
+	h := hmac.New(sha256.New, []byte(secret))
+	// Write Data to it
+	h.Write([]byte(data))
+	return h.Sum(nil)
 }

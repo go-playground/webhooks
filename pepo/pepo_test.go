@@ -37,7 +37,7 @@ func TestMain(m *testing.M) {
 
 	// setup
 	var err error
-	hook, err = New(Options.Secret("IsWishesWereHorsesWedAllBeEatingSteak!"))
+	hook, err = New(Options.Secret("ca84baa9ff9e1d2c1ef00e95720421406216fde99fbab7d842ac3ed73975c3cf"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -120,9 +120,9 @@ func TestWebhooks(t *testing.T) {
 			typ:      EventPayload{},
 			filename: "../testdata/pepo/video-update.json",
 			headers: http.Header{
-				"pepo-signature": []string{"sha1=229f4920493b455398168cd86dc6b366064bdf3f"},
-				"pepo-timestamp": []string{"1584103295"},
-				"pepo-version":   []string{"1"},
+				"pepo-signature": []string{"25cf27a6aca5d82e68eca421102b91ff79aef92bd330c754cab6d9d1e68e0752"},
+				"pepo-timestamp": []string{"1584205707"},
+				"pepo-version":   []string{"v1"},
 			},
 		},
 		{
@@ -130,9 +130,9 @@ func TestWebhooks(t *testing.T) {
 			typ:      EventPayload{},
 			filename: "../testdata/pepo/video-contribution.json",
 			headers: http.Header{
-				"pepo-signature": []string{"sha1=229f4920493b455398168cd86dc6b366064bdf3f"},
-				"pepo-timestamp": []string{"1584103295"},
-				"pepo-version":   []string{"1"},
+				"pepo-signature": []string{"8dbee64f6944ae5b27472644fe5dc0f5438b3bafa954c49c127553f05706114a"},
+				"pepo-timestamp": []string{"1584127377"},
+				"pepo-version":   []string{"v1"},
 			},
 		},
 	}

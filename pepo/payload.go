@@ -15,29 +15,29 @@ type Data struct {
 }
 
 type User struct {
-	ID                 string `json:"id"`
-	Name               string `json:"name"`
-	ProfileImage       string `json:"profile_image"`
-	TokenholderAddress string `json:"Tokenholder_address"`
-	TwitterHandle      string `json:"twitter_handle"`
-	GithubLogin        string `json:"github_login"`
+	ID                 string  `json:"id"`
+	Name               string  `json:"name"`
+	ProfileImage       *string `json:"profile_image"`
+	TokenholderAddress *string `json:"tokenholder_address"`
+	TwitterHandle      *string `json:"twitter_handle"`
+	GithubLogin        *string `json:"github_login"`
 }
 
 type Activity struct {
 	Kind    string `json:"kind"`
-	ActorID string `json:"actor_id"`
+	ActorID int64  `json:"actor_id"`
 	Video   Video  `json:"video"`
 }
 
 type Video struct {
 	ID                      int64    `json:"id"`
-	CreatorID               string   `json:"creator_id"`
+	CreatorID               int64    `json:"creator_id"`
 	URL                     string   `json:"url"`
 	VideoURL                string   `json:"video_url"`
-	TotalContributors       int32    `json:"total_contributors"`
+	TotalContributors       int64    `json:"total_contributors"`
 	TotalContributionAmount string   `json:"total_contribution_amount"`
-	Description             string   `json:"description"`
-	PosterImage             string   `json:"poster_image"`
+	Description             *string  `json:"description"`
+	PosterImage             *string  `json:"poster_image"`
 	Status                  string   `json:"status"`
 	Tags                    []string `json:"tags"`
 }
