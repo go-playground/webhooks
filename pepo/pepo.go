@@ -72,6 +72,10 @@ func (hook Webhook) Parse(r *http.Request) (interface{}, error) {
 	}
 
 	var pl EventPayload
+	err = json.Unmarshal([]byte(payload), &pl)
+	if err != nil {
+		return nil, err
+	}
 
 	// If we have a secret set, we should check the signature
 	if len(hook.secret) > 0 {
@@ -86,10 +90,6 @@ func (hook Webhook) Parse(r *http.Request) (interface{}, error) {
 		version := r.Header.Get("pepo-version")
 		if len(version) == 0 {
 			return nil, ErrMissingVersionHeader
-		}
-		err = json.Unmarshal([]byte(payload), &pl)
-		if err != nil {
-			return nil, err
 		}
 		signatureData := fmt.Sprintf("%s.%s.%s", timestamp, version, string(payload))
 		expectedSignature := createHMACsha256(hook.secret, signatureData)
