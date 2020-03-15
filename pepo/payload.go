@@ -1,7 +1,7 @@
 package pepo
 
 type EventPayload struct {
-	ID        string `json:"id"`
+	ID        string `bson:"_id" json:"id"`
 	Topic     string `json:"topic"`
 	CreatedAt int64  `json:"created_at"`
 	WebhookID string `json:"webhook_id"`
