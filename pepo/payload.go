@@ -2,42 +2,42 @@ package pepo
 
 type EventPayload struct {
 	ID        string `bson:"_id" json:"id"`
-	Topic     string `json:"topic"`
-	CreatedAt int64  `json:"created_at"`
-	WebhookID string `json:"webhook_id"`
-	Version   string `json:"version"`
-	Data      Data   `json:"data"`
+	Topic     string `bson:"topic" json:"topic"`
+	CreatedAt int64  `bson:"created_at" json:"created_at"`
+	WebhookID string `bson:"webhook_id" json:"webhook_id"`
+	Version   string `bson:"version" json:"version"`
+	Data      Data   `bson:"data" json:"data"`
 }
 
 type Data struct {
-	Users    map[string]User `json:"users"`
-	Activity Activity        `json:"activity"`
+	Users    map[string]User `bson:"users" json:"users"`
+	Activity Activity        `bson:"activity" json:"activity"`
 }
 
 type User struct {
-	ID                 string  `json:"id"`
-	Name               string  `json:"name"`
-	ProfileImage       *string `json:"profile_image"`
-	TokenholderAddress *string `json:"tokenholder_address"`
-	TwitterHandle      *string `json:"twitter_handle"`
-	GithubLogin        *string `json:"github_login"`
+	ID                 string  `bson:"id" json:"id"`
+	Name               string  `bson:"name" json:"name"`
+	ProfileImage       *string `bson:"profile_image" json:"profile_image"`
+	TokenholderAddress *string `bson:"tokenholder_address" json:"tokenholder_address"`
+	TwitterHandle      *string `bson:"twitter_handle" json:"twitter_handle"`
+	GithubLogin        *string `bson:"github_login" json:"github_login"`
 }
 
 type Activity struct {
-	Kind    string `json:"kind"`
-	ActorID int64  `json:"actor_id"`
-	Video   Video  `json:"video"`
+	Kind    string `bson:"kind" json:"kind"`
+	ActorID int64  `bson:"actor_id" json:"actor_id"`
+	Video   Video  `bson:"video" json:"video"`
 }
 
 type Video struct {
-	ID                      int64    `json:"id"`
-	CreatorID               int64    `json:"creator_id"`
-	URL                     string   `json:"url"`
-	VideoURL                string   `json:"video_url"`
-	TotalContributors       int64    `json:"total_contributors"`
-	TotalContributionAmount string   `json:"total_contribution_amount"`
-	Description             *string  `json:"description"`
-	PosterImage             *string  `json:"poster_image"`
-	Status                  string   `json:"status"`
-	Tags                    []string `json:"tags"`
+	ID                      int64    `bson:"id" json:"id"`
+	CreatorID               int64    `bson:"creator_id" json:"creator_id"`
+	URL                     string   `bson:"url" json:"url"`
+	VideoURL                string   `bson:"video_url" json:"video_url"`
+	TotalContributors       int64    `bson:"total_contributors" json:"total_contributors"`
+	TotalContributionAmount string   `bson:"total_contribution_amount" json:"total_contribution_amount"`
+	Description             *string  `bson:"description" json:"description"`
+	PosterImage             *string  `bson:"poster_image" json:"poster_image"`
+	Status                  string   `bson:"status" json:"status"`
+	Tags                    []string `bson:"tags" json:"tags"`
 }
