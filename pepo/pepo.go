@@ -93,11 +93,11 @@ func (hook Webhook) Parse(r *http.Request) (interface{}, error) {
 		}
 		signatureData := fmt.Sprintf("%s.%s.%s", timestamp, version, string(payload))
 		expectedSignature := createHMACsha256(hook.secret, signatureData)
-		hexSignature, err := hex.DecodeString(signature)
+		actualSignature, err := hex.DecodeString(signature)
 		if err != nil {
 			fmt.Println(err)
 		}
-		comparison := hmac.Equal(hexSignature, expectedSignature)
+		comparison := hmac.Equal(actualSignature, expectedSignature)
 		if !comparison {
 			return nil, ErrHMACVerificationFailed
 		}
