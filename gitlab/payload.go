@@ -281,6 +281,7 @@ type User struct {
 
 // Project contains all of the GitLab project information
 type Project struct {
+	ID                int64  `json:"id"`
 	Name              string `json:"name"`
 	Description       string `json:"description"`
 	WebURL            string `json:"web_url"`
