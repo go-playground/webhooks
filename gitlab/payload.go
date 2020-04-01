@@ -67,6 +67,7 @@ type PushEventPayload struct {
 	CheckoutSHA       string     `json:"checkout_sha"`
 	UserID            int64      `json:"user_id"`
 	UserName          string     `json:"user_name"`
+	UserUsername      string     `json:"user_username"`
 	UserEmail         string     `json:"user_email"`
 	UserAvatar        string     `json:"user_avatar"`
 	ProjectID         int64      `json:"project_id"`
@@ -85,6 +86,10 @@ type TagEventPayload struct {
 	CheckoutSHA       string     `json:"checkout_sha"`
 	UserID            int64      `json:"user_id"`
 	UserName          string     `json:"user_name"`
+	// NOTE: Although the `user_username` field is not present in the tag event example
+	// from GitLab's documentation, it exists in tag event payloads:
+	// https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/data_builder/push.rb#L88
+	UserUsername      string     `json:"user_username"`
 	UserAvatar        string     `json:"user_avatar"`
 	ProjectID         int64      `json:"project_id"`
 	Project           Project    `json:"Project"`
