@@ -67,6 +67,7 @@ type PushEventPayload struct {
 	CheckoutSHA       string     `json:"checkout_sha"`
 	UserID            int64      `json:"user_id"`
 	UserName          string     `json:"user_name"`
+	UserUsername      string     `json:"user_username"`
 	UserEmail         string     `json:"user_email"`
 	UserAvatar        string     `json:"user_avatar"`
 	ProjectID         int64      `json:"project_id"`
