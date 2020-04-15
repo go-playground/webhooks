@@ -231,11 +231,63 @@ func TestWebhooks(t *testing.T) {
 				"X-Gitlab-Event": []string{"Build Hook"},
 			},
 		},
+	}
+
+	for _, tt := range tests {
+		tc := tt
+		client := &http.Client{}
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			payload, err := os.Open(tc.filename)
+			assert.NoError(err)
+			defer func() {
+				_ = payload.Close()
+			}()
+
+			var parseError error
+			var results interface{}
+			server := newServer(func(w http.ResponseWriter, r *http.Request) {
+				results, parseError = hook.Parse(r, tc.event)
+			})
+			defer server.Close()
+			req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
+			assert.NoError(err)
+			req.Header = tc.headers
+			req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("X-Gitlab-Token", "sampleToken!")
+
+			resp, err := client.Do(req)
+			assert.NoError(err)
+			assert.Equal(http.StatusOK, resp.StatusCode)
+			assert.NoError(parseError)
+			assert.Equal(reflect.TypeOf(tc.typ), reflect.TypeOf(results))
+		})
+	}
+}
+
+func TestJobHooks(t *testing.T) {
+	assert := require.New(t)
+	tests := []struct {
+		name     string
+		events   []Event
+		typ      interface{}
+		filename string
+		headers  http.Header
+	}{
 		{
 			name:     "JobEvent",
-			event:    JobEvents,
+			events:   []Event{JobEvents},
 			typ:      JobEventPayload{},
 			filename: "../testdata/gitlab/job-event.json",
+			headers: http.Header{
+				"X-Gitlab-Event": []string{"Job Hook"},
+			},
+		},
+		{
+			name:     "JobEvent",
+			events:   []Event{JobEvents, BuildEvents},
+			typ:      BuildEventPayload{},
+			filename: "../testdata/gitlab/build-event.json",
 			headers: http.Header{
 				"X-Gitlab-Event": []string{"Job Hook"},
 			},
@@ -256,7 +308,7 @@ func TestWebhooks(t *testing.T) {
 			var parseError error
 			var results interface{}
 			server := newServer(func(w http.ResponseWriter, r *http.Request) {
-				results, parseError = hook.Parse(r, tc.event)
+				results, parseError = hook.Parse(r, tc.events...)
 			})
 			defer server.Close()
 			req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
