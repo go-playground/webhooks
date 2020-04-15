@@ -86,6 +86,7 @@ type TagEventPayload struct {
 	CheckoutSHA       string     `json:"checkout_sha"`
 	UserID            int64      `json:"user_id"`
 	UserName          string     `json:"user_name"`
+	UserUsername      string     `json:"user_username"`
 	UserAvatar        string     `json:"user_avatar"`
 	ProjectID         int64      `json:"project_id"`
 	Project           Project    `json:"Project"`
