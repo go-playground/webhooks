@@ -3544,16 +3544,6 @@ type PublicPayload struct {
 	} `json:"sender"`
 }
 
-// PullRequestChanges contains the information for GitHub's pull_request hook event
-type PullRequestChanges struct {
-	Title *struct {
-		From string `json:"from"`
-	} `json:"title"`
-	Body *struct {
-		From string `json:"from"`
-	} `json:"body"`
-}
-
 // PullRequestPayload contains the information for GitHub's pull_request hook event
 type PullRequestPayload struct {
 	Action      string `json:"action"`
@@ -4016,9 +4006,16 @@ type PullRequestPayload struct {
 		Type              string `json:"type"`
 		SiteAdmin         bool   `json:"site_admin"`
 	} `json:"sender"`
-	Changes           *PullRequestChanges `json:"changes"`
-	Assignee          *Assignee           `json:"assignee"`
-	RequestedReviewer *Assignee           `json:"requested_reviewer"`
+	Changes *struct {
+		Title *struct {
+			From string `json:"from"`
+		} `json:"title"`
+		Body *struct {
+			From string `json:"from"`
+		} `json:"body"`
+	} `json:"changes"`
+	Assignee          *Assignee `json:"assignee"`
+	RequestedReviewer *Assignee `json:"requested_reviewer"`
 	RequestedTeam     struct {
 		Name            string `json:"name"`
 		ID              int64  `json:"id"`
