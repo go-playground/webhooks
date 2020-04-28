@@ -3544,6 +3544,7 @@ type PublicPayload struct {
 	} `json:"sender"`
 }
 
+// PullRequestChanges contains the information for GitHub's pull_request hook event
 type PullRequestChanges struct {
 	Title *struct {
 		From string `json:"from"`
