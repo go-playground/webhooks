@@ -4006,6 +4006,14 @@ type PullRequestPayload struct {
 		Type              string `json:"type"`
 		SiteAdmin         bool   `json:"site_admin"`
 	} `json:"sender"`
+	Changes *struct {
+		Title *struct {
+			From string `json:"from"`
+		} `json:"title"`
+		Body *struct {
+			From string `json:"from"`
+		} `json:"body"`
+	} `json:"changes"`
 	Assignee          *Assignee `json:"assignee"`
 	RequestedReviewer *Assignee `json:"requested_reviewer"`
 	RequestedTeam     struct {
