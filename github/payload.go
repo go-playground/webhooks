@@ -2254,16 +2254,7 @@ type MembershipPayload struct {
 		Type              string `json:"type"`
 		SiteAdmin         bool   `json:"site_admin"`
 	} `json:"sender"`
-	Team struct {
-		Name            string `json:"name"`
-		ID              int64  `json:"id"`
-		NodeID          string `json:"node_id"`
-		Slug            string `json:"slug"`
-		Permission      string `json:"permission"`
-		URL             string `json:"url"`
-		MembersURL      string `json:"members_url"`
-		RepositoriesURL string `json:"repositories_url"`
-	} `json:"team"`
+	Team         *Team `json:"team"`
 	Organization struct {
 		Login            string `json:"login"`
 		ID               int64  `json:"id"`
@@ -5729,17 +5720,7 @@ type TeamPayload struct {
 
 // TeamAddPayload contains the information for GitHub's team_add hook event
 type TeamAddPayload struct {
-	Team struct {
-		Name            string `json:"name"`
-		ID              int64  `json:"id"`
-		NodeID          string `json:"node_id"`
-		Slug            string `json:"slug"`
-		Description     string `json:"description"`
-		Permission      string `json:"permission"`
-		URL             string `json:"url"`
-		MembersURL      string `json:"members_url"`
-		RepositoriesURL string `json:"repositories_url"`
-	} `json:"team"`
+	Team       *Team `json:"team"`
 	Repository struct {
 		ID       int64  `json:"id"`
 		NodeID   string `json:"node_id"`
@@ -6110,4 +6091,17 @@ type Label struct {
 	Name    string `json:"name"`
 	Color   string `json:"color"`
 	Default bool   `json:"default"`
+}
+
+// Team contains GitHub's Team information
+type Team struct {
+	Name            string `json:"name"`
+	ID              int64  `json:"id"`
+	NodeID          string `json:"node_id"`
+	Slug            string `json:"slug"`
+	Permission      string `json:"permission"`
+	URL             string `json:"url"`
+	MembersURL      string `json:"members_url"`
+	RepositoriesURL string `json:"repositories_url"`
+	Parent          *Team  `json:"parent,omitempty"`
 }
