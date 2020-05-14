@@ -5669,19 +5669,8 @@ type StatusPayload struct {
 
 // TeamPayload contains the information for GitHub's team hook event
 type TeamPayload struct {
-	Action string `json:"action"`
-	Team   struct {
-		Name            string `json:"name"`
-		ID              int64  `json:"id"`
-		NodeID          string `json:"node_id"`
-		Slug            string `json:"slug"`
-		Description     string `json:"description"`
-		Privacy         string `json:"privacy"`
-		URL             string `json:"url"`
-		MembersURL      string `json:"members_url"`
-		RepositoriesURL string `json:"repositories_url"`
-		Permission      string `json:"permission"`
-	} `json:"team"`
+	Action       string `json:"action"`
+	Team         *Team  `json:"team"`
 	Organization struct {
 		Login            string `json:"login"`
 		ID               int64  `json:"id"`
