@@ -66,6 +66,14 @@ type PullRequestOpenedPayload struct {
 	PullRequest PullRequest `json:"pullRequest"`
 }
 
+type PullRequestFromReferenceUpdatedPayload struct {
+	Date             Date        `json:"date"`
+	EventKey         Event       `json:"eventKey"`
+	Actor            User        `json:"actor"`
+	PullRequest      PullRequest `json:"pullRequest"`
+	PreviousFromHash string      `json:"previousFromHash"`
+}
+
 type PullRequestModifiedPayload struct {
 	Date                Date                   `json:"date"`
 	EventKey            Event                  `json:"eventKey"`
