@@ -45,6 +45,7 @@
     "slug": "contractors",
     "permission": "admin",
     "url": "https://api.github.com/teams/123456",
+    "html_url": "https://github.com/orgs/baxterandthehackers/teams/contractors",
     "members_url": "https://api.github.com/teams/123456/members{/member}",
     "repositories_url": "https://api.github.com/teams/123456/repos"
   },
