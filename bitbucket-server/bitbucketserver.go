@@ -32,11 +32,12 @@ const (
 	RepositoryCommentEditedEvent    Event = "repo:comment:edited"
 	RepositoryCommentDeletedEvent   Event = "repo:comment:deleted"
 
-	PullRequestOpenedEvent   Event = "pr:opened"
-	PullRequestModifiedEvent Event = "pr:modified"
-	PullRequestMergedEvent   Event = "pr:merged"
-	PullRequestDeclinedEvent Event = "pr:declined"
-	PullRequestDeletedEvent  Event = "pr:deleted"
+	PullRequestOpenedEvent               Event = "pr:opened"
+	PullRequestFromReferenceUpdatedEvent Event = "pr:from_ref_updated"
+	PullRequestModifiedEvent             Event = "pr:modified"
+	PullRequestMergedEvent               Event = "pr:merged"
+	PullRequestDeclinedEvent             Event = "pr:declined"
+	PullRequestDeletedEvent              Event = "pr:deleted"
 
 	PullRequestReviewerUpdatedEvent    Event = "pr:reviewer:updated"
 	PullRequestReviewerApprovedEvent   Event = "pr:reviewer:approved"
@@ -166,6 +167,10 @@ func (hook *Webhook) Parse(r *http.Request, events ...Event) (interface{}, error
 		return pl, err
 	case PullRequestOpenedEvent:
 		var pl PullRequestOpenedPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
+	case PullRequestFromReferenceUpdatedEvent:
+		var pl PullRequestFromReferenceUpdatedPayload
 		err = json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 	case PullRequestModifiedEvent:
