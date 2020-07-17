@@ -176,6 +176,7 @@ type JobEventPayload struct {
 // SystemHookPayload contains the ObjectKind to match with real hook events
 type SystemHookPayload struct {
 	ObjectKind string `json:"object_kind"`
+	EventName  string `json:"event_name"`
 }
 
 // Issue contains all of the GitLab issue information

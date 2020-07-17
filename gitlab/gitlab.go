@@ -191,7 +191,16 @@ func eventParsing(gitLabEvent Event, events []Event, payload []byte) (interface{
 		case objectMergeRequest:
 			return eventParsing(MergeRequestEvents, events, payload)
 		default:
-			return nil, fmt.Errorf("unknown system hook event %s", gitLabEvent)
+			switch pl.EventName {
+			case objectPush:
+				return eventParsing(PushEvents, events, payload)
+			case objectTag:
+				return eventParsing(TagEvents, events, payload)
+			case objectMergeRequest:
+				return eventParsing(MergeRequestEvents, events, payload)
+			default:
+				return nil, fmt.Errorf("unknown system hook event %s", gitLabEvent)
+			}
 		}
 	default:
 		return nil, fmt.Errorf("unknown event %s", gitLabEvent)

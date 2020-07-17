@@ -286,19 +286,19 @@ func TestSystemHooks(t *testing.T) {
 			name:     "PushEvent",
 			event:    PushEvents,
 			typ:      PushEventPayload{},
-			filename: "../testdata/gitlab/push-event.json",
+			filename: "../testdata/gitlab/system-push-event.json",
 		},
 		{
 			name:     "TagEvent",
 			event:    TagEvents,
 			typ:      TagEventPayload{},
-			filename: "../testdata/gitlab/tag-event.json",
+			filename: "../testdata/gitlab/system-tag-event.json",
 		},
 		{
 			name:     "MergeRequestEvent",
 			event:    MergeRequestEvents,
 			typ:      MergeRequestEventPayload{},
-			filename: "../testdata/gitlab/merge-request-event.json",
+			filename: "../testdata/gitlab/system-merge-request-event.json",
 		},
 	}
 	for _, tt := range tests {
