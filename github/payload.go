@@ -1662,6 +1662,11 @@ type IssueCommentPayload struct {
 		Body              string    `json:"body"`
 		AuthorAssociation string    `json:"author_association"`
 	} `json:"comment"`
+	Changes *struct {
+		Body *struct {
+			From string `json:"from"`
+		} `json:"body"`
+	} `json:"changes"`
 	Repository struct {
 		ID       int64  `json:"id"`
 		NodeID   string `json:"node_id"`
@@ -1826,6 +1831,14 @@ type IssuesPayload struct {
 		ClosedAt  *time.Time  `json:"closed_at"`
 		Body      string      `json:"body"`
 	} `json:"issue"`
+	Changes *struct {
+		Title *struct {
+			From string `json:"from"`
+		} `json:"title"`
+		Body *struct {
+			From string `json:"from"`
+		} `json:"body"`
+	} `json:"changes"`
 	Repository struct {
 		ID       int64  `json:"id"`
 		NodeID   string `json:"node_id"`
