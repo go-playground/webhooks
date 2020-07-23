@@ -1,16 +1,16 @@
 language: go
 go:
-    - 1.12.1
-    - tip
+  - 1.12.1
+  - tip
 matrix:
   allow_failures:
     - go: tip
 
 notifications:
-    email:
-        recipients: dean.karn@gmail.com
-        on_success: change
-        on_failure: always
+  email:
+    recipients: dean.karn@gmail.com
+    on_success: change
+    on_failure: always
 
 before_install:
   - go get -u github.com/go-playground/overalls
@@ -26,7 +26,7 @@ before_script:
   - go get -t ./...
 
 script:
- - make test
+  - make test
 
 after_success: |
   [ $TRAVIS_GO_VERSION = 1.11.2 ] &&
