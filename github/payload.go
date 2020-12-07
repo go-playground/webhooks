@@ -3590,6 +3590,7 @@ type PullRequestPayload struct {
 		Assignees          []*Assignee `json:"assignees"`
 		Milestone          *Milestone  `json:"milestone"`
 		CommitsURL         string      `json:"commits_url"`
+		Draft         	   bool        `json:"draft"`
 		ReviewCommentsURL  string      `json:"review_comments_url"`
 		ReviewCommentURL   string      `json:"review_comment_url"`
 		CommentsURL        string      `json:"comments_url"`

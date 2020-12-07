@@ -1,4 +1,4 @@
-module github.com/faceit/webhook
+module github.com/faceit/webhooks
 
 go 1.15
 
