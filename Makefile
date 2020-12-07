@@ -1,17 +1,26 @@
-GOCMD=go
+VERSION ?= SNAPSHOT
+PACKAGES := $(shell go list ./...)
 
-linters-install:
-	@gometalinter --version >/dev/null 2>&1 || { \
-		echo "installing linting tools..."; \
-		$(GOCMD) get github.com/alecthomas/gometalinter; \
-		gometalinter --install; \
-	}
+default: help
 
-lint: linters-install
-	@gofmt -l . >gofmt.test 2>&1 && if [ -s gofmt.test ]; then echo "Fix formatting using 'gofmt -s -w .' for:"; cat gofmt.test; exit 1; fi && rm gofmt.test
-	gometalinter --vendor --disable-all --enable=vet --enable=vetshadow --enable=golint --enable=megacheck --enable=ineffassign --enable=misspell --enable=errcheck --enable=goconst ./...
-
+.PHONY: test
 test:
-	$(GOCMD) test -cover -race ./...
+	go test -v ./... -coverprofile=cover.out
 
-.PHONY: test lint linters-install
+integration: test
+
+.PHONY: fix-imports
+fix-imports: ## Run goimports locally to fix any issues
+	goimports -w $(shell find . -type f -name '*.go' -not -path "./vendor/*")
+
+.PHONY: check-imports
+check-imports: ## Script to check goimports has been run on the branch
+	hack/verify-goimports.sh
+
+.PHONY: all
+all: test check-imports
+
+.PHONY: help
+help: ## Help
+	@echo "Please use 'make <target>' where <target> is ..."
+	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
