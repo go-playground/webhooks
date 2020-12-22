@@ -112,7 +112,8 @@ type PipelineEventPayload struct {
 	Project          Project                  `json:"project"`
 	Commit           Commit                   `json:"commit"`
 	ObjectAttributes PipelineObjectAttributes `json:"object_attributes"`
-	Jobs             []Job                    `json:"jobs"`
+	MergeRequest     MergeRequest             `json:"merge_request"`
+	Builds           []Build                  `json:"builds"`
 }
 
 // CommentEventPayload contains the information for GitLab's comment event
@@ -153,25 +154,27 @@ type BuildEventPayload struct {
 
 // JobEventPayload contains the information for GitLab's Job status change
 type JobEventPayload struct {
-	ObjectKind       string      `json:"object_kind"`
-	Ref              string      `json:"ref"`
-	Tag              bool        `json:"tag"`
-	BeforeSHA        string      `json:"before_sha"`
-	SHA              string      `json:"sha"`
-	JobID            int64       `json:"Job_id"`
-	JobName          string      `json:"Job_name"`
-	JobStage         string      `json:"Job_stage"`
-	JobStatus        string      `json:"Job_status"`
-	JobStartedAt     customTime  `json:"Job_started_at"`
-	JobFinishedAt    customTime  `json:"Job_finished_at"`
-	JobDuration      int64       `json:"Job_duration"`
-	Job              bool        `json:"Job"`
-	JobFailureReason string      `json:"job_failure_reason"`
-	ProjectID        int64       `json:"project_id"`
-	ProjectName      string      `json:"project_name"`
-	User             User        `json:"user"`
-	Commit           BuildCommit `json:"commit"`
-	Repository       Repository  `json:"repository"`
+	ObjectKind         string      `json:"object_kind"`
+	Ref                string      `json:"ref"`
+	Tag                bool        `json:"tag"`
+	BeforeSHA          string      `json:"before_sha"`
+	SHA                string      `json:"sha"`
+	BuildID            int64       `json:"build_id"`
+	BuildName          string      `json:"build_name"`
+	BuildStage         string      `json:"build_stage"`
+	BuildStatus        string      `json:"build_status"`
+	BuildStartedAt     customTime  `json:"build_started_at"`
+	BuildFinishedAt    customTime  `json:"build_finished_at"`
+	BuildDuration      int64       `json:"build_duration"`
+	BuildAllowFailure  bool        `json:"build_allow_failure"`
+	BuildFailureReason string      `json:"build_failure_reason"`
+	PipelineID         int64       `json:"pipeline_id"`
+	ProjectID          int64       `json:"project_id"`
+	ProjectName        string      `json:"project_name"`
+	User               User        `json:"user"`
+	Commit             BuildCommit `json:"commit"`
+	Repository         Repository  `json:"repository"`
+	Runner             Runner      `json:"runner"`
 }
 
 // SystemHookPayload contains the ObjectKind to match with real hook events
@@ -197,8 +200,8 @@ type Issue struct {
 	IID         int64      `json:"iid"`
 }
 
-// Job contains all of the GitLab job information
-type Job struct {
+// Build contains all of the GitLab Build information
+type Build struct {
 	ID            int64         `json:"id"`
 	Stage         string        `json:"stage"`
 	Name          string        `json:"name"`
@@ -240,6 +243,7 @@ type Wiki struct {
 type Commit struct {
 	ID        string     `json:"id"`
 	Message   string     `json:"message"`
+	Title     string     `json:"title"`
 	Timestamp customTime `json:"timestamp"`
 	URL       string     `json:"url"`
 	Author    Author     `json:"author"`
@@ -304,28 +308,40 @@ type Project struct {
 
 // Repository contains all of the GitLab repository information
 type Repository struct {
-	Name        string `json:"name"`
-	URL         string `json:"url"`
-	Description string `json:"description"`
-	Homepage    string `json:"homepage"`
+	Name            string `json:"name"`
+	URL             string `json:"url"`
+	Description     string `json:"description"`
+	Homepage        string `json:"homepage"`
+	GitSSHURL       string `json:"git_ssh_url"`
+	GitHTTPURL      string `json:"git_http_url"`
+	VisibilityLevel int64  `json:"visibility_level"`
 }
 
 // ObjectAttributes contains all of the GitLab object attributes information
 type ObjectAttributes struct {
 	ID               int64      `json:"id"`
 	Title            string     `json:"title"`
+	AssigneeIDS      []int64    `json:"assignee_ids"`
 	AssigneeID       int64      `json:"assignee_id"`
 	AuthorID         int64      `json:"author_id"`
 	ProjectID        int64      `json:"project_id"`
 	CreatedAt        customTime `json:"created_at"`
 	UpdatedAt        customTime `json:"updated_at"`
-	ChangePosition   Position   `json:"change_position"`
-	OriginalPosition Position   `json:"original_position"`
+	UpdatedByID      int64      `json:"updated_by_id"`
+	LastEditedAt     customTime `json:"last_edited_at"`
+	LastEditedByID   int64      `json:"last_edited_by_id"`
+	RelativePosition int64      `json:"relative_position"`
 	Position         Position   `json:"position"`
 	BranchName       string     `json:"branch_name"`
 	Description      string     `json:"description"`
 	MilestoneID      int64      `json:"milestone_id"`
 	State            string     `json:"state"`
+	StateID          int64      `json:"state_id"`
+	Confidential     bool       `json:"confidential"`
+	DiscussionLocked bool       `json:"discussion_locked"`
+	DueDate          customTime `json:"due_date"`
+	TimeEstimate     int64      `json:"time_estimate"`
+	TotalTimeSpent   int64      `json:"total_time_spent"`
 	IID              int64      `json:"iid"`
 	URL              string     `json:"url"`
 	Action           string     `json:"action"`
@@ -374,6 +390,13 @@ type PipelineObjectAttributes struct {
 	CreatedAt  customTime `json:"created_at"`
 	FinishedAt customTime `json:"finished_at"`
 	Duration   int64      `json:"duration"`
+	Variables  []Variable `json:"variables"`
+}
+
+// Variable contains pipeline variables
+type Variable struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
 }
 
 // Position defines a specific location, identified by paths line numbers and
@@ -421,6 +444,7 @@ type MergeRequest struct {
 	LastCommit      LastCommit `json:"last_commit"`
 	WorkInProgress  bool       `json:"work_in_progress"`
 	Assignee        Assignee   `json:"assignee"`
+	URL             string     `json:"url"`
 }
 
 // Assignee contains all of the GitLab assignee information
