@@ -2999,13 +2999,14 @@ type PingPayload struct {
 type ProjectCardPayload struct {
 	Action      string `json:"action"`
 	ProjectCard struct {
-		URL       string  `json:"url"`
-		ColumnURL string  `json:"column_url"`
-		ColumnID  int64   `json:"column_id"`
-		ID        int64   `json:"id"`
-		NodeID    string  `json:"node_id"`
-		Note      *string `json:"note"`
-		Creator   struct {
+		URL        string  `json:"url"`
+		ProjectURL string  `json:"project_url"`
+		ColumnURL  string  `json:"column_url"`
+		ColumnID   int64   `json:"column_id"`
+		ID         int64   `json:"id"`
+		NodeID     string  `json:"node_id"`
+		Note       *string `json:"note"`
+		Creator    struct {
 			Login             string `json:"login"`
 			ID                int64  `json:"id"`
 			NodeID            string `json:"node_id"`
@@ -3602,6 +3603,7 @@ type PullRequestPayload struct {
 		Assignee           *Assignee   `json:"assignee"`
 		Assignees          []*Assignee `json:"assignees"`
 		Milestone          *Milestone  `json:"milestone"`
+		Draft              bool        `json:"draft"`
 		CommitsURL         string      `json:"commits_url"`
 		ReviewCommentsURL  string      `json:"review_comments_url"`
 		ReviewCommentURL   string      `json:"review_comment_url"`

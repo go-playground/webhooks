@@ -380,7 +380,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/project-card.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"project_card"},
-				"X-Hub-Signature": []string{"sha1=495dec0d6449d16b71f2ddcd37d595cb9b04b1d8"},
+				"X-Hub-Signature": []string{"sha1=f5ed1572b04f0e03c8d5f5e3f7fa63737bef76d7"},
 			},
 		},
 		{
@@ -420,7 +420,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/pull-request.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"pull_request"},
-				"X-Hub-Signature": []string{"sha1=35712c8d2bc197b7d07621dcf20d2fb44620508f"},
+				"X-Hub-Signature": []string{"sha1=88972f972db301178aa13dafaf112d26416a15e6"},
 			},
 		},
 		{

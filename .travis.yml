@@ -1,6 +1,6 @@
 language: go
 go:
-  - 1.12.1
+  - 1.13.15
   - tip
 matrix:
   allow_failures:
@@ -29,6 +29,6 @@ script:
   - make test
 
 after_success: |
-  [ $TRAVIS_GO_VERSION = 1.11.2 ] &&
+  [ $TRAVIS_GO_VERSION = 1.13.15 ] &&
   overalls -project="github.com/go-playground/webhooks" -covermode=count -ignore=.git,_examples,testdata -debug &&
   goveralls -coverprofile=overalls.coverprofile -service travis-ci -repotoken $COVERALLS_TOKEN
