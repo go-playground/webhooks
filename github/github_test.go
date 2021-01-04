@@ -420,7 +420,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/pull-request.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"pull_request"},
-				"X-Hub-Signature": []string{"sha1=35712c8d2bc197b7d07621dcf20d2fb44620508f"},
+				"X-Hub-Signature": []string{"sha1=88972f972db301178aa13dafaf112d26416a15e6"},
 			},
 		},
 		{
