@@ -380,7 +380,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/project-card.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"project_card"},
-				"X-Hub-Signature": []string{"sha1=495dec0d6449d16b71f2ddcd37d595cb9b04b1d8"},
+				"X-Hub-Signature": []string{"sha1=f5ed1572b04f0e03c8d5f5e3f7fa63737bef76d7"},
 			},
 		},
 		{
