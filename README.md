@@ -83,7 +83,7 @@ func main() {
 Contributing
 ------
 
-Pull requests for other services are welcome!
+Pull request for other services are most welcomed Come and join us !!
 
 If the changes being proposed or requested are breaking changes, please create an issue for discussion.
 
