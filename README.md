@@ -1,10 +1,10 @@
 Library webhooks
 ================
-<img align="right" src="https://raw.githubusercontent.com/go-playground/webhooks/v5/logo.png">![Project status](https://img.shields.io/badge/version-5.17.0-green.svg)
+<img align="right" src="https://raw.githubusercontent.com/go-playground/webhooks/v5/logo.png">![Project status](https://img.shields.io/badge/version-6.0.0-green.svg)
 [![Build Status](https://travis-ci.org/go-playground/webhooks.svg?branch=v5)](https://travis-ci.org/go-playground/webhooks)
 [![Coverage Status](https://coveralls.io/repos/go-playground/webhooks/badge.svg?branch=v5&service=github)](https://coveralls.io/github/go-playground/webhooks?branch=v5)
 [![Go Report Card](https://goreportcard.com/badge/go-playground/webhooks)](https://goreportcard.com/report/go-playground/webhooks)
-[![GoDoc](https://godoc.org/gopkg.in/go-playground/webhooks.v5?status.svg)](https://godoc.org/gopkg.in/go-playground/webhooks.v5)
+[![GoDoc](https://godoc.org/gopkg.in/go-playground/webhooks.v6?status.svg)](https://godoc.org/gopkg.in/go-playground/webhooks.v6)
 ![License](https://img.shields.io/dub/l/vibe-d.svg)
 
 Library webhooks allows for easy receiving and parsing of GitHub, Bitbucket and GitLab Webhook Events
@@ -24,17 +24,17 @@ Installation
 Use go get.
 
 ```shell
-go get -u gopkg.in/go-playground/webhooks.v5
+go get -u gopkg.in/go-playground/webhooks.v6
 ```
 
 Then import the package into your own code.
 
-	import "gopkg.in/go-playground/webhooks.v5"
+	import "gopkg.in/go-playground/webhooks.v6"
 
 Usage and Documentation
 ------
 
-Please see http://godoc.org/gopkg.in/go-playground/webhooks.v5 for detailed usage docs.
+Please see http://godoc.org/gopkg.in/go-playground/webhooks.v6 for detailed usage docs.
 
 ##### Examples:
 ```go
@@ -45,7 +45,7 @@ import (
 
 	"net/http"
 
-	"gopkg.in/go-playground/webhooks.v5/github"
+	"gopkg.in/go-playground/webhooks.v6/github"
 )
 
 const (

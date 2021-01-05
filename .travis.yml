@@ -1,6 +1,6 @@
 language: go
 go:
-  - 1.13.15
+  - 1.15.6
   - tip
 matrix:
   allow_failures:
@@ -21,6 +21,7 @@ before_install:
   - ln -s $GOPATH/src/github.com/$TRAVIS_REPO_SLUG $GOPATH/src/gopkg.in/webhooks.v3
   - ln -s $GOPATH/src/github.com/$TRAVIS_REPO_SLUG $GOPATH/src/gopkg.in/webhooks.v4
   - ln -s $GOPATH/src/github.com/$TRAVIS_REPO_SLUG $GOPATH/src/gopkg.in/webhooks.v5
+  - ln -s $GOPATH/src/github.com/$TRAVIS_REPO_SLUG $GOPATH/src/gopkg.in/webhooks.v6
 
 before_script:
   - go get -t ./...
@@ -29,6 +30,6 @@ script:
   - make test
 
 after_success: |
-  [ $TRAVIS_GO_VERSION = 1.13.15 ] &&
+  [ $TRAVIS_GO_VERSION = 1.15.6 ] &&
   overalls -project="github.com/go-playground/webhooks" -covermode=count -ignore=.git,_examples,testdata -debug &&
   goveralls -coverprofile=overalls.coverprofile -service travis-ci -repotoken $COVERALLS_TOKEN
