@@ -1,8 +1,8 @@
 Library webhooks
 ================
-<img align="right" src="https://raw.githubusercontent.com/go-playground/webhooks/v5/logo.png">![Project status](https://img.shields.io/badge/version-6.0.0-green.svg)
-[![Build Status](https://travis-ci.org/go-playground/webhooks.svg?branch=v5)](https://travis-ci.org/go-playground/webhooks)
-[![Coverage Status](https://coveralls.io/repos/go-playground/webhooks/badge.svg?branch=v5&service=github)](https://coveralls.io/github/go-playground/webhooks?branch=v5)
+<img align="right" src="https://raw.githubusercontent.com/go-playground/webhooks/v6/logo.png">![Project status](https://img.shields.io/badge/version-6.0.0-green.svg)
+[![Build Status](https://travis-ci.org/go-playground/webhooks.svg?branch=v6)](https://travis-ci.org/go-playground/webhooks)
+[![Coverage Status](https://coveralls.io/repos/go-playground/webhooks/badge.svg?branch=v6&service=github)](https://coveralls.io/github/go-playground/webhooks?branch=v6)
 [![Go Report Card](https://goreportcard.com/badge/go-playground/webhooks)](https://goreportcard.com/report/go-playground/webhooks)
 [![GoDoc](https://godoc.org/gopkg.in/go-playground/webhooks.v6?status.svg)](https://godoc.org/gopkg.in/go-playground/webhooks.v6)
 ![License](https://img.shields.io/dub/l/vibe-d.svg)
