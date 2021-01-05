@@ -359,6 +359,7 @@ type ObjectAttributes struct {
 	Target           Target     `json:"target"`
 	LastCommit       LastCommit `json:"last_commit"`
 	Assignee         Assignee   `json:"assignee"`
+	HeadPipelineID	 int64	    `json:"head_pipeline_id"`
 }
 
 // PipelineObjectAttributes contains pipeline specific GitLab object attributes information
@@ -421,6 +422,7 @@ type MergeRequest struct {
 	LastCommit      LastCommit `json:"last_commit"`
 	WorkInProgress  bool       `json:"work_in_progress"`
 	Assignee        Assignee   `json:"assignee"`
+	HeadPipelineID	int64	   `json:"head_pipeline_id"`
 }
 
 // Assignee contains all of the GitLab assignee information
