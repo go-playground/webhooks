@@ -294,7 +294,7 @@ type Project struct {
 	Description       string `json:"description"`
 	WebURL            string `json:"web_url"`
 	AvatarURL         string `json:"avatar_url"`
-	GitSSSHURL        string `json:"git_ssh_url"`
+	GitSSHURL         string `json:"git_ssh_url"`
 	GitHTTPURL        string `json:"git_http_url"`
 	Namespace         string `json:"namespace"`
 	VisibilityLevel   int64  `json:"visibility_level"`
