@@ -13,9 +13,7 @@ notifications:
     on_failure: always
 
 before_install:
-  - go get -u github.com/go-playground/overalls
   - go get -u github.com/mattn/goveralls
-  - go get -u golang.org/x/tools/cmd/cover
 
 before_script:
   - go mod download
@@ -26,5 +24,5 @@ script:
 
 after_success: |
   [ $TRAVIS_GO_VERSION = 1.15.6 ] &&
-  overalls -project="github.com/go-playground/webhooks" -covermode=count -ignore=.git,_examples,testdata -debug &&
-  goveralls -coverprofile=overalls.coverprofile -service travis-ci -repotoken $COVERALLS_TOKEN
+  go test ./... -covermode=count -coverprofile=coverage.out &&
+  goveralls -coverprofile=coverage.out -service travis-ci -repotoken $COVERALLS_TOKEN
