@@ -13,7 +13,7 @@ type CheckRunPayload struct {
 		Status      string    `json:"status"`
 		Conclusion  string    `json:"conclusion"`
 		URL         string    `json:"url"`
-		HtmlURL     string    `json:"html_url"`
+		HTMLURL     string    `json:"html_url"`
 		StarterAt   time.Time `json:"started_at"`
 		CompletedAt time.Time `json:"completed_at"`
 		Output      struct {
@@ -59,7 +59,7 @@ type CheckRunPayload struct {
 				Name        string `json:"name"`
 				Description string `json:"description"`
 				ExternalURL string `json:"external_url"`
-				HtmlURL     string `json:"html_url"`
+				HTMLURL     string `json:"html_url"`
 				CreatedAt   string `json:"created_at"`
 				UpdatedAt   string `json:"updated_at"`
 			} `json:"app"`
@@ -92,7 +92,7 @@ type CheckRunPayload struct {
 			Name        string `json:"name"`
 			Description string `json:"description"`
 			ExternalURL string `json:"external_url"`
-			HtmlURL     string `json:"html_url"`
+			HTMLURL     string `json:"html_url"`
 			CreatedAt   string `json:"created_at"`
 			UpdatedAt   string `json:"updated_at"`
 		} `json:"app"`
@@ -249,7 +249,7 @@ type CheckSuitePayload struct {
 			Name        string `json:"name"`
 			Description string `json:"description"`
 			ExternalURL string `json:"external_url"`
-			HtmlURL     string `json:"html_url"`
+			HTMLURL     string `json:"html_url"`
 			CreatedAt   string `json:"created_at"`
 			UpdatedAt   string `json:"updated_at"`
 		} `json:"app"`

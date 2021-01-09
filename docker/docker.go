@@ -1,6 +1,6 @@
 package docker
 
-// this package recieves the Docker Hub Automated Build webhook
+// this package receives the Docker Hub Automated Build webhook
 // https://docs.docker.com/docker-hub/webhooks/
 // NOT the Docker Trusted Registry webhook
 // https://docs.docker.com/ee/dtr/user/create-and-manage-webhooks/
@@ -58,7 +58,6 @@ type BuildPayload struct {
 
 // Webhook instance contains all methods needed to process events
 type Webhook struct {
-	secret string
 }
 
 // New creates and returns a WebHook instance

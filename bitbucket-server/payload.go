@@ -147,7 +147,7 @@ type PullRequestCommentAddedPayload struct {
 	Actor           User        `json:"actor"`
 	PullRequest     PullRequest `json:"pullRequest"`
 	Comment         Comment     `json:"comment"`
-	CommentParentId uint64      `json:"commentParentId,omitempty"`
+	CommentParentID uint64      `json:"commentParentId,omitempty"`
 }
 
 type PullRequestCommentEditedPayload struct {
@@ -156,7 +156,7 @@ type PullRequestCommentEditedPayload struct {
 	Actor           User        `json:"actor"`
 	PullRequest     PullRequest `json:"pullRequest"`
 	Comment         Comment     `json:"comment"`
-	CommentParentId string      `json:"commentParentId,omitempty"`
+	CommentParentID string      `json:"commentParentId,omitempty"`
 	PreviousComment string      `json:"previousComment"`
 }
 
@@ -166,7 +166,7 @@ type PullRequestCommentDeletedPayload struct {
 	Actor           User        `json:"actor"`
 	PullRequest     PullRequest `json:"pullRequest"`
 	Comment         Comment     `json:"comment"`
-	CommentParentId uint64      `json:"commentParentId,omitempty"`
+	CommentParentID uint64      `json:"commentParentId,omitempty"`
 }
 
 // -----------------------
@@ -186,7 +186,7 @@ type Repository struct {
 	ID            uint64                 `json:"id"`
 	Slug          string                 `json:"slug"`
 	Name          string                 `json:"name"`
-	ScmId         string                 `json:"scmId"`
+	ScmID         string                 `json:"scmId"`
 	State         string                 `json:"state"`
 	StatusMessage string                 `json:"statusMessage"`
 	Forkable      bool                   `json:"forkable"`
@@ -229,7 +229,7 @@ type PullRequest struct {
 
 type RepositoryChange struct {
 	Reference   RepositoryReference `json:"ref"`
-	ReferenceId string              `json:"refId"`
+	ReferenceID string              `json:"refId"`
 	FromHash    string              `json:"fromHash"`
 	ToHash      string              `json:"toHash"`
 	Type        string              `json:"type"`
@@ -237,7 +237,7 @@ type RepositoryChange struct {
 
 type RepositoryReference struct {
 	ID           string     `json:"id"`
-	DisplayId    string     `json:"displayId"`
+	DisplayID    string     `json:"displayId"`
 	Type         string     `json:"type,omitempty"`
 	LatestCommit string     `json:"latestCommit,omitempty"`
 	Repository   Repository `json:"repository,omitempty"`
