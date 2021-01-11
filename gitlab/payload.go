@@ -143,7 +143,7 @@ type BuildEventPayload struct {
 	BuildStatus       string      `json:"build_status"`
 	BuildStartedAt    customTime  `json:"build_started_at"`
 	BuildFinishedAt   customTime  `json:"build_finished_at"`
-	BuildDuration     int64       `json:"build_duration"`
+	BuildDuration     float64     `json:"build_duration"`
 	BuildAllowFailure bool        `json:"build_allow_failure"`
 	ProjectID         int64       `json:"project_id"`
 	ProjectName       string      `json:"project_name"`
@@ -165,7 +165,7 @@ type JobEventPayload struct {
 	BuildStatus        string      `json:"build_status"`
 	BuildStartedAt     customTime  `json:"build_started_at"`
 	BuildFinishedAt    customTime  `json:"build_finished_at"`
-	BuildDuration      int64       `json:"build_duration"`
+	BuildDuration      float64     `json:"build_duration"`
 	BuildAllowFailure  bool        `json:"build_allow_failure"`
 	BuildFailureReason string      `json:"build_failure_reason"`
 	PipelineID         int64       `json:"pipeline_id"`
@@ -260,7 +260,7 @@ type BuildCommit struct {
 	AuthorName  string     `json:"auuthor_name"`
 	AuthorEmail string     `json:"author_email"`
 	Status      string     `json:"status"`
-	Duration    int64      `json:"duration"`
+	Duration    float64    `json:"duration"`
 	StartedAt   customTime `json:"started_at"`
 	FinishedAt  customTime `json:"finished_at"`
 }
