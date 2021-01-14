@@ -1,17 +1,17 @@
-GOCMD=go
+GOPATH=$(shell go env GOPATH)
 
 linters-install:
-	@gometalinter --version >/dev/null 2>&1 || { \
-		echo "installing linting tools..."; \
-		$(GOCMD) get github.com/alecthomas/gometalinter; \
-		gometalinter --install; \
+	@echo "+ $@"
+	@$(GOPATH)/bin/golangci-lint --version >/dev/null 2>&1 || { \
+  		echo "Install golangci-lint..."; \
+		curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GOPATH)/bin; \
 	}
 
 lint: linters-install
-	@gofmt -l . >gofmt.test 2>&1 && if [ -s gofmt.test ]; then echo "Fix formatting using 'gofmt -s -w .' for:"; cat gofmt.test; exit 1; fi && rm gofmt.test
-	gometalinter --vendor --disable-all --enable=vet --enable=vetshadow --enable=golint --enable=megacheck --enable=ineffassign --enable=misspell --enable=errcheck --enable=goconst ./...
+	@echo "+ $@"
+	$(GOPATH)/bin/golangci-lint run ./...
 
 test:
-	$(GOCMD) test -cover -race ./...
+	GO111MODULE=on go test -cover -race ./...
 
 .PHONY: test lint linters-install

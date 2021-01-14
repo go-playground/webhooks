@@ -13,23 +13,16 @@ notifications:
     on_failure: always
 
 before_install:
-  - go get -u github.com/go-playground/overalls
   - go get -u github.com/mattn/goveralls
-  - go get -u golang.org/x/tools/cmd/cover
-  - mkdir -p $GOPATH/src/gopkg.in
-  - ln -s $GOPATH/src/github.com/$TRAVIS_REPO_SLUG $GOPATH/src/gopkg.in/webhooks.v2
-  - ln -s $GOPATH/src/github.com/$TRAVIS_REPO_SLUG $GOPATH/src/gopkg.in/webhooks.v3
-  - ln -s $GOPATH/src/github.com/$TRAVIS_REPO_SLUG $GOPATH/src/gopkg.in/webhooks.v4
-  - ln -s $GOPATH/src/github.com/$TRAVIS_REPO_SLUG $GOPATH/src/gopkg.in/webhooks.v5
-  - ln -s $GOPATH/src/github.com/$TRAVIS_REPO_SLUG $GOPATH/src/gopkg.in/webhooks.v6
 
 before_script:
-  - go get -t ./...
+  - go mod download
 
 script:
+  - make lint
   - make test
 
 after_success: |
   [ $TRAVIS_GO_VERSION = 1.15.6 ] &&
-  overalls -project="github.com/go-playground/webhooks" -covermode=count -ignore=.git,_examples,testdata -debug &&
-  goveralls -coverprofile=overalls.coverprofile -service travis-ci -repotoken $COVERALLS_TOKEN
+  go test ./... -covermode=count -coverprofile=coverage.out &&
+  goveralls -coverprofile=coverage.out -service travis-ci -repotoken $COVERALLS_TOKEN

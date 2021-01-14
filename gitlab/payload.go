@@ -257,7 +257,7 @@ type BuildCommit struct {
 	ID          int64      `json:"id"`
 	SHA         string     `json:"sha"`
 	Message     string     `json:"message"`
-	AuthorName  string     `json:"auuthor_name"`
+	AuthorName  string     `json:"author_name"`
 	AuthorEmail string     `json:"author_email"`
 	Status      string     `json:"status"`
 	Duration    int64      `json:"duration"`
@@ -363,11 +363,11 @@ type ObjectAttributes struct {
 	Stages           []string   `json:"stages"`
 	Duration         int64      `json:"duration"`
 	Note             string     `json:"note"`
-	NotebookType     string     `json:"noteable_type"`
+	NotebookType     string     `json:"noteable_type"` // nolint:misspell
 	At               customTime `json:"attachment"`
 	LineCode         string     `json:"line_code"`
 	CommitID         string     `json:"commit_id"`
-	NoteableID       int64      `json:"noteable_id"`
+	NoteableID       int64      `json:"noteable_id"` // nolint: misspell
 	System           bool       `json:"system"`
 	WorkInProgress   bool       `json:"work_in_progress"`
 	StDiffs          []StDiff   `json:"st_diffs"`
