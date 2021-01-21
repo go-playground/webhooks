@@ -38,6 +38,7 @@ const (
 	objectPush         string = "push"
 	objectTag          string = "tag_push"
 	objectMergeRequest string = "merge_request"
+	objectBuild        string = "build"
 )
 
 // Option is a configuration option for the webhook
@@ -173,9 +174,15 @@ func eventParsing(gitLabEvent Event, events []Event, payload []byte) (interface{
 		err := json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 	case JobEvents:
-		var p1 JobEventPayload
-		err := json.Unmarshal([]byte(payload), &p1)
-		return p1, err
+		var pl JobEventPayload
+		err := json.Unmarshal([]byte(payload), &pl)
+		if err != nil {
+			return nil, err
+		}
+		if pl.ObjectKind == objectBuild {
+			return eventParsing(BuildEvents, events, payload)
+		}
+		return pl, nil
 
 	case SystemHookEvents:
 		var pl SystemHookPayload
