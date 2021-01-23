@@ -276,15 +276,6 @@ func TestJobHooks(t *testing.T) {
 	}{
 		{
 			name:     "JobEvent",
-			events:   []Event{JobEvents},
-			typ:      JobEventPayload{},
-			filename: "../testdata/gitlab/job-event.json",
-			headers: http.Header{
-				"X-Gitlab-Event": []string{"Job Hook"},
-			},
-		},
-		{
-			name:     "JobEvent",
 			events:   []Event{JobEvents, BuildEvents},
 			typ:      BuildEventPayload{},
 			filename: "../testdata/gitlab/build-event.json",

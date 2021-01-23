@@ -1,5 +1,7 @@
 GOPATH=$(shell go env GOPATH)
 
+all: lint test
+
 linters-install:
 	@echo "+ $@"
 	@$(GOPATH)/bin/golangci-lint --version >/dev/null 2>&1 || { \
@@ -12,6 +14,8 @@ lint: linters-install
 	$(GOPATH)/bin/golangci-lint run ./...
 
 test:
-	GO111MODULE=on go test -cover -race ./...
+	@echo "+ $@"
+	GO111MODULE=on go test -covermode=atomic -race ./...
 
 .PHONY: test lint linters-install
+.DEFAULT_GOAL := all
