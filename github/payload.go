@@ -187,6 +187,9 @@ type CheckRunPayload struct {
 		Watchers         int64     `json:"watchers"`
 		DefaultBranch    string    `json:"default_branch"`
 	} `json:"repository"`
+	Installation struct {
+		ID int64 `json:"id"`
+	} `json:"installation,omitempty"`
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
@@ -359,6 +362,9 @@ type CheckSuitePayload struct {
 		Watchers         int64     `json:"watchers"`
 		DefaultBranch    string    `json:"default_branch"`
 	} `json:"repository"`
+	Installation struct {
+		ID int64 `json:"id"`
+	} `json:"installation,omitempty"`
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
