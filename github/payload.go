@@ -1470,6 +1470,7 @@ type InstallationPayload struct {
 		NodeID   string `json:"node_id"`
 		Name     string `json:"name"`
 		FullName string `json:"full_name"`
+		Private  bool   `json:"private"`
 	} `json:"repositories"`
 	Sender struct {
 		Login             string `json:"login"`
