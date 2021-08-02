@@ -33,6 +33,7 @@ const (
 	CommitCommentEvent                       Event = "commit_comment"
 	CreateEvent                              Event = "create"
 	DeleteEvent                              Event = "delete"
+	DeployKeyEvent                           Event = "deploy_key"
 	DeploymentEvent                          Event = "deployment"
 	DeploymentStatusEvent                    Event = "deployment_status"
 	ForkEvent                                Event = "fork"
@@ -182,6 +183,10 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return pl, err
 	case CreateEvent:
 		var pl CreatePayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
+	case DeployKeyEvent:
+		var pl DeployKeyPayload
 		err = json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 	case DeleteEvent:
