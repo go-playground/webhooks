@@ -1,0 +1,267 @@
+{
+  "workspaceId": "05deef59-e151-4847-903a-8890fb540317",
+  "userId": "ab7bf655-bf5e-42bd-a8f6-6b545f1beab7",
+  "factSheet": {
+    "id": "650ec730-251d-4cbc-9a0f-9bca66cbb09e",
+    "name": "Fact Sheet Name",
+    "description": "FactSheet Description Description",
+    "displayName": "Fact Sheet Display Name",
+    "fullName": "Fact Sheet Full Name",
+    "type": "Product",
+    "fields": [],
+    "relations": [
+      {
+        "id": "1ee3fe6f-9174-45c6-9a9c-3040591cd0d8",
+        "displayNameToFS": "Fact Sheet Children 1",
+        "typeFromFS": "Product",
+        "typeToFS": "Product",
+        "permittedReadACL": [],
+        "constrainingRelations": [],
+        "idsOfConstrainingRelations": [],
+        "fields": [],
+        "status": "ACTIVE",
+        "fromId": "650ec730-251d-4cbc-9a0f-9bca66cbb09e",
+        "toId": "53bd4fb2-82db-482b-908f-4ee90138872d",
+        "naFields": [],
+        "type": "relToChild"
+      },
+      {
+        "id": "8a261996-c38b-4e57-8520-d89fb0439fa2",
+        "displayNameToFS": "Fact Sheet Children 2",
+        "typeFromFS": "Product",
+        "typeToFS": "Product",
+        "permittedReadACL": [],
+        "constrainingRelations": [],
+        "idsOfConstrainingRelations": [],
+        "fields": [],
+        "status": "ACTIVE",
+        "fromId": "650ec730-251d-4cbc-9a0f-9bca66cbb09e",
+        "toId": "83c580f8-3ae4-4ae8-b9d3-1c591ff665f8",
+        "naFields": [],
+        "type": "relToChild"
+      },
+      {
+        "id": "fbe3d8ec-1f25-4586-a3eb-0b01814d5eec",
+        "displayNameToFS": "Fact Sheet Children 3",
+        "typeFromFS": "Product",
+        "typeToFS": "Product",
+        "permittedReadACL": [],
+        "constrainingRelations": [],
+        "idsOfConstrainingRelations": [],
+        "fields": [],
+        "status": "ACTIVE",
+        "fromId": "650ec730-251d-4cbc-9a0f-9bca66cbb09e",
+        "toId": "eee955a3-5f7c-4563-9ab7-1ece15c21153",
+        "naFields": [],
+        "type": "relToChild"
+      },
+      {
+        "id": "c4c8fc3a-830a-4c36-935e-d89c7117e867",
+        "displayNameToFS": "Fact Sheet Parent",
+        "typeFromFS": "Product",
+        "typeToFS": "Product",
+        "permittedReadACL": [],
+        "constrainingRelations": [],
+        "idsOfConstrainingRelations": [],
+        "fields": [],
+        "status": "ACTIVE",
+        "fromId": "650ec730-251d-4cbc-9a0f-9bca66cbb09e",
+        "toId": "3e2a6527-ab8e-4fa2-9e17-cf83b833c8a1",
+        "naFields": [],
+        "type": "relToParent"
+      }
+    ],
+    "completion": {
+      "type": "SectionCompletion",
+      "completion": 0.20833333333333334,
+      "percentage": 21,
+      "weightedSum": 0.625,
+      "totalWeight": 3.0,
+      "subCompletions": {
+        "section.demandManagement": {
+          "type": "SectionCompletion",
+          "completion": 0.0,
+          "percentage": 0,
+          "weightedSum": 0.0,
+          "totalWeight": 7.0,
+          "subCompletions": {
+            "subsection.usedProcesses.label": {
+              "type": "ConcreteCompletion",
+              "completion": 0.0,
+              "percentage": 0,
+              "weightedSum": 0.0,
+              "totalWeight": 1.0
+            },
+            "subsection.usedBusinessCapability.label": {
+              "type": "ConcreteCompletion",
+              "completion": 0.0,
+              "percentage": 0,
+              "weightedSum": 0.0,
+              "totalWeight": 1.0
+            },
+            "subsection.usedApplications.label": {
+              "type": "ConcreteCompletion",
+              "completion": 0.0,
+              "percentage": 0,
+              "weightedSum": 0.0,
+              "totalWeight": 1.0
+            },
+            "subsection.usedDataObjects.label": {
+              "type": "ConcreteCompletion",
+              "completion": 0.0,
+              "percentage": 0,
+              "weightedSum": 0.0,
+              "totalWeight": 1.0
+            },
+            "subsection.usedProjects.label": {
+              "type": "ConcreteCompletion",
+              "completion": 0.0,
+              "percentage": 0,
+              "weightedSum": 0.0,
+              "totalWeight": 1.0
+            },
+            "subsection.usedUserGroups.label": {
+              "type": "ConcreteCompletion",
+              "completion": 0.0,
+              "percentage": 0,
+              "weightedSum": 0.0,
+              "totalWeight": 1.0
+            },
+            "subsection.usedITComponent.label": {
+              "type": "ConcreteCompletion",
+              "completion": 0.0,
+              "percentage": 0,
+              "weightedSum": 0.0,
+              "totalWeight": 1.0
+            }
+          }
+        },
+        "section.dependencies": {
+          "type": "SectionCompletion",
+          "completion": 0.5,
+          "percentage": 50,
+          "weightedSum": 2.0,
+          "totalWeight": 4.0,
+          "subCompletions": {
+            "subsection.requiredBy.label": {
+              "type": "ConcreteCompletion",
+              "completion": 0.0,
+              "percentage": 0,
+              "weightedSum": 0.0,
+              "totalWeight": 1.0
+            },
+            "subsection.children.label": {
+              "type": "ConcreteCompletion",
+              "completion": 1.0,
+              "percentage": 100,
+              "weightedSum": 1.0,
+              "totalWeight": 1.0
+            },
+            "subsection.parents.label": {
+              "type": "ConcreteCompletion",
+              "completion": 1.0,
+              "percentage": 100,
+              "weightedSum": 1.0,
+              "totalWeight": 1.0
+            },
+            "subsection.requires.label": {
+              "type": "ConcreteCompletion",
+              "completion": 0.0,
+              "percentage": 0,
+              "weightedSum": 0.0,
+              "totalWeight": 1.0
+            }
+          }
+        },
+        "section.information": {
+          "type": "SectionCompletion",
+          "completion": 0.125,
+          "percentage": 13,
+          "weightedSum": 0.5,
+          "totalWeight": 4.0,
+          "subCompletions": {
+            "subsection.nameDescription.label": {
+              "type": "ConcreteCompletion",
+              "completion": 0.5,
+              "percentage": 50,
+              "weightedSum": 2.0,
+              "totalWeight": 4.0
+            },
+            "subsection.successors.label": {
+              "type": "ConcreteCompletion",
+              "completion": 0.0,
+              "percentage": 0,
+              "weightedSum": 0.0,
+              "totalWeight": 1.0
+            },
+            "subsection.predecessors.label": {
+              "type": "ConcreteCompletion",
+              "completion": 0.0,
+              "percentage": 0,
+              "weightedSum": 0.0,
+              "totalWeight": 1.0
+            },
+            "subsection.lifecycle.label": {
+              "type": "ConcreteCompletion",
+              "completion": 0.0,
+              "percentage": 0,
+              "weightedSum": 0.0,
+              "totalWeight": 1.0
+            }
+          }
+        }
+      }
+    },
+    "createdAt": "2021-04-12T08:23:04.117010Z",
+    "updatedAt": "2021-08-21T14:01:17.619015Z",
+    "documents": [],
+    "status": "ACTIVE",
+    "lxState": "APPROVED",
+    "level": 2,
+    "rev": 9,
+    "naFields": [],
+    "subscriptions": [
+      {
+        "id": "19f2a4bf-f017-4743-a763-a6dec3ec1e6f",
+        "userId": "864a0360-185c-48d7-b1a6-51e0d5bd686e",
+        "type": "OBSERVER",
+        "linkedRoles": [],
+        "roles": []
+      },
+      {
+        "id": "4d68fb27-c79b-43f8-93bd-a82c6ef1bc92",
+        "userId": "23a8f181-8242-40fd-b1ef-f5a419dfdb5b",
+        "type": "OBSERVER",
+        "linkedRoles": [],
+        "roles": []
+      },
+      {
+        "id": "97ba18d2-69cb-46dc-b3d5-1d099b62ed61",
+        "userId": "bc8b6fb7-c9dd-471a-a311-f09c7c9ad087",
+        "type": "OBSERVER",
+        "linkedRoles": [],
+        "roles": []
+      },
+      {
+        "id": "0ffdf811-6dcd-4e7c-bef0-8448afa0bbf6",
+        "userId": "f12a2113-7d1b-4e2a-ba3d-05a00099ec77",
+        "type": "OBSERVER",
+        "linkedRoles": [],
+        "roles": []
+      },
+      {
+        "id": "511bb9ef-49b8-4300-8b5d-67ac426882b3",
+        "userId": "89f48112-4325-4fb3-b036-189c5f66b22e",
+        "type": "OBSERVER",
+        "linkedRoles": [],
+        "roles": []
+      }
+    ],
+    "permittedReadACL": [],
+    "permittedWriteACL": []
+  },
+  "id": 1013142,
+  "type": "FactSheetUpdatedEvent",
+  "createdAt": "2021-08-21T14:01:17.658228Z",
+  "transactionSequenceNumber": 1383231
+}
