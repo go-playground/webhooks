@@ -533,6 +533,36 @@ func TestWebhooks(t *testing.T) {
 				"X-Hub-Signature": []string{"sha1=a317bcfe69ccb8bece74c20c7378e5413c4772f1"},
 			},
 		},
+		{
+			name:     "WorkflowDispatchEvent",
+			event:    WorkflowDispatchEvent,
+			typ:      WorkflowDispatchPayload{},
+			filename: "../testdata/github/workflow_dispatch.json",
+			headers: http.Header{
+				"X-Github-Event":  []string{"workflow_dispatch"},
+				"X-Hub-Signature": []string{"sha1=58db5b3c7e2391b34275d42256e0eda67e4997b9"},
+			},
+		},
+		{
+			name:     "WorkflowJobEvent",
+			event:    WorkflowJobEvent,
+			typ:      WorkflowJobPayload{},
+			filename: "../testdata/github/workflow_job.json",
+			headers: http.Header{
+				"X-Github-Event":  []string{"workflow_job"},
+				"X-Hub-Signature": []string{"sha1=2f22091ecf169313c9991f5f98ef3dffb069841b"},
+			},
+		},
+		{
+			name:     "WorkflowRunEvent",
+			event:    WorkflowRunEvent,
+			typ:      WorkflowRunPayload{},
+			filename: "../testdata/github/workflow_run.json",
+			headers: http.Header{
+				"X-Github-Event":  []string{"workflow_run"},
+				"X-Hub-Signature": []string{"sha1=c54d046b1ce440bc3434c8de5ad73e0a630d7cbe"},
+			},
+		},
 	}
 
 	for _, tt := range tests {
