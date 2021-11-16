@@ -151,6 +151,7 @@ type BuildEventPayload struct {
 	User              User        `json:"user"`
 	Commit            BuildCommit `json:"commit"`
 	Repository        Repository  `json:"repository"`
+	Runner            Runner      `json:"runner"`
 }
 
 // JobEventPayload contains the information for GitLab's Job status change
