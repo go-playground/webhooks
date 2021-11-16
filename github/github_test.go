@@ -184,6 +184,16 @@ func TestWebhooks(t *testing.T) {
 			},
 		},
 		{
+			name:     "DeployKeyEvent",
+			event:    DeployKeyEvent,
+			typ:      DeployKeyPayload{},
+			filename: "../testdata/github/deploy_key.json",
+			headers: http.Header{
+				"X-Github-Event":  []string{"deploy_key"},
+				"X-Hub-Signature": []string{"sha1=dc9eea5621f5942542c94443cd2b71c8d7526168"},
+			},
+		},
+		{
 			name:     "DeploymentEvent",
 			event:    DeploymentEvent,
 			typ:      DeploymentPayload{},
