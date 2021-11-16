@@ -69,6 +69,9 @@ const (
 	TeamEvent                                Event = "team"
 	TeamAddEvent                             Event = "team_add"
 	WatchEvent                               Event = "watch"
+	WorkflowDispatchEvent                    Event = "workflow_dispatch"
+	WorkflowJobEvent                         Event = "workflow_job"
+	WorkflowRunEvent                         Event = "workflow_run"
 )
 
 // EventSubtype defines a GitHub Hook Event subtype
@@ -323,6 +326,18 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return pl, err
 	case WatchEvent:
 		var pl WatchPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
+	case WorkflowDispatchEvent:
+		var pl WorkflowDispatchPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
+	case WorkflowJobEvent:
+		var pl WorkflowJobPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
+	case WorkflowRunEvent:
+		var pl WorkflowRunPayload
 		err = json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 	default:
