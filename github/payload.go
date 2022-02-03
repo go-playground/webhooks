@@ -6437,7 +6437,6 @@ type WorkflowRunPayload struct {
 			Head   struct {
 				Ref  string `json:"ref"`
 				Sha  string `json:"sha"`
-				URL  string `json:"url"`
 				Repo struct {
 					ID   int64  `json:"id"`
 					Name string `json:"name"`
