@@ -15,6 +15,31 @@
     "check_suite_node_id": "1",
 		"url": "https://api.github.com/users/baxterthehacker/",
     "html_url": "https://api.github.com/users/baxterthehacker/html_url",
+    "pull_requests": [
+      {
+        "url": "https://api.github.com/repos/baxterthehacker/public-repo/pulls/43",
+        "id": 836659880,
+        "number": 43,
+        "head": {
+          "ref": "HeadBranch",
+          "sha": "d6b80f8411bdc1a44407ff20619a74068b03ea5a",
+          "repo": {
+            "id": 434328729,
+            "url": "https://api.github.com/repos/baxterthehacker/public-repo",
+            "name": "public-repo"
+          }
+        },
+        "base": {
+          "ref": "master",
+          "sha": "959ab634fb1411f204b2be49b68236808d6b741c",
+          "repo": {
+            "id": 434328729,
+            "url": "https://api.github.com/repos/baxterthehacker/public-repo",
+            "name": "public-repo"
+          }
+        }
+      }
+    ],
     "created_at": "2015-05-05T23:40:12Z",
     "updated_at": "2015-05-05T23:40:30Z",
 		"run_attempt": 1,

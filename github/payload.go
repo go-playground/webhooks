@@ -6430,7 +6430,30 @@ type WorkflowRunPayload struct {
 		CheckSuiteNodeID string `json:"check_suite_node_id"`
 		URL              string `json:"url"`
 		HTMLURL          string `json:"html_url"`
-		// PullRequests       []interface{} `json:"pull_requests"`
+		PullRequests     []struct {
+			ID     int64  `json:"id"`
+			Number int64  `json:"number"`
+			URL    string `json:"url"`
+			Head   struct {
+				Ref  string `json:"ref"`
+				Sha  string `json:"sha"`
+				URL  string `json:"url"`
+				Repo struct {
+					ID   int64  `json:"id"`
+					Name string `json:"name"`
+					URL  string `json:"url"`
+				} `json:"repo"`
+			} `json:"head"`
+			Base struct {
+				Ref  string `json:"ref"`
+				Sha  string `json:"sha"`
+				Repo struct {
+					ID   int64  `json:"id"`
+					Name string `json:"name"`
+					URL  string `json:"url"`
+				} `json:"repo"`
+			} `json:"base"`
+		} `json:"pull_requests"`
 		CreatedAt     time.Time `json:"created_at"`
 		UpdatedAt     time.Time `json:"updated_at"`
 		RunAttempt    int64     `json:"run_attempt"`
