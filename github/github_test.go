@@ -240,7 +240,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/installation.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"installation"},
-				"X-Hub-Signature": []string{"sha1=2058cf6cc28570710afbc638e669f5c67305a2db"},
+				"X-Hub-Signature": []string{"sha1=2bcb4ad96133ce2dd6d140fad7a80a2b14407f7f"},
 			},
 		},
 		{
@@ -250,7 +250,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/installation-repositories.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"installation_repositories"},
-				"X-Hub-Signature": []string{"sha1=c587fbd9dd169db8ae592b3bcc80b08e2e6f4f45"},
+				"X-Hub-Signature": []string{"sha1=997680ef1e6f4a6b6595f5fa70b82989f505137f"},
 			},
 		},
 		{
