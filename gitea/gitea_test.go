@@ -84,7 +84,7 @@ func TestBadRequests(t *testing.T) {
 			event:   PushEvent,
 			payload: bytes.NewBuffer([]byte("{}")),
 			headers: http.Header{
-				"X-Github-Event":  []string{"push"},
+				"X-Gitea-Event":  []string{"push"},
 				"X-Gitea-Signature": []string{""},
 			},
 		},
@@ -93,7 +93,7 @@ func TestBadRequests(t *testing.T) {
 			event:   PushEvent,
 			payload: bytes.NewBuffer([]byte("{}")),
 			headers: http.Header{
-				"X-Github-Event":  []string{"push"},
+				"X-Gitea-Event":  []string{"push"},
 				"X-Gitea-Signature": []string{"111"},
 			},
 		},
