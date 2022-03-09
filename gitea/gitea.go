@@ -18,6 +18,7 @@ var (
 	ErrInvalidHTTPMethod           = errors.New("invalid HTTP Method")
 	ErrMissingGiteaEventHeader     = errors.New("missing X-Gitea-Event Header")
 	ErrMissingGiteaSignatureHeader = errors.New("missing X-Gitea-Signature Header")
+	ErrEventNotFound               = errors.New("event not defined to be parsed")
 	ErrParsingPayload              = errors.New("error parsing payload")
 	ErrHMACVerificationFailed      = errors.New("HMAC verification failed")
 )
@@ -101,6 +102,18 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 	}
 
 	giteaEvent := Event(event)
+
+	var found bool
+	for _, evt := range events {
+		if evt == giteaEvent {
+			found = true
+			break
+		}
+	}
+	// event not defined to be parsed
+	if !found {
+		return nil, ErrEventNotFound
+	}
 
 	payload, err := ioutil.ReadAll(r.Body)
 	if err != nil || len(payload) == 0 {
