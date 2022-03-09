@@ -1,6 +1,9 @@
 package gitea
 
 import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -11,10 +14,12 @@ import (
 
 // parse errors
 var (
-	ErrEventNotSpecifiedToParse = errors.New("no Event specified to parse")
-	ErrInvalidHTTPMethod        = errors.New("invalid HTTP Method")
-	ErrMissingGiteaEventHeader  = errors.New("missing X-Gitea-Event Header")
-	ErrParsingPayload           = errors.New("error parsing payload")
+	ErrEventNotSpecifiedToParse    = errors.New("no Event specified to parse")
+	ErrInvalidHTTPMethod           = errors.New("invalid HTTP Method")
+	ErrMissingGiteaEventHeader     = errors.New("missing X-Gitea-Event Header")
+	ErrMissingGiteaSignatureHeader = errors.New("missing X-Gitea-Signature Header")
+	ErrParsingPayload              = errors.New("error parsing payload")
+	ErrHMACVerificationFailed      = errors.New("HMAC verification failed")
 )
 
 // Gitea hook types
@@ -100,6 +105,21 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 	payload, err := ioutil.ReadAll(r.Body)
 	if err != nil || len(payload) == 0 {
 		return nil, ErrParsingPayload
+	}
+
+	// If we have a Secret set, we should check the MAC
+	if len(hook.secret) > 0 {
+		signature := r.Header.Get("X-Gitea-Signature")
+		if len(signature) == 0 {
+			return nil, ErrMissingGiteaSignatureHeader
+		}
+		sig256 := hmac.New(sha256.New, []byte(hook.secret))
+		_, _ = io.Writer(sig256).Write([]byte(payload))
+		expectedMAC := hex.EncodeToString(sig256.Sum(nil))
+
+		if !hmac.Equal([]byte(signature), []byte(expectedMAC)) {
+			return nil, ErrHMACVerificationFailed
+		}
 	}
 
 	// https://github.com/go-gitea/gitea/blob/33fca2b537d36cf998dd27425b2bb8ed5b0965f3/services/webhook/payloader.go#L27
