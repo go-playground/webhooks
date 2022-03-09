@@ -79,14 +79,6 @@ func TestBadRequests(t *testing.T) {
 				"X-Gitea-Event": []string{"push"},
 			},
 		},
-		{
-			name:    "TokenMismatch",
-			event:   PushEvent,
-			payload: bytes.NewBuffer([]byte("{}")),
-			headers: http.Header{
-				"X-Gitea-Event": []string{"push"},
-			},
-		},
 	}
 
 	for _, tt := range tests {
