@@ -56,12 +56,12 @@ type CheckRunPayload struct {
 					Type              string `json:"type"`
 					SiteAdmin         bool   `json:"site_admin"`
 				} `json:"owner"`
-				Name        string `json:"name"`
-				Description string `json:"description"`
-				ExternalURL string `json:"external_url"`
-				HTMLURL     string `json:"html_url"`
-				CreatedAt   string `json:"created_at"`
-				UpdatedAt   string `json:"updated_at"`
+				Name        string    `json:"name"`
+				Description string    `json:"description"`
+				ExternalURL string    `json:"external_url"`
+				HTMLURL     string    `json:"html_url"`
+				CreatedAt   time.Time `json:"created_at"`
+				UpdatedAt   time.Time `json:"updated_at"`
 			} `json:"app"`
 			CreatedAt time.Time `json:"created_at"`
 			UpdatedAt time.Time `json:"updated_at"`
@@ -89,12 +89,12 @@ type CheckRunPayload struct {
 				Type              string `json:"type"`
 				SiteAdmin         bool   `json:"site_admin"`
 			} `json:"owner"`
-			Name        string `json:"name"`
-			Description string `json:"description"`
-			ExternalURL string `json:"external_url"`
-			HTMLURL     string `json:"html_url"`
-			CreatedAt   string `json:"created_at"`
-			UpdatedAt   string `json:"updated_at"`
+			Name        string    `json:"name"`
+			Description string    `json:"description"`
+			ExternalURL string    `json:"external_url"`
+			HTMLURL     string    `json:"html_url"`
+			CreatedAt   time.Time `json:"created_at"`
+			UpdatedAt   time.Time `json:"updated_at"`
 		} `json:"app"`
 		PullRequests []PullRequestPayload `json:"pull_requests"`
 	} `json:"check_run"`
@@ -249,12 +249,12 @@ type CheckSuitePayload struct {
 				Type              string `json:"type"`
 				SiteAdmin         bool   `json:"site_admin"`
 			} `json:"owner"`
-			Name        string `json:"name"`
-			Description string `json:"description"`
-			ExternalURL string `json:"external_url"`
-			HTMLURL     string `json:"html_url"`
-			CreatedAt   string `json:"created_at"`
-			UpdatedAt   string `json:"updated_at"`
+			Name        string    `json:"name"`
+			Description string    `json:"description"`
+			ExternalURL string    `json:"external_url"`
+			HTMLURL     string    `json:"html_url"`
+			CreatedAt   time.Time `json:"created_at"`
+			UpdatedAt   time.Time `json:"updated_at"`
 		} `json:"app"`
 		CreatedAt            time.Time `json:"created_at"`
 		UpdatedAt            time.Time `json:"updated_at"`
@@ -1579,18 +1579,23 @@ type InstallationPayload struct {
 		RepositoriesURL     string `json:"repositories_url"`
 		HTMLURL             string `json:"html_url"`
 		AppID               int    `json:"app_id"`
+		AppSlug             string `json:"app_slug"`
 		TargetID            int    `json:"target_id"`
 		TargetType          string `json:"target_type"`
 		Permissions         struct {
+			Contents           string `json:"contents"`
 			Issues             string `json:"issues"`
 			Metadata           string `json:"metadata"`
 			PullRequests       string `json:"pull_requests"`
 			RepositoryProjects string `json:"repository_projects"`
+			RepositoryHooks    string `json:"repository_hooks"`
 		} `json:"permissions"`
-		Events         []string `json:"events"`
-		CreatedAt      int64    `json:"created_at"`
-		UpdatedAt      int64    `json:"updated_at"`
-		SingleFileName *string  `json:"single_file_name"`
+		Events                 []string  `json:"events"`
+		CreatedAt              time.Time `json:"created_at"`
+		UpdatedAt              time.Time `json:"updated_at"`
+		SingleFileName         *string   `json:"single_file_name"`
+		HasMultipleSingleFiles bool      `json:"has_multiple_single_files"`
+		SingleFilePaths        []string  `json:"single_file_paths"`
 	} `json:"installation"`
 	Repositories []struct {
 		ID       int64  `json:"id"`
@@ -1665,10 +1670,10 @@ type InstallationRepositoriesPayload struct {
 			Deployments         string `json:"deployments"`
 			Contents            string `json:"contents"`
 		} `json:"permissions"`
-		Events         []string `json:"events"`
-		CreatedAt      int64    `json:"created_at"`
-		UpdatedAt      int64    `json:"updated_at"`
-		SingleFileName *string  `json:"single_file_name"`
+		Events         []string  `json:"events"`
+		CreatedAt      time.Time `json:"created_at"`
+		UpdatedAt      time.Time `json:"updated_at"`
+		SingleFileName *string   `json:"single_file_name"`
 	} `json:"installation"`
 	RepositoriesAdded []struct {
 		ID       int64  `json:"id"`
@@ -3151,9 +3156,9 @@ type ProjectCardPayload struct {
 			Type              string `json:"type"`
 			SiteAdmin         bool   `json:"site_admin"`
 		} `json:"creator"`
-		CreatedAt  int64  `json:"created_at"`
-		UpdatedAt  int64  `json:"updated_at"`
-		ContentURL string `json:"content_url"`
+		CreatedAt  time.Time `json:"created_at"`
+		UpdatedAt  time.Time `json:"updated_at"`
+		ContentURL string    `json:"content_url"`
 	} `json:"project_card"`
 	Repository struct {
 		ID       int64  `json:"id"`
@@ -3281,14 +3286,14 @@ type ProjectCardPayload struct {
 type ProjectColumnPayload struct {
 	Action        string `json:"action"`
 	ProjectColumn struct {
-		URL        string `json:"url"`
-		ProjectURL string `json:"project_url"`
-		CardsURL   string `json:"cards_url"`
-		ID         int64  `json:"id"`
-		NodeID     string `json:"node_id"`
-		Name       string `json:"name"`
-		CreatedAt  int64  `json:"created_at"`
-		UpdatedAt  int64  `json:"updated_at"`
+		URL        string    `json:"url"`
+		ProjectURL string    `json:"project_url"`
+		CardsURL   string    `json:"cards_url"`
+		ID         int64     `json:"id"`
+		NodeID     string    `json:"node_id"`
+		Name       string    `json:"name"`
+		CreatedAt  time.Time `json:"created_at"`
+		UpdatedAt  time.Time `json:"updated_at"`
 	} `json:"project_column"`
 	Repository struct {
 		ID       int64  `json:"id"`
@@ -3445,8 +3450,8 @@ type ProjectPayload struct {
 			Type              string `json:"type"`
 			SiteAdmin         bool   `json:"site_admin"`
 		} `json:"creator"`
-		CreatedAt int64 `json:"created_at"`
-		UpdatedAt int64 `json:"updated_at"`
+		CreatedAt time.Time `json:"created_at"`
+		UpdatedAt time.Time `json:"updated_at"`
 	} `json:"project"`
 	Repository struct {
 		ID       int64  `json:"id"`
@@ -5219,7 +5224,7 @@ type PushPayload struct {
 		NotificationsURL string    `json:"notifications_url"`
 		LabelsURL        string    `json:"labels_url"`
 		ReleasesURL      string    `json:"releases_url"`
-		CreatedAt        int64     `json:"created_at"`
+		CreatedAt        time.Time `json:"created_at"`
 		UpdatedAt        time.Time `json:"updated_at"`
 		PushedAt         int64     `json:"pushed_at"`
 		GitURL           string    `json:"git_url"`
