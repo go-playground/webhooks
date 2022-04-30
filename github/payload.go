@@ -1587,10 +1587,10 @@ type InstallationPayload struct {
 			PullRequests       string `json:"pull_requests"`
 			RepositoryProjects string `json:"repository_projects"`
 		} `json:"permissions"`
-		Events         []string `json:"events"`
-		CreatedAt      int64    `json:"created_at"`
-		UpdatedAt      int64    `json:"updated_at"`
-		SingleFileName *string  `json:"single_file_name"`
+		Events         []string  `json:"events"`
+		CreatedAt      time.Time `json:"created_at"`
+		UpdatedAt      time.Time `json:"updated_at"`
+		SingleFileName *string   `json:"single_file_name"`
 	} `json:"installation"`
 	Repositories []struct {
 		ID       int64  `json:"id"`
@@ -1665,10 +1665,10 @@ type InstallationRepositoriesPayload struct {
 			Deployments         string `json:"deployments"`
 			Contents            string `json:"contents"`
 		} `json:"permissions"`
-		Events         []string `json:"events"`
-		CreatedAt      int64    `json:"created_at"`
-		UpdatedAt      int64    `json:"updated_at"`
-		SingleFileName *string  `json:"single_file_name"`
+		Events         []string  `json:"events"`
+		CreatedAt      time.Time `json:"created_at"`
+		UpdatedAt      time.Time `json:"updated_at"`
+		SingleFileName *string   `json:"single_file_name"`
 	} `json:"installation"`
 	RepositoriesAdded []struct {
 		ID       int64  `json:"id"`
