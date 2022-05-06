@@ -131,29 +131,6 @@ type CommentEventPayload struct {
 	Snippet          Snippet          `json:"snippet"`
 }
 
-// BuildEventPayload contains the information for GitLab's build status change event
-type BuildEventPayload struct {
-	ObjectKind        string      `json:"object_kind"`
-	Ref               string      `json:"ref"`
-	Tag               bool        `json:"tag"`
-	BeforeSHA         string      `json:"before_sha"`
-	SHA               string      `json:"sha"`
-	BuildID           int64       `json:"build_id"`
-	BuildName         string      `json:"build_name"`
-	BuildStage        string      `json:"build_stage"`
-	BuildStatus       string      `json:"build_status"`
-	BuildStartedAt    customTime  `json:"build_started_at"`
-	BuildFinishedAt   customTime  `json:"build_finished_at"`
-	BuildDuration     float64     `json:"build_duration"`
-	BuildAllowFailure bool        `json:"build_allow_failure"`
-	ProjectID         int64       `json:"project_id"`
-	ProjectName       string      `json:"project_name"`
-	User              User        `json:"user"`
-	Commit            BuildCommit `json:"commit"`
-	Repository        Repository  `json:"repository"`
-	Runner            Runner      `json:"runner"`
-}
-
 // JobEventPayload contains the information for GitLab's Job status change
 type JobEventPayload struct {
 	ObjectKind         string      `json:"object_kind"`
