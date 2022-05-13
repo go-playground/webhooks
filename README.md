@@ -7,7 +7,7 @@ Library webhooks
 [![GoDoc](https://godoc.org/github.com/go-playground/webhooks/v6?status.svg)](https://godoc.org/github.com/go-playground/webhooks/v6)
 ![License](https://img.shields.io/dub/l/vibe-d.svg)
 
-Library webhooks allows for easy receiving and parsing of GitHub, Bitbucket and GitLab Webhook Events
+Library webhooks allows for easy receiving and parsing of GitHub, Bitbucket, GitLab, Docker Hub and Gogs Webhook Events
 
 Features:
 
@@ -53,13 +53,13 @@ const (
 )
 
 func main() {
-	hook, _ := github.New(github.Options.Secret("MyGitHubSuperSecretSecrect...?"))
+	hook, _ := github.New(github.Options.Secret("MyGitHubSuperSecretSecret...?"))
 
 	http.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
 		payload, err := hook.Parse(r, github.ReleaseEvent, github.PullRequestEvent)
 		if err != nil {
 			if err == github.ErrEventNotFound {
-				// ok event wasn;t one of the ones asked to be parsed
+				// ok event wasn't one of the ones asked to be parsed
 			}
 		}
 		switch payload.(type) {
@@ -89,4 +89,5 @@ If the changes being proposed or requested are breaking changes, please create a
 
 License
 ------
+
 Distributed under MIT License, please see license file in code for more details.
