@@ -59,7 +59,7 @@ func main() {
 		payload, err := hook.Parse(r, github.ReleaseEvent, github.PullRequestEvent)
 		if err != nil {
 			if err == github.ErrEventNotFound {
-				// ok event wasn;t one of the ones asked to be parsed
+				// ok event wasn't one of the ones asked to be parsed
 			}
 		}
 		switch payload.(type) {
