@@ -1,6 +1,6 @@
 {
   "object_kind": "note",
-  "event_type": "note",
+  "event_type": "confidential_note",
   "user": {
     "id": 1,
     "name": "Administrator",

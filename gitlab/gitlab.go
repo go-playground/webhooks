@@ -23,17 +23,18 @@ var (
 
 // GitLab hook types
 const (
-	PushEvents               Event = "Push Hook"
-	TagEvents                Event = "Tag Push Hook"
-	IssuesEvents             Event = "Issue Hook"
-	ConfidentialIssuesEvents Event = "Confidential Issue Hook"
-	CommentEvents            Event = "Note Hook"
-	MergeRequestEvents       Event = "Merge Request Hook"
-	WikiPageEvents           Event = "Wiki Page Hook"
-	PipelineEvents           Event = "Pipeline Hook"
-	BuildEvents              Event = "Build Hook"
-	JobEvents                Event = "Job Hook"
-	SystemHookEvents         Event = "System Hook"
+	PushEvents                Event = "Push Hook"
+	TagEvents                 Event = "Tag Push Hook"
+	IssuesEvents              Event = "Issue Hook"
+	ConfidentialIssuesEvents  Event = "Confidential Issue Hook"
+	CommentEvents             Event = "Note Hook"
+	ConfidentialCommentEvents Event = "Confidential Note Hook"
+	MergeRequestEvents        Event = "Merge Request Hook"
+	WikiPageEvents            Event = "Wiki Page Hook"
+	PipelineEvents            Event = "Pipeline Hook"
+	BuildEvents               Event = "Build Hook"
+	JobEvents                 Event = "Job Hook"
+	SystemHookEvents          Event = "System Hook"
 
 	objectPush         string = "push"
 	objectTag          string = "tag_push"
@@ -146,6 +147,11 @@ func eventParsing(gitLabEvent Event, events []Event, payload []byte) (interface{
 
 	case IssuesEvents:
 		var pl IssueEventPayload
+		err := json.Unmarshal([]byte(payload), &pl)
+		return pl, err
+
+	case ConfidentialCommentEvents:
+		var pl ConfidentialCommentEventPayload
 		err := json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 

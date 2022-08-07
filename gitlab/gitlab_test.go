@@ -169,6 +169,15 @@ func TestWebhooks(t *testing.T) {
 			},
 		},
 		{
+			name:     "ConfidentialCommentCommitEvent",
+			event:    ConfidentialCommentEvents,
+			typ:      ConfidentialCommentEventPayload{},
+			filename: "../testdata/gitlab/confidential-comment-commit-event.json",
+			headers: http.Header{
+				"X-Gitlab-Event": []string{"Confidential Note Hook"},
+			},
+		},
+		{
 			name:     "CommentMergeRequestEvent",
 			event:    CommentEvents,
 			typ:      CommentEventPayload{},
