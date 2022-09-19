@@ -6453,6 +6453,11 @@ type WorkflowRunPayload struct {
 				} `json:"repo"`
 			} `json:"base"`
 		} `json:"pull_requests"`
+		ReferencedWorkflows []struct {
+			Path string `json:"path"`
+			Ref  string `json:"ref"`
+			Sha  string `json:"sha"`
+		} `json:"referenced_workflows"`
 		CreatedAt     time.Time `json:"created_at"`
 		UpdatedAt     time.Time `json:"updated_at"`
 		RunAttempt    int64     `json:"run_attempt"`
