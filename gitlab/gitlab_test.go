@@ -231,6 +231,15 @@ func TestWebhooks(t *testing.T) {
 				"X-Gitlab-Event": []string{"Build Hook"},
 			},
 		},
+		{
+			name:     "DeploymentEvent",
+			event:    DeploymentEvents,
+			typ:      DeploymentEventPayload{},
+			filename: "../testdata/gitlab/deployment-event.json",
+			headers: http.Header{
+				"X-Gitlab-Event": []string{"Deployment Hook"},
+			},
+		},
 	}
 
 	for _, tt := range tests {
