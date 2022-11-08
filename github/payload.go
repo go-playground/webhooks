@@ -6916,7 +6916,7 @@ type Step struct {
 
 // GitHubAppAuthorizationPayload contains revoke action payload
 type GitHubAppAuthorizationPayload struct {
-	Action string `json:"string"`
+	Action string `json:"action"`
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
