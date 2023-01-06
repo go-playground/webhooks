@@ -38,6 +38,7 @@ type IssueEventPayload struct {
 	Repository       Repository       `json:"repository"`
 	ObjectAttributes ObjectAttributes `json:"object_attributes"`
 	Assignee         Assignee         `json:"assignee"`
+	Assignees        []Assignee       `json:"assignees"`
 	Changes          Changes          `json:"changes"`
 }
 
