@@ -257,7 +257,7 @@ func eventParsing(gitLabEvent Event, events []Event, payload []byte) (interface{
 				return pl, err
 
 			case eventUserAddToTeam:
-				var pl NewTeamMemberEventPayload
+				var pl TeamMemberAddedEventPayload
 				err := json.Unmarshal([]byte(payload), &pl)
 				return pl, err
 
@@ -317,7 +317,7 @@ func eventParsing(gitLabEvent Event, events []Event, payload []byte) (interface{
 				return pl, err
 
 			case eventUserAddToGroup:
-				var pl NewGroupMemberEventPayload
+				var pl GroupMemberAddedEventPayload
 				err := json.Unmarshal([]byte(payload), &pl)
 				return pl, err
 

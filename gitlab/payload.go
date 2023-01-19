@@ -262,8 +262,8 @@ type ProjectUpdatedEventPayload struct {
 	ProjectVisibility string     `json:"project_visibility"`
 }
 
-// NewTeamMemberEventPayload contains the information about GitLab's new team member event
-type NewTeamMemberEventPayload struct {
+// TeamMemberAddedEventPayload contains the information about GitLab's new team member event
+type TeamMemberAddedEventPayload struct {
 	CreatedAt                customTime `json:"created_at"`
 	UpdatedAt                customTime `json:"updated_at"`
 	EventName                string     `json:"event_name"`
@@ -412,8 +412,8 @@ type GroupRenamedEventPayload struct {
 	OldFullPath string     `json:"old_full_path"`
 }
 
-// NewGroupMemberEventPayload contains the information about GitLab's new group member event
-type NewGroupMemberEventPayload struct {
+// GroupMemberAddedEventPayload contains the information about GitLab's new group member event
+type GroupMemberAddedEventPayload struct {
 	CreatedAt    customTime `json:"created_at"`
 	UpdatedAt    customTime `json:"updated_at"`
 	EventName    string     `json:"event_name"`
