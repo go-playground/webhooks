@@ -58,6 +58,7 @@ type MergeRequestEventPayload struct {
 	Repository       Repository       `json:"repository"`
 	Labels           []Label          `json:"labels"`
 	Assignees        []Assignee       `json:"assignees"`
+	Reviewers        []Reviewer       `json:"reviewers"`
 }
 
 // PushEventPayload contains the information for GitLab's push event
@@ -459,6 +460,8 @@ type Assignee struct {
 	AvatarURL string `json:"avatar_url"`
 	Email     string `json:"email"`
 }
+
+type Reviewer *Assignee
 
 // StDiff contains all of the GitLab diff information
 type StDiff struct {
