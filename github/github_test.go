@@ -184,6 +184,16 @@ func TestWebhooks(t *testing.T) {
 			},
 		},
 		{
+			name:     "DependabotAlertEvent",
+			event:    DependabotAlertEvent,
+			typ:      DependabotAlertPayload{},
+			filename: "../testdata/github/dependabot_alert.json",
+			headers: http.Header{
+				"X-Github-Event":  []string{"dependabot_alert"},
+				"X-Hub-Signature": []string{"sha1=ce6a2bc876463a8b3b492399302bf316e1af7a21"},
+			},
+		},
+		{
 			name:     "DeployKeyEvent",
 			event:    DeployKeyEvent,
 			typ:      DeployKeyPayload{},

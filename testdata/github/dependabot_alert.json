@@ -1,0 +1,250 @@
+{
+  "action": "dismissed",
+  "alert": {
+    "number": 1,
+    "state": "dismissed",
+    "dependency": {
+      "package": {
+        "ecosystem": "rust",
+        "name": "time"
+      },
+      "manifest_path": "Cargo.lock",
+      "scope": "runtime"
+    },
+    "security_advisory": {
+      "ghsa_id": "GHSA-wcg3-cvx6-7396",
+      "cve_id": "CVE-2020-26235",
+      "summary": "Segmentation fault in time",
+      "description": "### Impact\n\nUnix-like operating systems may segfault due to dereferencing a dangling pointer in specific circumstances. This requires an environment variable to be set in a different thread than the affected functions. This may occur without the user's knowledge, notably in a third-party library.\n\nThe affected functions from time 0.2.7 through 0.2.22 are:\n\n- `time::UtcOffset::local_offset_at`\n- `time::UtcOffset::try_local_offset_at`\n- `time::UtcOffset::current_local_offset`\n- `time::UtcOffset::try_current_local_offset`\n- `time::OffsetDateTime::now_local`\n- `time::OffsetDateTime::try_now_local`\n\nThe affected functions in time 0.1 (all versions) are:\n\n- `at`\n- `at_utc`\n- `now`\n\nNon-Unix targets (including Windows and wasm) are unaffected.\n\n### Patches\n\nIn some versions of `time`, the internal method that determines the local offset has been modified to always return `None` on the affected operating systems. This has the effect of returning an `Err` on the `try_*` methods and `UTC` on the non-`try_*` methods. In later versions, `time` will attempt to determine the number of threads running in the process. If the process is single-threaded, the call will proceed as its safety invariant is upheld.\n\nUsers and library authors with time in their dependency tree must perform `cargo update`, which will pull in the updated, unaffected code.\n\nUsers of time 0.1 do not have a patch and must upgrade to an unaffected version: time 0.2.23 or greater or the 0.3 series.\n\n### Workarounds\n\nLibrary authors must ensure that the program only has one running thread at the time of calling any affected method. Binary authors may do the same and/or ensure that no other thread is actively mutating the environment.\n\n### References\n\n[time-rs/time#293](https://github.com/time-rs/time/issues/293).",
+      "severity": "medium",
+      "identifiers": [
+        {
+          "value": "GHSA-wcg3-cvx6-7396",
+          "type": "GHSA"
+        },
+        {
+          "value": "CVE-2020-26235",
+          "type": "CVE"
+        }
+      ],
+      "references": [
+        {
+          "url": "https://github.com/time-rs/time/security/advisories/GHSA-wcg3-cvx6-7396"
+        },
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-26235"
+        },
+        {
+          "url": "https://github.com/time-rs/time/issues/293"
+        },
+        {
+          "url": "https://rustsec.org/advisories/RUSTSEC-2020-0071.html"
+        },
+        {
+          "url": "https://crates.io/crates/time/0.2.23"
+        },
+        {
+          "url": "https://github.com/advisories/GHSA-wcg3-cvx6-7396"
+        }
+      ],
+      "published_at": "2021-08-25T20:56:46Z",
+      "updated_at": "2023-01-09T05:01:06Z",
+      "withdrawn_at": null,
+      "vulnerabilities": [
+        {
+          "package": {
+            "ecosystem": "rust",
+            "name": "time"
+          },
+          "severity": "medium",
+          "vulnerable_version_range": ">= 0.2.7, < 0.2.23",
+          "first_patched_version": {
+            "identifier": "0.2.23"
+          }
+        },
+        {
+          "package": {
+            "ecosystem": "rust",
+            "name": "time"
+          },
+          "severity": "medium",
+          "vulnerable_version_range": ">= 0.1, < 0.2",
+          "first_patched_version": null
+        }
+      ],
+      "cvss": {
+        "vector_string": "CVSS:3.1/AV:L/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+        "score": 6.2
+      },
+      "cwes": [
+        {
+          "cwe_id": "CWE-476",
+          "name": "NULL Pointer Dereference"
+        }
+      ]
+    },
+    "security_vulnerability": {
+      "package": {
+        "ecosystem": "rust",
+        "name": "time"
+      },
+      "severity": "medium",
+      "vulnerable_version_range": ">= 0.1, < 0.2",
+      "first_patched_version": null
+    },
+    "url": "https://api.github.com/repos/github/sample-app-rs/dependabot/alerts/1",
+    "html_url": "https://github.com/github/sample-app-rs/security/dependabot/1",
+    "created_at": "2022-12-29T13:50:06Z",
+    "updated_at": "2023-01-24T01:22:27Z",
+    "dismissed_at": "2023-01-24T01:22:27Z",
+    "dismissed_by": {
+      "login": "github",
+      "id": 54711422,
+      "node_id": "MDQ6VXNlcjU0NzExNDIy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/54711422?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/github",
+      "html_url": "https://github.com/github",
+      "followers_url": "https://api.github.com/users/github/followers",
+      "following_url": "https://api.github.com/users/github/following{/other_user}",
+      "gists_url": "https://api.github.com/users/github/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/github/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/github/subscriptions",
+      "organizations_url": "https://api.github.com/users/github/orgs",
+      "repos_url": "https://api.github.com/users/github/repos",
+      "events_url": "https://api.github.com/users/github/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/github/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "dismissed_reason": "not_used",
+    "dismissed_comment": null,
+    "fixed_at": null
+  },
+  "repository": {
+    "id": 581005466,
+    "node_id": "R_kgDOIqFwmg",
+    "name": "sample-app-rs",
+    "full_name": "github/sample-app-rs",
+    "private": false,
+    "owner": {
+      "login": "github",
+      "id": 54711422,
+      "node_id": "MDQ6VXNlcjU0NzExNDIy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/54711422?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/github",
+      "html_url": "https://github.com/github",
+      "followers_url": "https://api.github.com/users/github/followers",
+      "following_url": "https://api.github.com/users/github/following{/other_user}",
+      "gists_url": "https://api.github.com/users/github/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/github/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/github/subscriptions",
+      "organizations_url": "https://api.github.com/users/github/orgs",
+      "repos_url": "https://api.github.com/users/github/repos",
+      "events_url": "https://api.github.com/users/github/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/github/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "html_url": "https://github.com/github/sample-app-rs",
+    "description": "server side implementation of todo app",
+    "fork": false,
+    "url": "https://api.github.com/repos/github/sample-app-rs",
+    "forks_url": "https://api.github.com/repos/github/sample-app-rs/forks",
+    "keys_url": "https://api.github.com/repos/github/sample-app-rs/keys{/key_id}",
+    "collaborators_url": "https://api.github.com/repos/github/sample-app-rs/collaborators{/collaborator}",
+    "teams_url": "https://api.github.com/repos/github/sample-app-rs/teams",
+    "hooks_url": "https://api.github.com/repos/github/sample-app-rs/hooks",
+    "issue_events_url": "https://api.github.com/repos/github/sample-app-rs/issues/events{/number}",
+    "events_url": "https://api.github.com/repos/github/sample-app-rs/events",
+    "assignees_url": "https://api.github.com/repos/github/sample-app-rs/assignees{/user}",
+    "branches_url": "https://api.github.com/repos/github/sample-app-rs/branches{/branch}",
+    "tags_url": "https://api.github.com/repos/github/sample-app-rs/tags",
+    "blobs_url": "https://api.github.com/repos/github/sample-app-rs/git/blobs{/sha}",
+    "git_tags_url": "https://api.github.com/repos/github/sample-app-rs/git/tags{/sha}",
+    "git_refs_url": "https://api.github.com/repos/github/sample-app-rs/git/refs{/sha}",
+    "trees_url": "https://api.github.com/repos/github/sample-app-rs/git/trees{/sha}",
+    "statuses_url": "https://api.github.com/repos/github/sample-app-rs/statuses/{sha}",
+    "languages_url": "https://api.github.com/repos/github/sample-app-rs/languages",
+    "stargazers_url": "https://api.github.com/repos/github/sample-app-rs/stargazers",
+    "contributors_url": "https://api.github.com/repos/github/sample-app-rs/contributors",
+    "subscribers_url": "https://api.github.com/repos/github/sample-app-rs/subscribers",
+    "subscription_url": "https://api.github.com/repos/github/sample-app-rs/subscription",
+    "commits_url": "https://api.github.com/repos/github/sample-app-rs/commits{/sha}",
+    "git_commits_url": "https://api.github.com/repos/github/sample-app-rs/git/commits{/sha}",
+    "comments_url": "https://api.github.com/repos/github/sample-app-rs/comments{/number}",
+    "issue_comment_url": "https://api.github.com/repos/github/sample-app-rs/issues/comments{/number}",
+    "contents_url": "https://api.github.com/repos/github/sample-app-rs/contents/{+path}",
+    "compare_url": "https://api.github.com/repos/github/sample-app-rs/compare/{base}...{head}",
+    "merges_url": "https://api.github.com/repos/github/sample-app-rs/merges",
+    "archive_url": "https://api.github.com/repos/github/sample-app-rs/{archive_format}{/ref}",
+    "downloads_url": "https://api.github.com/repos/github/sample-app-rs/downloads",
+    "issues_url": "https://api.github.com/repos/github/sample-app-rs/issues{/number}",
+    "pulls_url": "https://api.github.com/repos/github/sample-app-rs/pulls{/number}",
+    "milestones_url": "https://api.github.com/repos/github/sample-app-rs/milestones{/number}",
+    "notifications_url": "https://api.github.com/repos/github/sample-app-rs/notifications{?since,all,participating}",
+    "labels_url": "https://api.github.com/repos/github/sample-app-rs/labels{/name}",
+    "releases_url": "https://api.github.com/repos/github/sample-app-rs/releases{/id}",
+    "deployments_url": "https://api.github.com/repos/github/sample-app-rs/deployments",
+    "created_at": "2022-12-22T02:42:56Z",
+    "updated_at": "2022-12-29T11:58:28Z",
+    "pushed_at": "2023-01-24T00:57:10Z",
+    "git_url": "git://github.com/github/sample-app-rs.git",
+    "ssh_url": "git@github.com:github/sample-app-rs.git",
+    "clone_url": "https://github.com/github/sample-app-rs.git",
+    "svn_url": "https://github.com/github/sample-app-rs",
+    "homepage": null,
+    "size": 136,
+    "stargazers_count": 0,
+    "watchers_count": 0,
+    "language": "Rust",
+    "has_issues": true,
+    "has_projects": true,
+    "has_downloads": true,
+    "has_wiki": true,
+    "has_pages": false,
+    "has_discussions": false,
+    "forks_count": 0,
+    "mirror_url": null,
+    "archived": false,
+    "disabled": false,
+    "open_issues_count": 0,
+    "license": {
+      "key": "mit",
+      "name": "MIT License",
+      "spdx_id": "MIT",
+      "url": "https://api.github.com/licenses/mit",
+      "node_id": "MDc6TGljZW5zZTEz"
+    },
+    "allow_forking": true,
+    "is_template": false,
+    "web_commit_signoff_required": false,
+    "topics": [],
+    "visibility": "public",
+    "forks": 0,
+    "open_issues": 0,
+    "watchers": 0,
+    "default_branch": "main"
+  },
+  "sender": {
+    "login": "github",
+    "id": 54711422,
+    "node_id": "MDQ6VXNlcjU0NzExNDIy",
+    "avatar_url": "https://avatars.githubusercontent.com/u/54711422?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/github",
+    "html_url": "https://github.com/github",
+    "followers_url": "https://api.github.com/users/github/followers",
+    "following_url": "https://api.github.com/users/github/following{/other_user}",
+    "gists_url": "https://api.github.com/users/github/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/github/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/github/subscriptions",
+    "organizations_url": "https://api.github.com/users/github/orgs",
+    "repos_url": "https://api.github.com/users/github/repos",
+    "events_url": "https://api.github.com/users/github/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/github/received_events",
+    "type": "User",
+    "site_admin": false
+  }
+}
