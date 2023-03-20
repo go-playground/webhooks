@@ -14,7 +14,7 @@ type CheckRunPayload struct {
 		Conclusion  string    `json:"conclusion"`
 		URL         string    `json:"url"`
 		HTMLURL     string    `json:"html_url"`
-		StarterAt   time.Time `json:"started_at"`
+		StartedAt   time.Time `json:"started_at"`
 		CompletedAt time.Time `json:"completed_at"`
 		Output      struct {
 			Title            string `json:"title"`
