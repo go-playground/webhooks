@@ -5431,7 +5431,29 @@ type ReleasePayload struct {
 
 // RepositoryPayload contains the information for GitHub's repository hook event
 type RepositoryPayload struct {
-	Action     string `json:"action"`
+	Action  string `json:"action"`
+	Changes struct {
+		DefaultBranch struct {
+			From string `json:"from"`
+		} `json:"default_branch,omitempty"`
+		Description struct {
+			From string `json:"from"`
+		} `json:"description,omitempty"`
+		Homepage struct {
+			From string `json:"from"`
+		} `json:"homepage,omitempty"`
+		Topics struct {
+			From string `json:"from,omitempty"`
+		} `json:"topics,omitempty"`
+		Repository struct {
+			Name struct {
+				From string `json:"from"`
+			} `json:"name"`
+		} `json:"repository,omitempty"`
+		Owner struct {
+			From string `json:"from"`
+		} `json:"owner,omitempty"`
+	} `json:"changes,omitempty"`
 	Repository struct {
 		ID       int64  `json:"id"`
 		NodeID   string `json:"node_id"`
