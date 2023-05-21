@@ -121,6 +121,7 @@ type PipelineEventPayload struct {
 // CommentEventPayload contains the information for GitLab's comment event
 type CommentEventPayload struct {
 	ObjectKind       string           `json:"object_kind"`
+	EventType        string           `json:"event_type"`
 	User             User             `json:"user"`
 	ProjectID        int64            `json:"project_id"`
 	Project          Project          `json:"project"`
@@ -130,6 +131,13 @@ type CommentEventPayload struct {
 	Commit           Commit           `json:"commit"`
 	Issue            Issue            `json:"issue"`
 	Snippet          Snippet          `json:"snippet"`
+}
+
+// ConfidentialCommentEventPayload contains the information for GitLab's confidential issue event
+type ConfidentialCommentEventPayload struct {
+	// The data for confidential issues is currently the same as normal issues,
+	// so we can just embed the normal issue payload type here.
+	CommentEventPayload
 }
 
 // BuildEventPayload contains the information for GitLab's build status change event

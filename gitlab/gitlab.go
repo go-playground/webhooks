@@ -30,6 +30,7 @@ const (
 	IssuesEvents             Event  = "Issue Hook"
 	ConfidentialIssuesEvents Event  = "Confidential Issue Hook"
 	CommentEvents            Event  = "Note Hook"
+	ConfidentialCommentEvents Event = "Confidential Note Hook"
 	MergeRequestEvents       Event  = "Merge Request Hook"
 	WikiPageEvents           Event  = "Wiki Page Hook"
 	PipelineEvents           Event  = "Pipeline Hook"
@@ -170,6 +171,11 @@ func eventParsing(gitLabEvent Event, events []Event, payload []byte) (interface{
 
 	case IssuesEvents:
 		var pl IssueEventPayload
+		err := json.Unmarshal([]byte(payload), &pl)
+		return pl, err
+
+	case ConfidentialCommentEvents:
+		var pl ConfidentialCommentEventPayload
 		err := json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 
