@@ -33,6 +33,7 @@ const (
 	CommitCommentEvent                       Event = "commit_comment"
 	CreateEvent                              Event = "create"
 	DeleteEvent                              Event = "delete"
+	DependabotAlertEvent                     Event = "dependabot_alert"
 	DeployKeyEvent                           Event = "deploy_key"
 	DeploymentEvent                          Event = "deployment"
 	DeploymentStatusEvent                    Event = "deployment_status"
@@ -72,6 +73,7 @@ const (
 	WorkflowDispatchEvent                    Event = "workflow_dispatch"
 	WorkflowJobEvent                         Event = "workflow_job"
 	WorkflowRunEvent                         Event = "workflow_run"
+	GitHubAppAuthorizationEvent              Event = "github_app_authorization"
 )
 
 // EventSubtype defines a GitHub Hook Event subtype
@@ -194,6 +196,10 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return pl, err
 	case DeleteEvent:
 		var pl DeletePayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
+	case DependabotAlertEvent:
+		var pl DependabotAlertPayload
 		err = json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 	case DeploymentEvent:
@@ -338,6 +344,10 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return pl, err
 	case WorkflowRunEvent:
 		var pl WorkflowRunPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
+	case GitHubAppAuthorizationEvent:
+		var pl GitHubAppAuthorizationPayload
 		err = json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 	default:

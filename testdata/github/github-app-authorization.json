@@ -1,0 +1,23 @@
+{
+    "action": "revoked",
+    "sender": {
+        "login": "pansachin",
+        "id": 83265393,
+        "node_id": "MDQ6VXNlcjgzMjY1Mzkz",
+        "avatar_url": "https://avatars.githubusercontent.com/u/83265393?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/pansachin",
+        "html_url": "https://github.com/pansachin",
+        "followers_url": "https://api.github.com/users/pansachin/followers",
+        "following_url": "https://api.github.com/users/pansachin/following{/other_user}",
+        "gists_url": "https://api.github.com/users/pansachin/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/pansachin/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/pansachin/subscriptions",
+        "organizations_url": "https://api.github.com/users/pansachin/orgs",
+        "repos_url": "https://api.github.com/users/pansachin/repos",
+        "events_url": "https://api.github.com/users/pansachin/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/pansachin/received_events",
+        "type": "User",
+        "site_admin": false
+    }
+}
