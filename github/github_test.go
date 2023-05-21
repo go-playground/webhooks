@@ -484,6 +484,16 @@ func TestWebhooks(t *testing.T) {
 			},
 		},
 		{
+			name:     "RepositoryEditedEvent",
+			event:    RepositoryEvent,
+			typ:      RepositoryPayload{},
+			filename: "../testdata/github/repository-edited.json",
+			headers: http.Header{
+				"X-Github-Event":  []string{"repository"},
+				"X-Hub-Signature": []string{"sha1=4edb36f8c0a8e3905e340c7af4b3af9a21d93acc"},
+			},
+		},
+		{
 			name:     "RepositoryVulnerabilityAlertEvent",
 			event:    RepositoryVulnerabilityAlertEvent,
 			typ:      RepositoryVulnerabilityAlertPayload{},

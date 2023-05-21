@@ -213,6 +213,7 @@ type Build struct {
 	CreatedAt     customTime    `json:"created_at"`
 	StartedAt     customTime    `json:"started_at"`
 	FinishedAt    customTime    `json:"finished_at"`
+	FailureReason string        `json:"failure_reason"`
 	When          string        `json:"when"`
 	Manual        bool          `json:"manual"`
 	User          User          `json:"user"`
