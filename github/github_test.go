@@ -184,6 +184,16 @@ func TestWebhooks(t *testing.T) {
 			},
 		},
 		{
+			name:     "DependabotAlertEvent",
+			event:    DependabotAlertEvent,
+			typ:      DependabotAlertPayload{},
+			filename: "../testdata/github/dependabot_alert.json",
+			headers: http.Header{
+				"X-Github-Event":  []string{"dependabot_alert"},
+				"X-Hub-Signature": []string{"sha1=ce6a2bc876463a8b3b492399302bf316e1af7a21"},
+			},
+		},
+		{
 			name:     "DeployKeyEvent",
 			event:    DeployKeyEvent,
 			typ:      DeployKeyPayload{},
@@ -484,6 +494,16 @@ func TestWebhooks(t *testing.T) {
 			},
 		},
 		{
+			name:     "RepositoryEditedEvent",
+			event:    RepositoryEvent,
+			typ:      RepositoryPayload{},
+			filename: "../testdata/github/repository-edited.json",
+			headers: http.Header{
+				"X-Github-Event":  []string{"repository"},
+				"X-Hub-Signature": []string{"sha1=4edb36f8c0a8e3905e340c7af4b3af9a21d93acc"},
+			},
+		},
+		{
 			name:     "RepositoryVulnerabilityAlertEvent",
 			event:    RepositoryVulnerabilityAlertEvent,
 			typ:      RepositoryVulnerabilityAlertPayload{},
@@ -571,6 +591,16 @@ func TestWebhooks(t *testing.T) {
 			headers: http.Header{
 				"X-Github-Event":  []string{"workflow_run"},
 				"X-Hub-Signature": []string{"sha1=c54d046b1ce440bc3434c8de5ad73e0a630d7cbe"},
+			},
+		},
+		{
+			name:     "GitHubAppAuthorizationEvent",
+			event:    GitHubAppAuthorizationEvent,
+			typ:      GitHubAppAuthorizationPayload{},
+			filename: "../testdata/github/github-app-authorization.json",
+			headers: http.Header{
+				"X-Github-Event":  []string{"github_app_authorization"},
+				"X-Hub-Signature": []string{"sha1=4f18624a7fe3a9c525b51bdbd0e3da8230d753d6"},
 			},
 		},
 	}

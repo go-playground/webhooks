@@ -38,6 +38,7 @@ type IssueEventPayload struct {
 	Repository       Repository       `json:"repository"`
 	ObjectAttributes ObjectAttributes `json:"object_attributes"`
 	Assignee         Assignee         `json:"assignee"`
+	Assignees        []Assignee       `json:"assignees"`
 	Changes          Changes          `json:"changes"`
 }
 
@@ -133,50 +134,52 @@ type CommentEventPayload struct {
 
 // BuildEventPayload contains the information for GitLab's build status change event
 type BuildEventPayload struct {
-	ObjectKind        string      `json:"object_kind"`
-	Ref               string      `json:"ref"`
-	Tag               bool        `json:"tag"`
-	BeforeSHA         string      `json:"before_sha"`
-	SHA               string      `json:"sha"`
-	BuildID           int64       `json:"build_id"`
-	BuildName         string      `json:"build_name"`
-	BuildStage        string      `json:"build_stage"`
-	BuildStatus       string      `json:"build_status"`
-	BuildStartedAt    customTime  `json:"build_started_at"`
-	BuildFinishedAt   customTime  `json:"build_finished_at"`
-	BuildDuration     float64     `json:"build_duration"`
-	BuildAllowFailure bool        `json:"build_allow_failure"`
-	ProjectID         int64       `json:"project_id"`
-	ProjectName       string      `json:"project_name"`
-	User              User        `json:"user"`
-	Commit            BuildCommit `json:"commit"`
-	Repository        Repository  `json:"repository"`
-	Runner            Runner      `json:"runner"`
+	ObjectKind          string      `json:"object_kind"`
+	Ref                 string      `json:"ref"`
+	Tag                 bool        `json:"tag"`
+	BeforeSHA           string      `json:"before_sha"`
+	SHA                 string      `json:"sha"`
+	BuildID             int64       `json:"build_id"`
+	BuildName           string      `json:"build_name"`
+	BuildStage          string      `json:"build_stage"`
+	BuildStatus         string      `json:"build_status"`
+	BuildStartedAt      customTime  `json:"build_started_at"`
+	BuildFinishedAt     customTime  `json:"build_finished_at"`
+	BuildQueuedDuration float64     `json:"build_queued_duration"`
+	BuildDuration       float64     `json:"build_duration"`
+	BuildAllowFailure   bool        `json:"build_allow_failure"`
+	ProjectID           int64       `json:"project_id"`
+	ProjectName         string      `json:"project_name"`
+	User                User        `json:"user"`
+	Commit              BuildCommit `json:"commit"`
+	Repository          Repository  `json:"repository"`
+	Runner              Runner      `json:"runner"`
 }
 
 // JobEventPayload contains the information for GitLab's Job status change
 type JobEventPayload struct {
-	ObjectKind         string      `json:"object_kind"`
-	Ref                string      `json:"ref"`
-	Tag                bool        `json:"tag"`
-	BeforeSHA          string      `json:"before_sha"`
-	SHA                string      `json:"sha"`
-	BuildID            int64       `json:"build_id"`
-	BuildName          string      `json:"build_name"`
-	BuildStage         string      `json:"build_stage"`
-	BuildStatus        string      `json:"build_status"`
-	BuildStartedAt     customTime  `json:"build_started_at"`
-	BuildFinishedAt    customTime  `json:"build_finished_at"`
-	BuildDuration      float64     `json:"build_duration"`
-	BuildAllowFailure  bool        `json:"build_allow_failure"`
-	BuildFailureReason string      `json:"build_failure_reason"`
-	PipelineID         int64       `json:"pipeline_id"`
-	ProjectID          int64       `json:"project_id"`
-	ProjectName        string      `json:"project_name"`
-	User               User        `json:"user"`
-	Commit             BuildCommit `json:"commit"`
-	Repository         Repository  `json:"repository"`
-	Runner             Runner      `json:"runner"`
+	ObjectKind          string      `json:"object_kind"`
+	Ref                 string      `json:"ref"`
+	Tag                 bool        `json:"tag"`
+	BeforeSHA           string      `json:"before_sha"`
+	SHA                 string      `json:"sha"`
+	BuildID             int64       `json:"build_id"`
+	BuildName           string      `json:"build_name"`
+	BuildStage          string      `json:"build_stage"`
+	BuildStatus         string      `json:"build_status"`
+	BuildStartedAt      customTime  `json:"build_started_at"`
+	BuildFinishedAt     customTime  `json:"build_finished_at"`
+	BuildQueuedDuration float64     `json:"build_queued_duration"`
+	BuildDuration       float64     `json:"build_duration"`
+	BuildAllowFailure   bool        `json:"build_allow_failure"`
+	BuildFailureReason  string      `json:"build_failure_reason"`
+	PipelineID          int64       `json:"pipeline_id"`
+	ProjectID           int64       `json:"project_id"`
+	ProjectName         string      `json:"project_name"`
+	User                User        `json:"user"`
+	Commit              BuildCommit `json:"commit"`
+	Repository          Repository  `json:"repository"`
+	Runner              Runner      `json:"runner"`
 }
 
 // DeploymentEventPayload contains the information for GitLab's triggered when a deployment
@@ -200,6 +203,278 @@ type DeploymentEventPayload struct {
 type SystemHookPayload struct {
 	ObjectKind string `json:"object_kind"`
 	EventName  string `json:"event_name"`
+}
+
+// ProjectCreatedEventPayload contains the information about GitLab's project created event
+type ProjectCreatedEventPayload struct {
+	CreatedAt         customTime `json:"created_at"`
+	UpdatedAt         customTime `json:"updated_at"`
+	EventName         string     `json:"event_name"`
+	Name              string     `json:"name"`
+	OwnerEmail        string     `json:"owner_email"`
+	OwnerName         string     `json:"owner_name"`
+	Owners            []Author   `json:"owners"`
+	Path              string     `json:"path"`
+	PathWithNamespace string     `json:"path_with_namespace"`
+	ProjectID         int64      `json:"project_id"`
+	ProjectVisibility string     `json:"project_visibility"`
+}
+
+// ProjectDestroyedEventPayload contains the information about GitLab's project destroyed event
+type ProjectDestroyedEventPayload struct {
+	CreatedAt         customTime `json:"created_at"`
+	UpdatedAt         customTime `json:"updated_at"`
+	EventName         string     `json:"event_name"`
+	Name              string     `json:"name"`
+	OwnerEmail        string     `json:"owner_email"`
+	OwnerName         string     `json:"owner_name"`
+	Owners            []Author   `json:"owners"`
+	Path              string     `json:"path"`
+	PathWithNamespace string     `json:"path_with_namespace"`
+	ProjectID         int64      `json:"project_id"`
+	ProjectVisibility string     `json:"project_visibility"`
+}
+
+// ProjectRenamedEventPayload contains the information about GitLab's project renamed event
+type ProjectRenamedEventPayload struct {
+	CreatedAt            customTime `json:"created_at"`
+	UpdatedAt            customTime `json:"updated_at"`
+	EventName            string     `json:"event_name"`
+	Name                 string     `json:"name"`
+	Path                 string     `json:"path"`
+	PathWithNamespace    string     `json:"path_with_namespace"`
+	ProjectID            int64      `json:"project_id"`
+	OwnerName            string     `json:"owner_name"`
+	OwnerEmail           string     `json:"owner_email"`
+	Owners               []Author   `json:"owners"`
+	ProjectVisibility    string     `json:"project_visibility"`
+	OldPathWithNamespace string     `json:"old_path_with_namespace"`
+}
+
+// ProjectTransferredEventPayload contains the information about GitLab's project transferred event
+type ProjectTransferredEventPayload struct {
+	CreatedAt            customTime `json:"created_at"`
+	UpdatedAt            customTime `json:"updated_at"`
+	EventName            string     `json:"event_name"`
+	Name                 string     `json:"name"`
+	Path                 string     `json:"path"`
+	PathWithNamespace    string     `json:"path_with_namespace"`
+	ProjectID            int64      `json:"project_id"`
+	OwnerName            string     `json:"owner_name"`
+	OwnerEmail           string     `json:"owner_email"`
+	Owners               []Author   `json:"owners"`
+	ProjectVisibility    string     `json:"project_visibility"`
+	OldPathWithNamespace string     `json:"old_path_with_namespace"`
+}
+
+// ProjectUpdatedEventPayload contains the information about GitLab's project updated event
+type ProjectUpdatedEventPayload struct {
+	CreatedAt         customTime `json:"created_at"`
+	UpdatedAt         customTime `json:"updated_at"`
+	EventName         string     `json:"event_name"`
+	Name              string     `json:"name"`
+	OwnerEmail        string     `json:"owner_email"`
+	OwnerName         string     `json:"owner_name"`
+	Owners            []Author   `json:"owners"`
+	Path              string     `json:"path"`
+	PathWithNamespace string     `json:"path_with_namespace"`
+	ProjectID         int64      `json:"project_id"`
+	ProjectVisibility string     `json:"project_visibility"`
+}
+
+// TeamMemberAddedEventPayload contains the information about GitLab's new team member event
+type TeamMemberAddedEventPayload struct {
+	CreatedAt                customTime `json:"created_at"`
+	UpdatedAt                customTime `json:"updated_at"`
+	EventName                string     `json:"event_name"`
+	AccessLevel              string     `json:"access_level"`
+	ProjectID                int64      `json:"project_id"`
+	ProjectName              string     `json:"project_name"`
+	ProjectPath              string     `json:"project_path"`
+	ProjectPathWithNamespace string     `json:"project_path_with_namespace"`
+	UserEmail                string     `json:"user_email"`
+	UserName                 string     `json:"user_name"`
+	UserUsername             string     `json:"user_username"`
+	UserID                   int64      `json:"user_id"`
+	ProjectVisibility        string     `json:"project_visibility"`
+}
+
+// TeamMemberRemovedEventPayload contains the information about GitLab's team member removed event
+type TeamMemberRemovedEventPayload struct {
+	CreatedAt                customTime `json:"created_at"`
+	UpdatedAt                customTime `json:"updated_at"`
+	EventName                string     `json:"event_name"`
+	AccessLevel              string     `json:"access_level"`
+	ProjectID                int        `json:"project_id"`
+	ProjectName              string     `json:"project_name"`
+	ProjectPath              string     `json:"project_path"`
+	ProjectPathWithNamespace string     `json:"project_path_with_namespace"`
+	UserEmail                string     `json:"user_email"`
+	UserName                 string     `json:"user_name"`
+	UserUsername             string     `json:"user_username"`
+	UserID                   int64      `json:"user_id"`
+	ProjectVisibility        string     `json:"project_visibility"`
+}
+
+// TeamMemberUpdatedEventPayload contains the information about GitLab's team member updated event
+type TeamMemberUpdatedEventPayload struct {
+	CreatedAt                customTime `json:"created_at"`
+	UpdatedAt                customTime `json:"updated_at"`
+	EventName                string     `json:"event_name"`
+	AccessLevel              string     `json:"access_level"`
+	ProjectID                int64      `json:"project_id"`
+	ProjectName              string     `json:"project_name"`
+	ProjectPath              string     `json:"project_path"`
+	ProjectPathWithNamespace string     `json:"project_path_with_namespace"`
+	UserEmail                string     `json:"user_email"`
+	UserName                 string     `json:"user_name"`
+	UserUsername             string     `json:"user_username"`
+	UserID                   int64      `json:"user_id"`
+	ProjectVisibility        string     `json:"project_visibility"`
+}
+
+// UserCreatedEventPayload contains the information about GitLab's user created event
+type UserCreatedEventPayload struct {
+	CreatedAt customTime `json:"created_at"`
+	UpdatedAt customTime `json:"updated_at"`
+	Email     string     `json:"email"`
+	EventName string     `json:"event_name"`
+	Name      string     `json:"name"`
+	Username  string     `json:"username"`
+	UserID    int64      `json:"user_id"`
+}
+
+// UserRemovedEventPayload contains the information about GitLab's user removed event
+type UserRemovedEventPayload struct {
+	CreatedAt customTime `json:"created_at"`
+	UpdatedAt customTime `json:"updated_at"`
+	Email     string     `json:"email"`
+	EventName string     `json:"event_name"`
+	Name      string     `json:"name"`
+	Username  string     `json:"username"`
+	UserID    int64      `json:"user_id"`
+}
+
+// UserFailedLoginEventPayload contains the information about GitLab's user login failed event
+type UserFailedLoginEventPayload struct {
+	EventName string     `json:"event_name"`
+	CreatedAt customTime `json:"created_at"`
+	UpdatedAt customTime `json:"updated_at"`
+	Name      string     `json:"name"`
+	Email     string     `json:"email"`
+	UserID    int64      `json:"user_id"`
+	Username  string     `json:"username"`
+	State     string     `json:"state"`
+}
+
+// UserRenamedEventPayload contains the information about GitLab's user renamed event
+type UserRenamedEventPayload struct {
+	EventName   string     `json:"event_name"`
+	CreatedAt   customTime `json:"created_at"`
+	UpdatedAt   customTime `json:"updated_at"`
+	Name        string     `json:"name"`
+	Email       string     `json:"email"`
+	UserID      int64      `json:"user_id"`
+	Username    string     `json:"username"`
+	OldUsername string     `json:"old_username"`
+}
+
+// KeyAddedEventPayload contains the information about GitLab's key added event
+type KeyAddedEventPayload struct {
+	EventName string     `json:"event_name"`
+	CreatedAt string     `json:"created_at"`
+	UpdatedAt customTime `json:"updated_at"`
+	Username  string     `json:"username"`
+	Key       string     `json:"key"`
+	Id        int64      `json:"id"`
+}
+
+// KeyRemovedEventPayload contains the information about GitLab's key removed event
+type KeyRemovedEventPayload struct {
+	EventName string     `json:"event_name"`
+	CreatedAt string     `json:"created_at"`
+	UpdatedAt customTime `json:"updated_at"`
+	Username  string     `json:"username"`
+	Key       string     `json:"key"`
+	Id        int64      `json:"id"`
+}
+
+// GroupCreatedEventPayload contains the information about GitLab's group created event
+type GroupCreatedEventPayload struct {
+	CreatedAt customTime `json:"created_at"`
+	UpdatedAt customTime `json:"updated_at"`
+	EventName string     `json:"event_name"`
+	Name      string     `json:"name"`
+	Path      string     `json:"path"`
+	GroupID   int64      `json:"group_id"`
+}
+
+// GroupRemovedEventPayload contains the information about GitLab's group removed event
+type GroupRemovedEventPayload struct {
+	CreatedAt customTime `json:"created_at"`
+	UpdatedAt customTime `json:"updated_at"`
+	EventName string     `json:"event_name"`
+	Name      string     `json:"name"`
+	Path      string     `json:"path"`
+	GroupID   int64      `json:"group_id"`
+}
+
+// GroupRenamedEventPayload contains the information about GitLab's group renamed event
+type GroupRenamedEventPayload struct {
+	EventName   string     `json:"event_name"`
+	CreatedAt   customTime `json:"created_at"`
+	UpdatedAt   customTime `json:"updated_at"`
+	Name        string     `json:"name"`
+	Path        string     `json:"path"`
+	FullPath    string     `json:"full_path"`
+	GroupID     int64      `json:"group_id"`
+	OldPath     string     `json:"old_path"`
+	OldFullPath string     `json:"old_full_path"`
+}
+
+// GroupMemberAddedEventPayload contains the information about GitLab's new group member event
+type GroupMemberAddedEventPayload struct {
+	CreatedAt    customTime `json:"created_at"`
+	UpdatedAt    customTime `json:"updated_at"`
+	EventName    string     `json:"event_name"`
+	GroupAccess  string     `json:"group_access"`
+	GroupID      int64      `json:"group_id"`
+	GroupName    string     `json:"group_name"`
+	GroupPath    string     `json:"group_path"`
+	UserEmail    string     `json:"user_email"`
+	UserName     string     `json:"user_name"`
+	UserUsername string     `json:"user_username"`
+	UserID       int64      `json:"user_id"`
+}
+
+// GroupMemberRemovedEventPayload contains the information about GitLab's group member removed event
+type GroupMemberRemovedEventPayload struct {
+	CreatedAt    customTime `json:"created_at"`
+	UpdatedAt    customTime `json:"updated_at"`
+	EventName    string     `json:"event_name"`
+	GroupAccess  string     `json:"group_access"`
+	GroupID      int64      `json:"group_id"`
+	GroupName    string     `json:"group_name"`
+	GroupPath    string     `json:"group_path"`
+	UserEmail    string     `json:"user_email"`
+	UserName     string     `json:"user_name"`
+	UserUsername string     `json:"user_username"`
+	UserID       int64      `json:"user_id"`
+}
+
+// GroupMemberUpdatedEventPayload contains the information about GitLab's group member updated event
+type GroupMemberUpdatedEventPayload struct {
+	CreatedAt    customTime `json:"created_at"`
+	UpdatedAt    customTime `json:"updated_at"`
+	EventName    string     `json:"event_name"`
+	GroupAccess  string     `json:"group_access"`
+	GroupID      int64      `json:"group_id"`
+	GroupName    string     `json:"group_name"`
+	GroupPath    string     `json:"group_path"`
+	UserEmail    string     `json:"user_email"`
+	UserName     string     `json:"user_name"`
+	UserUsername string     `json:"user_username"`
+	UserID       int64      `json:"user_id"`
 }
 
 // Issue contains all of the GitLab issue information
@@ -228,6 +503,7 @@ type Build struct {
 	CreatedAt     customTime    `json:"created_at"`
 	StartedAt     customTime    `json:"started_at"`
 	FinishedAt    customTime    `json:"finished_at"`
+	FailureReason string        `json:"failure_reason"`
 	When          string        `json:"when"`
 	Manual        bool          `json:"manual"`
 	User          User          `json:"user"`
