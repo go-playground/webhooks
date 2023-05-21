@@ -182,6 +182,23 @@ type JobEventPayload struct {
 	Runner              Runner      `json:"runner"`
 }
 
+// DeploymentEventPayload contains the information for GitLab's triggered when a deployment
+type DeploymentEventPayload struct {
+	ObjectKind     string  `json:"object_kind"`
+	Status         string  `json:"status"`
+	StatusChangeAt string  `json:"status_changed_at"`
+	DeploymentId   int64   `json:"deployment_id"`
+	DeployableId   int64   `json:"deployable_id"`
+	DeployableUrl  string  `json:"deployable_url"`
+	Environment    string  `json:"environment"`
+	Project        Project `json:"project"`
+	ShortSha       string  `json:"short_sha"`
+	User           User    `json:"user"`
+	UserUrl        string  `json:"user_url"`
+	CommitUrl      string  `json:"commit_url"`
+	CommitTitle    string  `json:"commit_title"`
+}
+
 // SystemHookPayload contains the ObjectKind to match with real hook events
 type SystemHookPayload struct {
 	ObjectKind string `json:"object_kind"`

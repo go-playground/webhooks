@@ -35,6 +35,7 @@ const (
 	PipelineEvents           Event  = "Pipeline Hook"
 	BuildEvents              Event  = "Build Hook"
 	JobEvents                Event  = "Job Hook"
+  DeploymentEvents         Event = "Deployment Hook"
 	SystemHookEvents         Event  = "System Hook"
 	objectPush               string = "push"
 	objectTag                string = "tag_push"
@@ -205,6 +206,14 @@ func eventParsing(gitLabEvent Event, events []Event, payload []byte) (interface{
 		}
 		if pl.ObjectKind == objectBuild {
 			return eventParsing(BuildEvents, events, payload)
+		}
+		return pl, nil
+
+	case DeploymentEvents:
+		var pl DeploymentEventPayload
+		err := json.Unmarshal([]byte(payload), &pl)
+		if err != nil {
+			return nil, err
 		}
 		return pl, nil
 
