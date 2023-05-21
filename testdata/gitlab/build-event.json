@@ -10,6 +10,7 @@
   "build_status": "created",
   "build_started_at": null,
   "build_finished_at": null,
+  "build_queued_duration": 0.9678,
   "build_duration": null,
   "build_allow_failure": false,
   "project_id": 380,
