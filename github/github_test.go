@@ -593,6 +593,16 @@ func TestWebhooks(t *testing.T) {
 				"X-Hub-Signature": []string{"sha1=c54d046b1ce440bc3434c8de5ad73e0a630d7cbe"},
 			},
 		},
+		{
+			name:     "GitHubAppAuthorizationEvent",
+			event:    GitHubAppAuthorizationEvent,
+			typ:      GitHubAppAuthorizationPayload{},
+			filename: "../testdata/github/github-app-authorization.json",
+			headers: http.Header{
+				"X-Github-Event":  []string{"github_app_authorization"},
+				"X-Hub-Signature": []string{"sha1=4f18624a7fe3a9c525b51bdbd0e3da8230d753d6"},
+			},
+		},
 	}
 
 	for _, tt := range tests {
