@@ -33,6 +33,7 @@ const (
 	CommitCommentEvent                       Event = "commit_comment"
 	CreateEvent                              Event = "create"
 	DeleteEvent                              Event = "delete"
+	DependabotAlertEvent                     Event = "dependabot_alert"
 	DeployKeyEvent                           Event = "deploy_key"
 	DeploymentEvent                          Event = "deployment"
 	DeploymentStatusEvent                    Event = "deployment_status"
@@ -194,6 +195,10 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return pl, err
 	case DeleteEvent:
 		var pl DeletePayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
+	case DependabotAlertEvent:
+		var pl DependabotAlertPayload
 		err = json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 	case DeploymentEvent:
