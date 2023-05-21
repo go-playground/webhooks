@@ -1,6 +1,8 @@
 package gitlab
 
 import (
+	"crypto/sha512"
+	"crypto/subtle"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -53,14 +55,16 @@ type WebhookOptions struct{}
 // Secret registers the GitLab secret
 func (WebhookOptions) Secret(secret string) Option {
 	return func(hook *Webhook) error {
-		hook.secret = secret
+		// already convert here to prevent timing attack (conversion depends on secret)
+		hash := sha512.Sum512([]byte(secret))
+		hook.secretHash = hash[:]
 		return nil
 	}
 }
 
 // Webhook instance contains all methods needed to process events
 type Webhook struct {
-	secret string
+	secretHash []byte
 }
 
 // Event defines a GitLab hook event type by the X-Gitlab-Event Header
@@ -91,10 +95,10 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return nil, ErrInvalidHTTPMethod
 	}
 
-	// If we have a Secret set, we should check the MAC
-	if len(hook.secret) > 0 {
-		signature := r.Header.Get("X-Gitlab-Token")
-		if signature != hook.secret {
+	// If we have a Secret set, we should check in constant time
+	if len(hook.secretHash) > 0 {
+		tokenHash := sha512.Sum512([]byte(r.Header.Get("X-Gitlab-Token")))
+		if subtle.ConstantTimeCompare(tokenHash[:], hook.secretHash[:]) == 0 {
 			return nil, ErrGitLabTokenVerificationFailed
 		}
 	}
