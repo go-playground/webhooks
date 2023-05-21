@@ -74,7 +74,7 @@ type PushEventPayload struct {
 	UserEmail         string     `json:"user_email"`
 	UserAvatar        string     `json:"user_avatar"`
 	ProjectID         int64      `json:"project_id"`
-	Project           Project    `json:"Project"`
+	Project           Project    `json:"project"`
 	Repository        Repository `json:"repository"`
 	Commits           []Commit   `json:"commits"`
 	TotalCommitsCount int64      `json:"total_commits_count"`
@@ -92,7 +92,7 @@ type TagEventPayload struct {
 	UserUsername      string     `json:"user_username"`
 	UserAvatar        string     `json:"user_avatar"`
 	ProjectID         int64      `json:"project_id"`
-	Project           Project    `json:"Project"`
+	Project           Project    `json:"project"`
 	Repository        Repository `json:"repository"`
 	Commits           []Commit   `json:"commits"`
 	TotalCommitsCount int64      `json:"total_commits_count"`
