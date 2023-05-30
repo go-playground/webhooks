@@ -2,7 +2,7 @@ package github
 
 import (
 	"crypto/hmac"
-	"crypto/sha1"
+	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
@@ -10,6 +10,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 // parse errors
@@ -17,7 +18,7 @@ var (
 	ErrEventNotSpecifiedToParse  = errors.New("no Event specified to parse")
 	ErrInvalidHTTPMethod         = errors.New("invalid HTTP Method")
 	ErrMissingGithubEventHeader  = errors.New("missing X-GitHub-Event Header")
-	ErrMissingHubSignatureHeader = errors.New("missing X-Hub-Signature Header")
+	ErrMissingHubSignatureHeader = errors.New("missing X-Hub-Signature-256 Header")
 	ErrEventNotFound             = errors.New("event not defined to be parsed")
 	ErrParsingPayload            = errors.New("error parsing payload")
 	ErrHMACVerificationFailed    = errors.New("HMAC verification failed")
@@ -160,15 +161,18 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 
 	// If we have a Secret set, we should check the MAC
 	if len(hook.secret) > 0 {
-		signature := r.Header.Get("X-Hub-Signature")
+		signature := r.Header.Get("X-Hub-Signature-256")
 		if len(signature) == 0 {
 			return nil, ErrMissingHubSignatureHeader
 		}
-		mac := hmac.New(sha1.New, []byte(hook.secret))
+
+		signature = strings.TrimPrefix(signature, "sha256=")
+
+		mac := hmac.New(sha256.New, []byte(hook.secret))
 		_, _ = mac.Write(payload)
 		expectedMAC := hex.EncodeToString(mac.Sum(nil))
 
-		if !hmac.Equal([]byte(signature[5:]), []byte(expectedMAC)) {
+		if !hmac.Equal([]byte(signature), []byte(expectedMAC)) {
 			return nil, ErrHMACVerificationFailed
 		}
 	}
