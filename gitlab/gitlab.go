@@ -25,43 +25,44 @@ var (
 
 // GitLab hook types
 const (
-	PushEvents               Event  = "Push Hook"
-	TagEvents                Event  = "Tag Push Hook"
-	IssuesEvents             Event  = "Issue Hook"
-	ConfidentialIssuesEvents Event  = "Confidential Issue Hook"
-	CommentEvents            Event  = "Note Hook"
-	ConfidentialCommentEvents Event = "Confidential Note Hook"
-	MergeRequestEvents       Event  = "Merge Request Hook"
-	WikiPageEvents           Event  = "Wiki Page Hook"
-	PipelineEvents           Event  = "Pipeline Hook"
-	BuildEvents              Event  = "Build Hook"
-	JobEvents                Event  = "Job Hook"
-  DeploymentEvents         Event = "Deployment Hook"
-	SystemHookEvents         Event  = "System Hook"
-	objectPush               string = "push"
-	objectTag                string = "tag_push"
-	objectMergeRequest       string = "merge_request"
-	objectBuild              string = "build"
-	eventProjectCreate       string = "project_create"
-	eventProjectDestroy      string = "project_destroy"
-	eventProjectRename       string = "project_rename"
-	eventProjectTransfer     string = "project_transfer"
-	eventProjectUpdate       string = "project_update"
-	eventUserAddToTeam       string = "user_add_to_team"
-	eventUserRemoveFromTeam  string = "user_remove_from_team"
-	eventUserUpdateForTeam   string = "user_update_for_team"
-	eventUserCreate          string = "user_create"
-	eventUserDestroy         string = "user_destroy"
-	eventUserFailedLogin     string = "user_failed_login"
-	eventUserRename          string = "user_rename"
-	eventKeyCreate           string = "key_create"
-	eventKeyDestroy          string = "key_destroy"
-	eventGroupCreate         string = "group_create"
-	eventGroupDestroy        string = "group_destroy"
-	eventGroupRename         string = "group_rename"
-	eventUserAddToGroup      string = "user_add_to_group"
-	eventUserRemoveFromGroup string = "user_remove_from_group"
-	eventUserUpdateForGroup  string = "user_update_for_group"
+	PushEvents                Event  = "Push Hook"
+	TagEvents                 Event  = "Tag Push Hook"
+	IssuesEvents              Event  = "Issue Hook"
+	ConfidentialIssuesEvents  Event  = "Confidential Issue Hook"
+	CommentEvents             Event  = "Note Hook"
+	ConfidentialCommentEvents Event  = "Confidential Note Hook"
+	MergeRequestEvents        Event  = "Merge Request Hook"
+	WikiPageEvents            Event  = "Wiki Page Hook"
+	PipelineEvents            Event  = "Pipeline Hook"
+	BuildEvents               Event  = "Build Hook"
+	JobEvents                 Event  = "Job Hook"
+	DeploymentEvents          Event  = "Deployment Hook"
+	ReleaseEvents             Event  = "Release Hook"
+	SystemHookEvents          Event  = "System Hook"
+	objectPush                string = "push"
+	objectTag                 string = "tag_push"
+	objectMergeRequest        string = "merge_request"
+	objectBuild               string = "build"
+	eventProjectCreate        string = "project_create"
+	eventProjectDestroy       string = "project_destroy"
+	eventProjectRename        string = "project_rename"
+	eventProjectTransfer      string = "project_transfer"
+	eventProjectUpdate        string = "project_update"
+	eventUserAddToTeam        string = "user_add_to_team"
+	eventUserRemoveFromTeam   string = "user_remove_from_team"
+	eventUserUpdateForTeam    string = "user_update_for_team"
+	eventUserCreate           string = "user_create"
+	eventUserDestroy          string = "user_destroy"
+	eventUserFailedLogin      string = "user_failed_login"
+	eventUserRename           string = "user_rename"
+	eventKeyCreate            string = "key_create"
+	eventKeyDestroy           string = "key_destroy"
+	eventGroupCreate          string = "group_create"
+	eventGroupDestroy         string = "group_destroy"
+	eventGroupRename          string = "group_rename"
+	eventUserAddToGroup       string = "user_add_to_group"
+	eventUserRemoveFromGroup  string = "user_remove_from_group"
+	eventUserUpdateForGroup   string = "user_update_for_group"
 )
 
 // Option is a configuration option for the webhook
@@ -354,6 +355,10 @@ func eventParsing(gitLabEvent Event, events []Event, payload []byte) (interface{
 				return nil, fmt.Errorf("unknown system hook event %s", gitLabEvent)
 			}
 		}
+	case ReleaseEvents:
+		var pl ReleaseEventPayload
+		err := json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	default:
 		return nil, fmt.Errorf("unknown event %s", gitLabEvent)
 	}

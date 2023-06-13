@@ -94,23 +94,27 @@ func TestBadRequests(t *testing.T) {
 	for _, tt := range tests {
 		tc := tt
 		client := &http.Client{}
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			var parseError error
-			server := newServer(func(w http.ResponseWriter, r *http.Request) {
-				_, parseError = hook.Parse(r, tc.event)
-			})
-			defer server.Close()
-			req, err := http.NewRequest(http.MethodPost, server.URL+path, tc.payload)
-			assert.NoError(err)
-			req.Header = tc.headers
-			req.Header.Set("Content-Type", "application/json")
+		t.Run(
+			tt.name, func(t *testing.T) {
+				t.Parallel()
+				var parseError error
+				server := newServer(
+					func(w http.ResponseWriter, r *http.Request) {
+						_, parseError = hook.Parse(r, tc.event)
+					},
+				)
+				defer server.Close()
+				req, err := http.NewRequest(http.MethodPost, server.URL+path, tc.payload)
+				assert.NoError(err)
+				req.Header = tc.headers
+				req.Header.Set("Content-Type", "application/json")
 
-			resp, err := client.Do(req)
-			assert.NoError(err)
-			assert.Equal(http.StatusOK, resp.StatusCode)
-			assert.Error(parseError)
-		})
+				resp, err := client.Do(req)
+				assert.NoError(err)
+				assert.Equal(http.StatusOK, resp.StatusCode)
+				assert.Error(parseError)
+			},
+		)
 	}
 }
 
@@ -249,37 +253,50 @@ func TestWebhooks(t *testing.T) {
 				"X-Gitlab-Event": []string{"Deployment Hook"},
 			},
 		},
+		{
+			name:     "ReleaseEvent",
+			event:    ReleaseEvents,
+			typ:      ReleaseEventPayload{},
+			filename: "../testdata/gitlab/release-event.json",
+			headers: http.Header{
+				"X-Gitlab-Event": []string{"Release Hook"},
+			},
+		},
 	}
 
 	for _, tt := range tests {
 		tc := tt
 		client := &http.Client{}
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			payload, err := os.Open(tc.filename)
-			assert.NoError(err)
-			defer func() {
-				_ = payload.Close()
-			}()
+		t.Run(
+			tt.name, func(t *testing.T) {
+				t.Parallel()
+				payload, err := os.Open(tc.filename)
+				assert.NoError(err)
+				defer func() {
+					_ = payload.Close()
+				}()
 
-			var parseError error
-			var results interface{}
-			server := newServer(func(w http.ResponseWriter, r *http.Request) {
-				results, parseError = hook.Parse(r, tc.event)
-			})
-			defer server.Close()
-			req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-			assert.NoError(err)
-			req.Header = tc.headers
-			req.Header.Set("Content-Type", "application/json")
-			req.Header.Set("X-Gitlab-Token", "sampleToken!")
+				var parseError error
+				var results interface{}
+				server := newServer(
+					func(w http.ResponseWriter, r *http.Request) {
+						results, parseError = hook.Parse(r, tc.event)
+					},
+				)
+				defer server.Close()
+				req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
+				assert.NoError(err)
+				req.Header = tc.headers
+				req.Header.Set("Content-Type", "application/json")
+				req.Header.Set("X-Gitlab-Token", "sampleToken!")
 
-			resp, err := client.Do(req)
-			assert.NoError(err)
-			assert.Equal(http.StatusOK, resp.StatusCode)
-			assert.NoError(parseError)
-			assert.Equal(reflect.TypeOf(tc.typ), reflect.TypeOf(results))
-		})
+				resp, err := client.Do(req)
+				assert.NoError(err)
+				assert.Equal(http.StatusOK, resp.StatusCode)
+				assert.NoError(parseError)
+				assert.Equal(reflect.TypeOf(tc.typ), reflect.TypeOf(results))
+			},
+		)
 	}
 }
 
@@ -306,32 +323,36 @@ func TestJobHooks(t *testing.T) {
 	for _, tt := range tests {
 		tc := tt
 		client := &http.Client{}
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			payload, err := os.Open(tc.filename)
-			assert.NoError(err)
-			defer func() {
-				_ = payload.Close()
-			}()
+		t.Run(
+			tt.name, func(t *testing.T) {
+				t.Parallel()
+				payload, err := os.Open(tc.filename)
+				assert.NoError(err)
+				defer func() {
+					_ = payload.Close()
+				}()
 
-			var parseError error
-			var results interface{}
-			server := newServer(func(w http.ResponseWriter, r *http.Request) {
-				results, parseError = hook.Parse(r, tc.events...)
-			})
-			defer server.Close()
-			req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-			assert.NoError(err)
-			req.Header = tc.headers
-			req.Header.Set("Content-Type", "application/json")
-			req.Header.Set("X-Gitlab-Token", "sampleToken!")
+				var parseError error
+				var results interface{}
+				server := newServer(
+					func(w http.ResponseWriter, r *http.Request) {
+						results, parseError = hook.Parse(r, tc.events...)
+					},
+				)
+				defer server.Close()
+				req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
+				assert.NoError(err)
+				req.Header = tc.headers
+				req.Header.Set("Content-Type", "application/json")
+				req.Header.Set("X-Gitlab-Token", "sampleToken!")
 
-			resp, err := client.Do(req)
-			assert.NoError(err)
-			assert.Equal(http.StatusOK, resp.StatusCode)
-			assert.NoError(parseError)
-			assert.Equal(reflect.TypeOf(tc.typ), reflect.TypeOf(results))
-		})
+				resp, err := client.Do(req)
+				assert.NoError(err)
+				assert.Equal(http.StatusOK, resp.StatusCode)
+				assert.NoError(parseError)
+				assert.Equal(reflect.TypeOf(tc.typ), reflect.TypeOf(results))
+			},
+		)
 	}
 }
 
@@ -485,31 +506,35 @@ func TestSystemHooks(t *testing.T) {
 	for _, tt := range tests {
 		tc := tt
 		client := &http.Client{}
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			payload, err := os.Open(tc.filename)
-			assert.NoError(err)
-			defer func() {
-				_ = payload.Close()
-			}()
+		t.Run(
+			tt.name, func(t *testing.T) {
+				t.Parallel()
+				payload, err := os.Open(tc.filename)
+				assert.NoError(err)
+				defer func() {
+					_ = payload.Close()
+				}()
 
-			var parseError error
-			var results interface{}
-			server := newServer(func(w http.ResponseWriter, r *http.Request) {
-				results, parseError = hook.Parse(r, SystemHookEvents, tc.event)
-			})
-			defer server.Close()
-			req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
-			assert.NoError(err)
-			req.Header.Set("Content-Type", "application/json")
-			req.Header.Set("X-Gitlab-Token", "sampleToken!")
-			req.Header.Set("X-Gitlab-Event", "System Hook")
+				var parseError error
+				var results interface{}
+				server := newServer(
+					func(w http.ResponseWriter, r *http.Request) {
+						results, parseError = hook.Parse(r, SystemHookEvents, tc.event)
+					},
+				)
+				defer server.Close()
+				req, err := http.NewRequest(http.MethodPost, server.URL+path, payload)
+				assert.NoError(err)
+				req.Header.Set("Content-Type", "application/json")
+				req.Header.Set("X-Gitlab-Token", "sampleToken!")
+				req.Header.Set("X-Gitlab-Event", "System Hook")
 
-			resp, err := client.Do(req)
-			assert.NoError(err)
-			assert.Equal(http.StatusOK, resp.StatusCode)
-			assert.NoError(parseError)
-			assert.Equal(reflect.TypeOf(tc.typ), reflect.TypeOf(results))
-		})
+				resp, err := client.Do(req)
+				assert.NoError(err)
+				assert.Equal(http.StatusOK, resp.StatusCode)
+				assert.NoError(parseError)
+				assert.Equal(reflect.TypeOf(tc.typ), reflect.TypeOf(results))
+			},
+		)
 	}
 }
