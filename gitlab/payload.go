@@ -52,6 +52,7 @@ type ConfidentialIssueEventPayload struct {
 // MergeRequestEventPayload contains the information for GitLab's merge request event
 type MergeRequestEventPayload struct {
 	ObjectKind       string           `json:"object_kind"`
+	EventType        string           `json:"event_type"`
 	User             User             `json:"user"`
 	ObjectAttributes ObjectAttributes `json:"object_attributes"`
 	Changes          Changes          `json:"changes"`
@@ -59,6 +60,15 @@ type MergeRequestEventPayload struct {
 	Repository       Repository       `json:"repository"`
 	Labels           []Label          `json:"labels"`
 	Assignees        []Assignee       `json:"assignees"`
+	Reviewers        []Reviewers      `json:"reviewers"`
+}
+
+// Reviewers contains all of the GitLab reviewers information
+type Reviewers struct {
+	ID        int    `json:"id"`
+	Name      string `json:"name"`
+	Username  string `json:"username"`
+	AvatarURL string `json:"avatar_url"`
 }
 
 // PushEventPayload contains the information for GitLab's push event
@@ -605,6 +615,7 @@ type Project struct {
 	VisibilityLevel   int64  `json:"visibility_level"`
 	PathWithNamespace string `json:"path_with_namespace"`
 	DefaultBranch     string `json:"default_branch"`
+	CiConfigPath      string `json:"ci_config_path"`
 	Homepage          string `json:"homepage"`
 	URL               string `json:"url"`
 	SSHURL            string `json:"ssh_url"`
@@ -628,6 +639,7 @@ type ObjectAttributes struct {
 	Title            string     `json:"title"`
 	AssigneeIDS      []int64    `json:"assignee_ids"`
 	AssigneeID       int64      `json:"assignee_id"`
+	ReviewerIDs      []int64    `json:"reviewer_ids"`
 	AuthorID         int64      `json:"author_id"`
 	ProjectID        int64      `json:"project_id"`
 	CreatedAt        customTime `json:"created_at"`
@@ -813,6 +825,7 @@ type Target struct {
 type LastCommit struct {
 	ID        string     `json:"id"`
 	Message   string     `json:"message"`
+	Title     string     `json:"title"`
 	Timestamp customTime `json:"timestamp"`
 	URL       string     `json:"url"`
 	Author    Author     `json:"author"`
