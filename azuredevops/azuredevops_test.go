@@ -80,6 +80,12 @@ func TestWebhooks(t *testing.T) {
 			typ:      GitPullRequestEvent{},
 			filename: "../testdata/azuredevops/git.pullrequest.updated.json",
 		},
+		{
+			name:     "git.push",
+			event:    GitPushEventType,
+			typ:      GitPushEvent{},
+			filename: "../testdata/azuredevops/git.push.json",
+		},
 	}
 
 	for _, tt := range tests {
