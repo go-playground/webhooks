@@ -535,7 +535,7 @@ type CommitCommentPayload struct {
 	} `json:"sender"`
 	Installation struct {
 		ID int64 `json:"id"`
-	} `json:"installation"`
+	} `json:"installation,omitempty"`
 }
 
 // CreatePayload contains the information for GitHub's create hook event
@@ -2122,7 +2122,7 @@ type IssueCommentPayload struct {
 	} `json:"sender"`
 	Installation struct {
 		ID int64 `json:"id"`
-	} `json:"installation"`
+	} `json:"installation,omitempty"`
 }
 
 // IssuesPayload contains the information for GitHub's issues hook event
@@ -2297,7 +2297,7 @@ type IssuesPayload struct {
 	} `json:"sender"`
 	Installation struct {
 		ID int64 `json:"id"`
-	} `json:"installation"`
+	} `json:"installation,omitempty"`
 	Assignee *Assignee `json:"assignee"`
 	Label    *Label    `json:"label"`
 }
