@@ -685,6 +685,8 @@ type ObjectAttributes struct {
 // PipelineObjectAttributes contains pipeline specific GitLab object attributes information
 type PipelineObjectAttributes struct {
 	ID         int64      `json:"id"`
+	IID        int64      `json:"iid"`
+	Name       string     `json:"name"`
 	Ref        string     `json:"ref"`
 	Tag        bool       `json:"tag"`
 	SHA        string     `json:"sha"`
@@ -696,6 +698,7 @@ type PipelineObjectAttributes struct {
 	FinishedAt customTime `json:"finished_at"`
 	Duration   int64      `json:"duration"`
 	Variables  []Variable `json:"variables"`
+	Url        string     `json:"url"`
 }
 
 // Variable contains pipeline variables
