@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 )
 
@@ -81,7 +80,7 @@ func New(options ...Option) (*Webhook, error) {
 // Parse verifies and parses the events specified and returns the payload object or an error
 func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error) {
 	defer func() {
-		_, _ = io.Copy(ioutil.Discard, r.Body)
+		_, _ = io.Copy(io.Discard, r.Body)
 		_ = r.Body.Close()
 	}()
 
@@ -120,7 +119,7 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return nil, ErrEventNotFound
 	}
 
-	payload, err := ioutil.ReadAll(r.Body)
+	payload, err := io.ReadAll(r.Body)
 	if err != nil || len(payload) == 0 {
 		return nil, ErrParsingPayload
 	}
