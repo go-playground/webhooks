@@ -1,0 +1,13 @@
+{
+  "action": "published",
+  "release": {
+    "tag_name": "v1.0.0",
+    "html_url": "https://gogs.example.com/user/repo/releases/tag/v1.0.0"
+  },
+  "repository": {
+    "name": "repo",
+    "full_name": "user/repo",
+    "html_url": "https://gogs.example.com/user/repo",
+    "clone_url": "https://gogs.example.com/user/repo.git"
+  }
+}

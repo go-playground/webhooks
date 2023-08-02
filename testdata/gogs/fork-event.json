@@ -1,0 +1,22 @@
+{
+    "forkee": {
+        "name": "repo",
+        "full_name": "user/repo",
+        "html_url": "https://gogs.example.com/user/repo",
+        "clone_url": "https://gogs.example.com/user/repo.git"
+    },
+    "repository": {
+        "name": "repo",
+        "full_name": "user/repo",
+        "html_url": "https://gogs.example.com/user/repo",
+        "clone_url": "https://gogs.example.com/user/repo.git"
+    },
+    "sender": {
+        "id": 1,
+        "login": "unknwon",
+        "full_name": "Unknwon",
+        "email": "u@gogs.io",
+        "avatar_url": "https://secure.gravatar.com/avatar/d8b2871cdac01b57bbda23716cc03b96",
+        "username": "unknwon"
+    }
+}
