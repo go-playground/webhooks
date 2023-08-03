@@ -187,9 +187,9 @@ type CheckRunPayload struct {
 		Watchers         int64     `json:"watchers"`
 		DefaultBranch    string    `json:"default_branch"`
 	} `json:"repository"`
-	Installation struct {
+	Installation *struct {
 		ID int64 `json:"id"`
-	} `json:"installation,omitempty"`
+	} `json:"installation"`
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
@@ -362,9 +362,9 @@ type CheckSuitePayload struct {
 		Watchers         int64     `json:"watchers"`
 		DefaultBranch    string    `json:"default_branch"`
 	} `json:"repository"`
-	Installation struct {
+	Installation *struct {
 		ID int64 `json:"id"`
-	} `json:"installation,omitempty"`
+	} `json:"installation"`
 	Sender struct {
 		Login             string `json:"login"`
 		ID                int64  `json:"id"`
@@ -533,9 +533,9 @@ type CommitCommentPayload struct {
 		Type              string `json:"type"`
 		SiteAdmin         bool   `json:"site_admin"`
 	} `json:"sender"`
-	Installation struct {
+	Installation *struct {
 		ID int64 `json:"id"`
-	} `json:"installation,omitempty"`
+	} `json:"installation"`
 }
 
 // CreatePayload contains the information for GitHub's create hook event
@@ -2120,9 +2120,9 @@ type IssueCommentPayload struct {
 		Type              string `json:"type"`
 		SiteAdmin         bool   `json:"site_admin"`
 	} `json:"sender"`
-	Installation struct {
+	Installation *struct {
 		ID int64 `json:"id"`
-	} `json:"installation,omitempty"`
+	} `json:"installation"`
 }
 
 // IssuesPayload contains the information for GitHub's issues hook event
@@ -2295,9 +2295,9 @@ type IssuesPayload struct {
 		Type              string `json:"type"`
 		SiteAdmin         bool   `json:"site_admin"`
 	} `json:"sender"`
-	Installation struct {
+	Installation *struct {
 		ID int64 `json:"id"`
-	} `json:"installation,omitempty"`
+	} `json:"installation"`
 	Assignee *Assignee `json:"assignee"`
 	Label    *Label    `json:"label"`
 }
