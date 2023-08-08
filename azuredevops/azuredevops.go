@@ -27,6 +27,7 @@ const (
 	GitPullRequestCreatedEventType Event = "git.pullrequest.created"
 	GitPullRequestUpdatedEventType Event = "git.pullrequest.updated"
 	GitPullRequestMergedEventType  Event = "git.pullrequest.merged"
+	GitPushEventType               Event = "git.push"
 )
 
 // Webhook instance contains all methods needed to process events
@@ -62,6 +63,10 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 	}
 
 	switch pl.EventType {
+	case GitPushEventType:
+		var fpl GitPushEvent
+		err = json.Unmarshal([]byte(payload), &fpl)
+		return fpl, err
 	case GitPullRequestCreatedEventType, GitPullRequestMergedEventType, GitPullRequestUpdatedEventType:
 		var fpl GitPullRequestEvent
 		err = json.Unmarshal([]byte(payload), &fpl)

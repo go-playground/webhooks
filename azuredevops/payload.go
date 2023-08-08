@@ -36,6 +36,21 @@ type GitPullRequestEvent struct {
 	CreatedDate        Date        `json:"createdDate"`
 }
 
+// git.push
+
+type GitPushEvent struct {
+	CreatedDate        string             `json:"createdDate"`
+	DetailedMessage    Message            `json:"detailedMessage"`
+	EventType          string             `json:"eventType"`
+	ID                 string             `json:"id"`
+	Message            Message            `json:"message"`
+	PublisherID        string             `json:"publisherId"`
+	Resource           Resource           `json:"resource"`
+	ResourceContainers ResourceContainers `json:"resourceContainers"`
+	ResourceVersion    string             `json:"resourceVersion"`
+	Scope              string             `json:"scope"`
+}
+
 // build.complete
 
 type BuildCompleteEvent struct {
@@ -174,6 +189,38 @@ type Request struct {
 	ID           int    `json:"id"`
 	URL          string `json:"url"`
 	RequestedFor User   `json:"requestedFor"`
+}
+
+type Resource struct {
+	Commits    []Commit    `json:"commits"`
+	Date       string      `json:"date"`
+	PushedBy   PushedBy    `json:"pushedBy"`
+	PushID     int         `json:"pushId"`
+	RefUpdates []RefUpdate `json:"refUpdates"`
+	Repository Repository  `json:"repository"`
+	URL        string      `json:"url"`
+}
+
+type RefUpdate struct {
+	Name        string `json:"name"`
+	NewObjectID string `json:"newObjectId"`
+	OldObjectID string `json:"oldObjectId"`
+}
+
+type PushedBy struct {
+	DisplayName string `json:"displayName"`
+	ID          string `json:"id"`
+	UniqueName  string `json:"uniqueName"`
+}
+
+type ResourceContainers struct {
+	Account    Account `json:"account"`
+	Collection Account `json:"collection"`
+	Project    Account `json:"project"`
+}
+
+type Account struct {
+	ID string `json:"id"`
 }
 
 type Date time.Time
