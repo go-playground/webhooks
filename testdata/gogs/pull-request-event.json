@@ -1,0 +1,19 @@
+{
+    "action": "opened",
+    "number": 1,
+    "pull_request": {
+        "title": "Add new feature",
+        "body": "This pull request adds a new feature.",
+        "html_url": "https://gogs.example.com/user/repo/pulls/1",
+        "user": {
+            "login": "jane",
+            "html_url": "https://gogs.example.com/jane"
+        }
+    },
+    "repository": {
+        "name": "repo",
+        "full_name": "user/repo",
+        "html_url": "https://gogs.example.com/user/repo",
+        "clone_url": "https://gogs.example.com/user/repo.git"
+    }
+}
