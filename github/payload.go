@@ -6648,6 +6648,9 @@ type WorkflowJobPayload struct {
 		Type              string `json:"type"`
 		SiteAdmin         bool   `json:"site_admin"`
 	} `json:"sender"`
+	Installation struct {
+		ID int64 `json:"id"`
+	} `json:"installation,omitempty"`
 }
 
 // WorkflowRunPayload contains the information for GitHub's workflow run event
