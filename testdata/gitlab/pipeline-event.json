@@ -2,6 +2,8 @@
    "object_kind": "pipeline",
    "object_attributes":{
       "id": 31,
+      "iid": 3,
+      "name": "pipeline_name",
       "ref": "master",
       "tag": false,
       "sha": "bcbb5ec396a2c0f828686f14fac9b80b780504f2",
@@ -21,7 +23,8 @@
           "key": "NESTOR_PROD_ENVIRONMENT",
           "value": "us-west-1"
         }
-      ]
+      ],
+      "url": "http://192.168.64.1:3005/gitlab-org/gitlab-test/-/pipelines/31"
    },
     "merge_request": {
       "id": 1,

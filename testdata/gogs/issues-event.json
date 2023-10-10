@@ -1,0 +1,19 @@
+{
+    "action": "opened",
+    "issue": {
+        "number": 1,
+        "title": "Fix bug",
+        "body": "There is a bug in the code.",
+        "html_url": "https://gogs.example.com/user/repo/issues/1",
+        "user": {
+            "login": "jane",
+            "html_url": "https://gogs.example.com/jane"
+        }
+    },
+    "repository": {
+        "name": "repo",
+        "full_name": "user/repo",
+        "html_url": "https://gogs.example.com/user/repo",
+        "clone_url": "https://gogs.example.com/user/repo.git"
+    }
+}

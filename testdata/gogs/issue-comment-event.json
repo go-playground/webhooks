@@ -1,0 +1,22 @@
+{
+    "action": "created",
+    "issue": {
+        "number": 1,
+        "title": "Fix bug",
+        "html_url": "https://gogs.example.com/user/repo/issues/1"
+    },
+    "comment": {
+        "body": "I found the cause of the bug.",
+        "html_url": "https://gogs.example.com/user/repo/issues/1#comment-12345",
+        "user": {
+            "login": "john",
+            "html_url": "https://gogs.example.com/john"
+        }
+    },
+    "repository": {
+        "name": "repo",
+        "full_name": "user/repo",
+        "html_url": "https://gogs.example.com/user/repo",
+        "clone_url": "https://gogs.example.com/user/repo.git"
+    }
+}
