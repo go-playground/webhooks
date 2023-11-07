@@ -485,6 +485,43 @@ type GroupMemberUpdatedEventPayload struct {
 	UserID       int64      `json:"user_id"`
 }
 
+// ReleaseEventPayload contains the information about GitLab's release event
+type ReleaseEventPayload struct {
+	ID          int        `json:"id"`
+	CreatedAt   customTime `json:"created_at"`
+	Description string     `json:"description"`
+	Name        string     `json:"name"`
+	ReleasedAt  customTime `json:"released_at"`
+	Tag         string     `json:"tag"`
+	ObjectKind  string     `json:"object_kind"`
+	Project     Project    `json:"project"`
+	URL         string     `json:"url"`
+	Action      string     `json:"action"`
+	Assets      Assets     `json:"assets"`
+}
+
+// Assets represent artefacts and links associated to a release
+type Assets struct {
+	Count   int           `json:"count"`
+	Links   []Link        `json:"links"`
+	Sources []AssetSource `json:"sources"`
+}
+
+// Link represent a generic html link
+type Link struct {
+	ID       int    `json:"id"`
+	External bool   `json:"external"`
+	LinkType string `json:"link_type"`
+	Name     string `json:"name"`
+	URL      string `json:"url"`
+}
+
+// AssetSource represent the download url for an asset
+type AssetSource struct {
+	Format string `json:"format"`
+	URL    string `json:"url"`
+}
+
 // Issue contains all of the GitLab issue information
 type Issue struct {
 	ID          int64      `json:"id"`

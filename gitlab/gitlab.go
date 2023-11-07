@@ -36,6 +36,7 @@ const (
 	BuildEvents               Event  = "Build Hook"
 	JobEvents                 Event  = "Job Hook"
 	DeploymentEvents          Event  = "Deployment Hook"
+	ReleaseEvents             Event  = "Release Hook"
 	SystemHookEvents          Event  = "System Hook"
 	objectPush                string = "push"
 	objectTag                 string = "tag_push"
@@ -353,6 +354,10 @@ func eventParsing(gitLabEvent Event, events []Event, payload []byte) (interface{
 				return nil, fmt.Errorf("unknown system hook event %s", gitLabEvent)
 			}
 		}
+	case ReleaseEvents:
+		var pl ReleaseEventPayload
+		err := json.Unmarshal([]byte(payload), &pl)
+		return pl, err
 	default:
 		return nil, fmt.Errorf("unknown event %s", gitLabEvent)
 	}
