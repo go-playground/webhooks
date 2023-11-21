@@ -590,7 +590,7 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/workflow_run.json",
 			headers: http.Header{
 				"X-Github-Event":  []string{"workflow_run"},
-				"X-Hub-Signature": []string{"sha1=c54d046b1ce440bc3434c8de5ad73e0a630d7cbe"},
+				"X-Hub-Signature": []string{"sha1=46c14317c062992de64d11e12a0bad91dd9c4f50"},
 			},
 		},
 		{
