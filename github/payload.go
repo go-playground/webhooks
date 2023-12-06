@@ -216,17 +216,39 @@ type CheckRunPayload struct {
 type CheckSuitePayload struct {
 	Action     string `json:"action"`
 	CheckSuite struct {
-		ID           int64                `json:"id"`
-		NodeID       string               `json:"node_id"`
-		HeadBranch   string               `json:"head_branch"`
-		HeadSHA      string               `json:"head_sha"`
-		Status       string               `json:"status"`
-		Conclusion   string               `json:"conclusion"`
-		URL          string               `json:"url"`
-		Before       string               `json:"before"`
-		After        string               `json:"after"`
-		PullRequests []PullRequestPayload `json:"pull_requests"`
-		App          struct {
+		ID           int64  `json:"id"`
+		NodeID       string `json:"node_id"`
+		HeadBranch   string `json:"head_branch"`
+		HeadSHA      string `json:"head_sha"`
+		Status       string `json:"status"`
+		Conclusion   string `json:"conclusion"`
+		URL          string `json:"url"`
+		Before       string `json:"before"`
+		After        string `json:"after"`
+		PullRequests []struct {
+			URL    string `json:"url"`
+			ID     int64  `json:"id"`
+			Number int64  `json:"number"`
+			Head   struct {
+				Ref  string `json:"ref"`
+				SHA  string `json:"sha"`
+				Repo struct {
+					ID   int64  `json:"id"`
+					URL  string `json:"url"`
+					Name string `json:"name"`
+				} `json:"repo"`
+			} `json:"head"`
+			Base struct {
+				Ref  string `json:"ref"`
+				SHA  string `json:"sha"`
+				Repo struct {
+					ID   int64  `json:"id"`
+					URL  string `json:"url"`
+					Name string `json:"name"`
+				} `json:"repo"`
+			} `json:"base"`
+		} `json:"pull_requests"`
+		App struct {
 			ID     int64  `json:"id"`
 			NodeID string `json:"node_id"`
 			Owner  struct {
