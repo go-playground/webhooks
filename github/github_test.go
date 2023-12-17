@@ -555,6 +555,15 @@ func TestWebhooks(t *testing.T) {
 				"X-Github-Event": []string{"github_app_authorization"},
 			},
 		},
+		{
+			name:     "CodeScanningAlertEvent",
+			event:    CodeScanningAlertEvent,
+			typ:      CodeScanningAlertPayload{},
+			filename: "../testdata/github/code_scanning_alert.json",
+			headers: http.Header{
+				"X-Github-Event": []string{"code_scanning_alert"},
+			},
+		},
 	}
 
 	for _, tt := range tests {
