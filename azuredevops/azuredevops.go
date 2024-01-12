@@ -13,8 +13,9 @@ import (
 
 // parse errors
 var (
-	ErrInvalidHTTPMethod = errors.New("invalid HTTP Method")
-	ErrParsingPayload    = errors.New("error parsing payload")
+	ErrInvalidHTTPMethod           = errors.New("invalid HTTP Method")
+	ErrParsingPayload              = errors.New("error parsing payload")
+	ErrBasicAuthVerificationFailed = errors.New("basic auth verification failed")
 )
 
 // Event defines an Azure DevOps server hook event type
@@ -29,13 +30,38 @@ const (
 	GitPushEventType               Event = "git.push"
 )
 
+// Option is a configuration option for the webhook
+type Option func(*Webhook) error
+
+// Options is a namespace var for configuration options
+var Options = WebhookOptions{}
+
+// WebhookOptions is a namespace for configuration option methods
+type WebhookOptions struct{}
+
+// BasicAuth verifies payload using basic auth
+func (WebhookOptions) BasicAuth(username, password string) Option {
+	return func(hook *Webhook) error {
+		hook.username = username
+		hook.password = password
+		return nil
+	}
+}
+
 // Webhook instance contains all methods needed to process events
 type Webhook struct {
+	username string
+	password string
 }
 
 // New creates and returns a WebHook instance
-func New() (*Webhook, error) {
+func New(options ...Option) (*Webhook, error) {
 	hook := new(Webhook)
+	for _, opt := range options {
+		if err := opt(hook); err != nil {
+			return nil, errors.New("Error applying Option")
+		}
+	}
 	return hook, nil
 }
 
@@ -45,6 +71,10 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		_, _ = io.Copy(io.Discard, r.Body)
 		_ = r.Body.Close()
 	}()
+
+	if !hook.verifyBasicAuth(r) {
+		return nil, ErrBasicAuthVerificationFailed
+	}
 
 	if r.Method != http.MethodPost {
 		return nil, ErrInvalidHTTPMethod
@@ -77,4 +107,14 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 	default:
 		return nil, fmt.Errorf("unknown event %s", pl.EventType)
 	}
+}
+
+func (hook Webhook) verifyBasicAuth(r *http.Request) bool {
+	// skip validation if username or password was not provided
+	if hook.username == "" && hook.password == "" {
+		return true
+	}
+	username, password, ok := r.BasicAuth()
+
+	return ok && username == hook.username && password == hook.password
 }
