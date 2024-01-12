@@ -170,3 +170,16 @@ func TestParseBasicAuth(t *testing.T) {
 		assert.Nil(t, p)
 	}
 }
+
+func TestBasicAuth(t *testing.T) {
+	const user = "user"
+	const pass = "pass123"
+
+	opt := Options.BasicAuth(user, pass)
+	h := &Webhook{}
+	err := opt(h)
+
+	assert.NoError(t, err)
+	assert.Equal(t, h.username, user)
+	assert.Equal(t, h.password, pass)
+}
