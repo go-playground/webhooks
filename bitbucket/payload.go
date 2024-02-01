@@ -391,10 +391,11 @@ type Repository struct {
 
 // Project is the common Bitbucket Project Sub Entity
 type Project struct {
-	Type    string `json:"type"`
-	Project string `json:"project"`
-	UUID    string `json:"uuid"`
-	Links   struct {
+	Type  string `json:"type"`
+	Key   string `json:"key"`
+	UUID  string `json:"uuid"`
+	Name  string `json:"name"`
+	Links struct {
 		HTML struct {
 			Href string `json:"href"`
 		} `json:"html"`
@@ -402,7 +403,6 @@ type Project struct {
 			Href string `json:"href"`
 		} `json:"avatar"`
 	} `json:"links"`
-	Key string `json:"key"`
 }
 
 // Issue is the common Bitbucket Issue Sub Entity
