@@ -379,14 +379,15 @@ type Repository struct {
 			Href string `json:"href"`
 		} `json:"avatar"`
 	} `json:"links"`
-	UUID      string  `json:"uuid"`
-	Project   Project `json:"project"`
-	FullName  string  `json:"full_name"`
-	Name      string  `json:"name"`
-	Website   string  `json:"website"`
-	Owner     Owner   `json:"owner"`
-	Scm       string  `json:"scm"`
-	IsPrivate bool    `json:"is_private"`
+	UUID      string    `json:"uuid"`
+	Project   Project   `json:"project"`
+	FullName  string    `json:"full_name"`
+	Name      string    `json:"name"`
+	Website   string    `json:"website"`
+	Owner     Owner     `json:"owner"`
+	Scm       string    `json:"scm"`
+	IsPrivate bool      `json:"is_private"`
+	Workspace Workspace `json:"workspace"`
 }
 
 // Project is the common Bitbucket Project Sub Entity
@@ -507,4 +508,23 @@ type PullRequest struct {
 			Href string `json:"href"`
 		} `json:"html"`
 	} `json:"links"`
+}
+
+// Workspace generated using https://mholt.github.io/json-to-go/.
+type Workspace struct {
+	Slug  string `json:"slug"`
+	Type  string `json:"type"`
+	Name  string `json:"name"`
+	Links struct {
+		Self struct {
+			Href string `json:"href"`
+		} `json:"self"`
+		HTML struct {
+			Href string `json:"href"`
+		} `json:"html"`
+		Avatar struct {
+			Href string `json:"href"`
+		} `json:"avatar"`
+	} `json:"links"`
+	UUID string `json:"uuid"`
 }
