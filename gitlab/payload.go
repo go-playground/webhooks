@@ -37,8 +37,8 @@ type IssueEventPayload struct {
 	Project          Project          `json:"project"`
 	Repository       Repository       `json:"repository"`
 	ObjectAttributes ObjectAttributes `json:"object_attributes"`
-	Assignee         Assignee         `json:"assignee"`
-	Assignees        []Assignee       `json:"assignees"`
+	Assignee         User             `json:"assignee"`
+	Assignees        []User           `json:"assignees"`
 	Changes          Changes          `json:"changes"`
 }
 
@@ -59,17 +59,13 @@ type MergeRequestEventPayload struct {
 	Project          Project          `json:"project"`
 	Repository       Repository       `json:"repository"`
 	Labels           []Label          `json:"labels"`
-	Assignees        []Assignee       `json:"assignees"`
-	Reviewers        []Reviewers      `json:"reviewers"`
+	Assignees        []User           `json:"assignees"`
+	Reviewers        []User           `json:"reviewers"`
 }
 
 // Reviewers contains all of the GitLab reviewers information
-type Reviewers struct {
-	ID        int    `json:"id"`
-	Name      string `json:"name"`
-	Username  string `json:"username"`
-	AvatarURL string `json:"avatar_url"`
-}
+// Deprecated: Use User instead
+type Reviewers User
 
 // PushEventPayload contains the information for GitLab's push event
 type PushEventPayload struct {
@@ -728,7 +724,7 @@ type ObjectAttributes struct {
 	Source           Source     `json:"source"`
 	Target           Target     `json:"target"`
 	LastCommit       LastCommit `json:"last_commit"`
-	Assignee         Assignee   `json:"assignee"`
+	Assignee         User       `json:"assignee"`
 }
 
 // PipelineObjectAttributes contains pipeline specific GitLab object attributes information
@@ -800,18 +796,13 @@ type MergeRequest struct {
 	Target          Target     `json:"target"`
 	LastCommit      LastCommit `json:"last_commit"`
 	WorkInProgress  bool       `json:"work_in_progress"`
-	Assignee        Assignee   `json:"assignee"`
+	Assignee        User       `json:"assignee"`
 	URL             string     `json:"url"`
 }
 
 // Assignee contains all of the GitLab assignee information
-type Assignee struct {
-	ID        int64  `json:"id"`
-	Name      string `json:"name"`
-	Username  string `json:"username"`
-	AvatarURL string `json:"avatar_url"`
-	Email     string `json:"email"`
-}
+// Deprecated: Use User instead
+type Assignee User
 
 // StDiff contains all of the GitLab diff information
 type StDiff struct {
