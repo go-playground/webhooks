@@ -870,13 +870,36 @@ type Author struct {
 
 // Changes contains all changes associated with a GitLab issue or MR
 type Changes struct {
-	LabelChanges LabelChanges `json:"labels"`
+	LabelChanges *ListChange[Label]           `json:"labels"`
+	Draft        *PropChange[bool]            `json:"draft"`
+	StateId      *PropChange[IssuableStateID] `json:"state_id"`
+	Assignees    *ListChange[User]            `json:"assignees"`
+	Reviewers    *ListChange[User]            `json:"reviewers"`
+	Title        *PropChange[string]          `json:"title"`
+	Description  *PropChange[string]          `json:"description"`
+
+	UpdatedAt      *PropChange[customTime] `json:"updated_at"`
+	UpdatedByID    *PropChange[int64]      `json:"updated_by_id"`
+	LastEditedAt   *PropChange[customTime] `json:"last_edited_at"`
+	LastEditedByID *PropChange[int64]      `json:"last_edited_by_id"`
 }
 
-// LabelChanges contains changes in labels assocatiated with a GitLab issue or MR
-type LabelChanges struct {
-	Previous []Label `json:"previous"`
-	Current  []Label `json:"current"`
+type PropChange[T comparable] struct {
+	Previous T `json:"previous"`
+	Current  T `json:"current"`
+}
+
+func (p *PropChange[T]) Was(value T) bool {
+	return p != nil && p.Previous == value
+}
+
+func (p *PropChange[T]) Became(newValue T) bool {
+	return p != nil && p.Current == newValue
+}
+
+type ListChange[T comparable] struct {
+	Previous []T `json:"previous"`
+	Current  []T `json:"current"`
 }
 
 // Label contains all of the GitLab label information
@@ -892,3 +915,13 @@ type Label struct {
 	Type        string     `json:"type"`
 	GroupID     int64      `json:"group_id"`
 }
+
+type IssuableStateID int
+
+// Source: https://forum.gitlab.com/t/merge-event-state-id-meanings/47433
+const (
+	StateOpened IssuableStateID = 1
+	StateClosed IssuableStateID = 2
+	StateMerged IssuableStateID = 3
+	StateLocked IssuableStateID = 4
+)
