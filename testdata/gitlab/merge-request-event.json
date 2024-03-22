@@ -50,6 +50,7 @@
     "milestone_id": null,
     "state_id": 1,
     "state": "opened",
+    "draft": false,
     "blocking_discussions_resolved": true,
     "work_in_progress": false,
     "first_contribution": true,
@@ -133,9 +134,21 @@
     "group_id": 41
   }],
   "changes": {
+    "title": {
+      "previous": "MS Viewport",
+      "current": "MS-Viewport"
+    },
+    "description": {
+      "previous": "Lorem ipsum dolor sit amet",
+      "current": ""
+    },
     "updated_by_id": {
       "previous": null,
       "current": 1
+    },
+    "draft": {
+      "previous": true,
+      "current": false
     },
     "updated_at": {
       "previous": "2017-09-15 16:50:55 UTC",
@@ -174,6 +187,28 @@
     "last_edited_by_id": {
       "previous": null,
       "current": 3278533
+    },
+    "assignees": {
+      "previous": [],
+      "current": [
+        {
+          "id": 6,
+          "name": "User1",
+          "username": "user1",
+          "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+        }
+      ]
+    },
+    "reviewers": {
+      "previous": [],
+      "current": [
+        {
+          "id": 6,
+          "name": "User1",
+          "username": "user1",
+          "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+        }
+      ]
     }
   },
   "assignees": [
