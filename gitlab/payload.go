@@ -725,6 +725,7 @@ type ObjectAttributes struct {
 	Target           Target     `json:"target"`
 	LastCommit       LastCommit `json:"last_commit"`
 	Assignee         User       `json:"assignee"`
+	Draft            bool       `json:"draft"`
 }
 
 // PipelineObjectAttributes contains pipeline specific GitLab object attributes information

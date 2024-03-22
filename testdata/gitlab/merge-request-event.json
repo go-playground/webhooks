@@ -50,6 +50,7 @@
     "milestone_id": null,
     "state_id": 1,
     "state": "opened",
+    "draft": false,
     "blocking_discussions_resolved": true,
     "work_in_progress": false,
     "first_contribution": true,
