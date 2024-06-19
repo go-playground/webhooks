@@ -6480,6 +6480,7 @@ type WorkflowJobPayload struct {
 		HTMLURL     string    `json:"html_url"`
 		Status      string    `json:"status"`
 		Conclusion  string    `json:"conclusion"`
+		CreatedAt   time.Time `json:"created_at"`
 		StartedAt   time.Time `json:"started_at"`
 		CompletedAt time.Time `json:"completed_at"`
 		Name        string    `json:"name"`
