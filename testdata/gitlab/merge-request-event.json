@@ -52,6 +52,7 @@
     "state": "opened",
     "blocking_discussions_resolved": true,
     "work_in_progress": false,
+    "draft": false,
     "first_contribution": true,
     "merge_status": "unchecked",
     "target_project_id": 14,
@@ -136,6 +137,10 @@
     "updated_by_id": {
       "previous": null,
       "current": 1
+    },
+    "draft": {
+      "previous": true,
+      "current": false
     },
     "updated_at": {
       "previous": "2017-09-15 16:50:55 UTC",

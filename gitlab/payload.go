@@ -724,6 +724,7 @@ type ObjectAttributes struct {
 	NoteableID       int64      `json:"noteable_id"` // nolint: misspell
 	System           bool       `json:"system"`
 	WorkInProgress   bool       `json:"work_in_progress"`
+	Draft            bool       `json:"draft"`
 	StDiffs          []StDiff   `json:"st_diffs"`
 	Source           Source     `json:"source"`
 	Target           Target     `json:"target"`
@@ -880,12 +881,19 @@ type Author struct {
 // Changes contains all changes associated with a GitLab issue or MR
 type Changes struct {
 	LabelChanges LabelChanges `json:"labels"`
+	DraftChanges DraftChanges `json:"draft"`
 }
 
-// LabelChanges contains changes in labels assocatiated with a GitLab issue or MR
+// LabelChanges contains changes in labels associated with a GitLab issue or MR
 type LabelChanges struct {
 	Previous []Label `json:"previous"`
 	Current  []Label `json:"current"`
+}
+
+// DraftChanges contains the current and previous value of the draft property, tells us if draft was toggles
+type DraftChanges struct {
+	Previous bool `json:"previous"`
+	Current  bool `json:"current"`
 }
 
 // Label contains all of the GitLab label information
