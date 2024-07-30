@@ -37,8 +37,8 @@ type IssueEventPayload struct {
 	Project          Project          `json:"project"`
 	Repository       Repository       `json:"repository"`
 	ObjectAttributes ObjectAttributes `json:"object_attributes"`
-	Assignee         Assignee         `json:"assignee"`
-	Assignees        []Assignee       `json:"assignees"`
+	Assignee         User             `json:"assignee"`
+	Assignees        []User           `json:"assignees"`
 	Changes          Changes          `json:"changes"`
 }
 
@@ -59,17 +59,13 @@ type MergeRequestEventPayload struct {
 	Project          Project          `json:"project"`
 	Repository       Repository       `json:"repository"`
 	Labels           []Label          `json:"labels"`
-	Assignees        []Assignee       `json:"assignees"`
-	Reviewers        []Reviewers      `json:"reviewers"`
+	Assignees        []User           `json:"assignees"`
+	Reviewers        []User           `json:"reviewers"`
 }
 
 // Reviewers contains all of the GitLab reviewers information
-type Reviewers struct {
-	ID        int    `json:"id"`
-	Name      string `json:"name"`
-	Username  string `json:"username"`
-	AvatarURL string `json:"avatar_url"`
-}
+// Deprecated: Use User instead
+type Reviewers User
 
 // PushEventPayload contains the information for GitLab's push event
 type PushEventPayload struct {
@@ -728,7 +724,8 @@ type ObjectAttributes struct {
 	Source           Source     `json:"source"`
 	Target           Target     `json:"target"`
 	LastCommit       LastCommit `json:"last_commit"`
-	Assignee         Assignee   `json:"assignee"`
+	Assignee         User       `json:"assignee"`
+	Draft            bool       `json:"draft"`
 }
 
 // PipelineObjectAttributes contains pipeline specific GitLab object attributes information
@@ -800,18 +797,13 @@ type MergeRequest struct {
 	Target          Target     `json:"target"`
 	LastCommit      LastCommit `json:"last_commit"`
 	WorkInProgress  bool       `json:"work_in_progress"`
-	Assignee        Assignee   `json:"assignee"`
+	Assignee        User       `json:"assignee"`
 	URL             string     `json:"url"`
 }
 
 // Assignee contains all of the GitLab assignee information
-type Assignee struct {
-	ID        int64  `json:"id"`
-	Name      string `json:"name"`
-	Username  string `json:"username"`
-	AvatarURL string `json:"avatar_url"`
-	Email     string `json:"email"`
-}
+// Deprecated: Use User instead
+type Assignee User
 
 // StDiff contains all of the GitLab diff information
 type StDiff struct {
@@ -879,13 +871,36 @@ type Author struct {
 
 // Changes contains all changes associated with a GitLab issue or MR
 type Changes struct {
-	LabelChanges LabelChanges `json:"labels"`
+	LabelChanges *ListChange[Label]           `json:"labels"`
+	Draft        *PropChange[bool]            `json:"draft"`
+	StateId      *PropChange[IssuableStateID] `json:"state_id"`
+	Assignees    *ListChange[User]            `json:"assignees"`
+	Reviewers    *ListChange[User]            `json:"reviewers"`
+	Title        *PropChange[string]          `json:"title"`
+	Description  *PropChange[string]          `json:"description"`
+
+	UpdatedAt      *PropChange[customTime] `json:"updated_at"`
+	UpdatedByID    *PropChange[int64]      `json:"updated_by_id"`
+	LastEditedAt   *PropChange[customTime] `json:"last_edited_at"`
+	LastEditedByID *PropChange[int64]      `json:"last_edited_by_id"`
 }
 
-// LabelChanges contains changes in labels assocatiated with a GitLab issue or MR
-type LabelChanges struct {
-	Previous []Label `json:"previous"`
-	Current  []Label `json:"current"`
+type PropChange[T comparable] struct {
+	Previous T `json:"previous"`
+	Current  T `json:"current"`
+}
+
+func (p *PropChange[T]) Was(value T) bool {
+	return p != nil && p.Previous == value
+}
+
+func (p *PropChange[T]) Became(newValue T) bool {
+	return p != nil && p.Current == newValue
+}
+
+type ListChange[T comparable] struct {
+	Previous []T `json:"previous"`
+	Current  []T `json:"current"`
 }
 
 // Label contains all of the GitLab label information
@@ -901,3 +916,13 @@ type Label struct {
 	Type        string     `json:"type"`
 	GroupID     int64      `json:"group_id"`
 }
+
+type IssuableStateID int
+
+// Source: https://forum.gitlab.com/t/merge-event-state-id-meanings/47433
+const (
+	StateOpened IssuableStateID = 1
+	StateClosed IssuableStateID = 2
+	StateMerged IssuableStateID = 3
+	StateLocked IssuableStateID = 4
+)
