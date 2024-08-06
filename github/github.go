@@ -21,6 +21,7 @@ var (
 	ErrEventNotFound             = errors.New("event not defined to be parsed")
 	ErrParsingPayload            = errors.New("error parsing payload")
 	ErrHMACVerificationFailed    = errors.New("HMAC verification failed")
+	ErrWrongHubSignatureHeader   = errors.New("Invalid Github signature")
 )
 
 // Event defines a GitHub hook event type
@@ -167,7 +168,9 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		}
 
 		signature = strings.TrimPrefix(signature, "sha256=")
-
+		if len(signature) < 6 {
+			return nil, ErrWrongHubSignatureHeader
+		}
 		mac := hmac.New(sha256.New, []byte(hook.secret))
 		_, _ = mac.Write(payload)
 		expectedMAC := hex.EncodeToString(mac.Sum(nil))

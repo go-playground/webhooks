@@ -59,6 +59,15 @@ func TestBadRequests(t *testing.T) {
 		headers http.Header
 	}{
 		{
+			name:    "ShortSignature",
+			event:   CommitCommentEvent,
+			payload: bytes.NewBuffer([]byte("{12345}")),
+			headers: http.Header{
+				"X-Github-Event":  []string{"commit_comment"},
+				"X-Hub-Signature": []string{"sha1"},
+			},
+		},
+		{
 			name:    "BadNoEventHeader",
 			event:   CreateEvent,
 			payload: bytes.NewBuffer([]byte("{}")),
