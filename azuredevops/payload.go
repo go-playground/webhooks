@@ -51,6 +51,17 @@ type GitPushEvent struct {
 	Scope              string             `json:"scope"`
 }
 
+// "ms.vss-code.git-pullrequest-comment-event"
+
+type GitPullRequestCommentEvent struct {
+	ID          string             `json:"id"`
+	EventType   Event              `json:"eventType"`
+	PublisherID string             `json:"publisherId"`
+	Scope       string             `json:"scope"`
+	Message     Message            `json:"message"`
+	Resource    PullRequestComment `json:"resource"`
+}
+
 // build.complete
 
 type BuildCompleteEvent struct {
@@ -98,6 +109,22 @@ type PullRequest struct {
 	Reviewers             []Reviewer `json:"reviewers"`
 	Commits               []Commit   `json:"commits"`
 	URL                   string     `json:"url"`
+}
+
+type PullRequestComment struct {
+	PullRequest PullRequest `json:"pullRequest"`
+	Comment     Comment     `json:"comment"`
+}
+
+type Comment struct {
+	ID                     int    `json:"id"`
+	ParentCommentID        int    `json:"parentCommentId"`
+	Content                string `json:"content"`
+	Author                 User   `json:"author"`
+	PublishedDate          Date   `json:"publishedDate"`
+	LastUpdatedDate        Date   `json:"lastUpdatedDate"`
+	LastContentUpdatedDate Date   `json:"lastContentUpdatedDate"`
+	CommentType            string `json:"commentType"`
 }
 
 type Repository struct {

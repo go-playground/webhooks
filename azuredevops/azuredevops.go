@@ -28,6 +28,7 @@ const (
 	GitPullRequestUpdatedEventType Event = "git.pullrequest.updated"
 	GitPullRequestMergedEventType  Event = "git.pullrequest.merged"
 	GitPushEventType               Event = "git.push"
+	GitPullRequestCommentEventType Event = "ms.vss-code.git-pullrequest-comment-event"
 )
 
 // Option is a configuration option for the webhook
@@ -102,6 +103,10 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return fpl, err
 	case BuildCompleteEventType:
 		var fpl BuildCompleteEvent
+		err = json.Unmarshal([]byte(payload), &fpl)
+		return fpl, err
+	case GitPullRequestCommentEventType:
+		var fpl GitPullRequestCommentEvent
 		err = json.Unmarshal([]byte(payload), &fpl)
 		return fpl, err
 	default:

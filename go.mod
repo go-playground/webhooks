@@ -1,4 +1,4 @@
-module github.com/go-playground/webhooks/v6
+module github.com/nullify-platform/webhooks
 
 go 1.17
 
