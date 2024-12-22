@@ -220,6 +220,7 @@ type PullRequest struct {
 	FromRef      RepositoryReference      `json:"fromRef"`
 	ToRef        RepositoryReference      `json:"toRef"`
 	Locked       bool                     `json:"locked"`
+	Draft        bool                     `json:"draft"`
 	Author       PullRequestParticipant   `json:"author"`
 	Reviewers    []PullRequestParticipant `json:"reviewers"`
 	Participants []PullRequestParticipant `json:"participants"`
