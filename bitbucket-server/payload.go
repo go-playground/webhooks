@@ -214,6 +214,7 @@ type PullRequest struct {
 	State        string                   `json:"state"`
 	Open         bool                     `json:"open"`
 	Closed       bool                     `json:"closed"`
+	Draft        bool                     `json:"draft"`
 	CreatedDate  uint64                   `json:"createdDate"`
 	UpdatedDate  uint64                   `json:"updatedDate,omitempty"`
 	ClosedDate   uint64                   `json:"closedDate,omitempty"`
