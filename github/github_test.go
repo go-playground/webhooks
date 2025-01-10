@@ -484,6 +484,24 @@ func TestWebhooks(t *testing.T) {
 			},
 		},
 		{
+			name:     "StarEvent",
+			event:    StarEvent,
+			typ:      StarPayload{},
+			filename: "../testdata/github/star.json",
+			headers: http.Header{
+				"X-Github-Event": []string{"star"},
+			},
+		},
+		{
+			name:     "StarEventDeleted",
+			event:    StarEvent,
+			typ:      StarPayload{},
+			filename: "../testdata/github/star-deleted.json",
+			headers: http.Header{
+				"X-Github-Event": []string{"star"},
+			},
+		},
+		{
 			name:     "StatusEvent",
 			event:    StatusEvent,
 			typ:      StatusPayload{},
