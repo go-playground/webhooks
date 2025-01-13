@@ -66,6 +66,7 @@ const (
 	RepositoryEvent                          Event = "repository"
 	RepositoryVulnerabilityAlertEvent        Event = "repository_vulnerability_alert"
 	SecurityAdvisoryEvent                    Event = "security_advisory"
+	StarEvent                                Event = "star"
 	StatusEvent                              Event = "status"
 	TeamEvent                                Event = "team"
 	TeamAddEvent                             Event = "team_add"
@@ -87,6 +88,15 @@ const (
 	TagSubtype    EventSubtype = "tag"
 	PullSubtype   EventSubtype = "pull"
 	IssueSubtype  EventSubtype = "issues"
+)
+
+// InstallationTargetType defines a GitHub Hook HTTP Header type
+type InstallationTargetType string
+
+// GitHub hook HTTP header installation target types
+const (
+	InstallationTargetTypeRepository   InstallationTargetType = "repository"
+	InstallationTargetTypeOrganization InstallationTargetType = "organization"
 )
 
 // Option is a configuration option for the webhook
@@ -175,6 +185,12 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		if !hmac.Equal([]byte(signature), []byte(expectedMAC)) {
 			return nil, ErrHMACVerificationFailed
 		}
+	}
+
+	targetType := InstallationTargetTypeRepository
+	instTargetType := InstallationTargetType(r.Header.Get("X-GitHub-Hook-Installation-Target-Type"))
+	if instTargetType == InstallationTargetTypeOrganization {
+		targetType = InstallationTargetTypeOrganization
 	}
 
 	switch gitHubEvent {
@@ -271,7 +287,12 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		err = json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 	case PingEvent:
-		var pl PingPayload
+		if targetType == InstallationTargetTypeRepository {
+			var pl PingPayload
+			err = json.Unmarshal([]byte(payload), &pl)
+			return pl, err
+		}
+		var pl PingOrganizationPayload
 		err = json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 	case ProjectCardEvent:
@@ -320,6 +341,10 @@ func (hook Webhook) Parse(r *http.Request, events ...Event) (interface{}, error)
 		return pl, err
 	case SecurityAdvisoryEvent:
 		var pl SecurityAdvisoryPayload
+		err = json.Unmarshal([]byte(payload), &pl)
+		return pl, err
+	case StarEvent:
+		var pl StarPayload
 		err = json.Unmarshal([]byte(payload), &pl)
 		return pl, err
 	case StatusEvent:

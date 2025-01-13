@@ -1,0 +1,59 @@
+{
+    "zen": "Avoid administrative distraction.",
+    "hook_id": 523968606,
+    "hook": {
+        "type": "Organization",
+        "id": 523968606,
+        "name": "web",
+        "active": true,
+        "events": [
+            "*"
+        ],
+        "config": {
+            "content_type": "json",
+            "insecure_ssl": "0",
+            "secret": "********",
+            "url": "https://github.devchain.network/v1/webhook/github"
+        },
+        "updated_at": "2025-01-13T07:08:59Z",
+        "created_at": "2025-01-13T07:08:59Z",
+        "url": "https://api.github.com/orgs/vbyazilim/hooks/523968606",
+        "ping_url": "https://api.github.com/orgs/vbyazilim/hooks/523968606/pings",
+        "deliveries_url": "https://api.github.com/orgs/vbyazilim/hooks/523968606/deliveries"
+    },
+    "organization": {
+        "login": "vbyazilim",
+        "id": 34422235,
+        "node_id": "MDEyOk9yZ2FuaXphdGlvbjM0NDIyMjM1",
+        "url": "https://api.github.com/orgs/vbyazilim",
+        "repos_url": "https://api.github.com/orgs/vbyazilim/repos",
+        "events_url": "https://api.github.com/orgs/vbyazilim/events",
+        "hooks_url": "https://api.github.com/orgs/vbyazilim/hooks",
+        "issues_url": "https://api.github.com/orgs/vbyazilim/issues",
+        "members_url": "https://api.github.com/orgs/vbyazilim/members{/member}",
+        "public_members_url": "https://api.github.com/orgs/vbyazilim/public_members{/member}",
+        "avatar_url": "https://avatars.githubusercontent.com/u/34422235?v=4",
+        "description": "Software Development, Training and Consultancy"
+    },
+    "sender": {
+        "login": "vigo",
+        "id": 82952,
+        "node_id": "MDQ6VXNlcjgyOTUy",
+        "avatar_url": "https://avatars.githubusercontent.com/u/82952?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/vigo",
+        "html_url": "https://github.com/vigo",
+        "followers_url": "https://api.github.com/users/vigo/followers",
+        "following_url": "https://api.github.com/users/vigo/following{/other_user}",
+        "gists_url": "https://api.github.com/users/vigo/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/vigo/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/vigo/subscriptions",
+        "organizations_url": "https://api.github.com/users/vigo/orgs",
+        "repos_url": "https://api.github.com/users/vigo/repos",
+        "events_url": "https://api.github.com/users/vigo/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/vigo/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+    }
+}

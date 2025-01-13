@@ -367,6 +367,16 @@ func TestWebhooks(t *testing.T) {
 			},
 		},
 		{
+			name:     "PingEvent",
+			event:    PingEvent,
+			typ:      PingOrganizationPayload{},
+			filename: "../testdata/github/ping-organization.json",
+			headers: http.Header{
+				"X-Github-Event":                         []string{"ping"},
+				"X-GitHub-Hook-Installation-Target-Type": []string{"organization"},
+			},
+		},
+		{
 			name:     "ProjectCardEvent",
 			event:    ProjectCardEvent,
 			typ:      ProjectCardPayload{},
@@ -481,6 +491,24 @@ func TestWebhooks(t *testing.T) {
 			filename: "../testdata/github/security-advisory.json",
 			headers: http.Header{
 				"X-Github-Event": []string{"security_advisory"},
+			},
+		},
+		{
+			name:     "StarEvent",
+			event:    StarEvent,
+			typ:      StarPayload{},
+			filename: "../testdata/github/star.json",
+			headers: http.Header{
+				"X-Github-Event": []string{"star"},
+			},
+		},
+		{
+			name:     "StarEventDeleted",
+			event:    StarEvent,
+			typ:      StarPayload{},
+			filename: "../testdata/github/star-deleted.json",
+			headers: http.Header{
+				"X-Github-Event": []string{"star"},
 			},
 		},
 		{
