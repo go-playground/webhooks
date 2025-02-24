@@ -832,7 +832,7 @@ type DependabotAlertPayload struct {
 			FirstPatchedVersion    struct {
 				Identifier string `json:"identifier"`
 			} `json:"first_patched_version"`
-		} `json:"secirty_vulnerability"`
+		} `json:"security_vulnerability"`
 		URL          string `json:"url"`
 		HTMLURL      string `json:"html_url"`
 		CreatedAt    string `json:"created_at"`    // "YYYY-MM-DDTHH:MM:SSZ"
