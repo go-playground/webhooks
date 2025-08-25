@@ -470,6 +470,7 @@ type PullRequest struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	State       string `json:"state"`
+	Draft       bool   `json:"draft`"
 	Author      Owner  `json:"author"`
 	Source      struct {
 		Branch struct {
